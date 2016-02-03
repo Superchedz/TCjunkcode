@@ -27,6 +27,8 @@
 #  1.2      2015-11-22 GLC   Added code to handle the internet being down on startup, handle all
 #                            errors that occur when sending startup emails.
 #  1.3      2016-01-31 GLC   Added function to get local ip address and include in the email.
+#  1.4      2016-01-31 GLC   Minor fix to show target temp when turning on sensor zone rather than
+#                            the upper temp of the curve.  (it may confuse people)
 ################################################################################################
 
 import RPi.GPIO as GPIO 
@@ -414,7 +416,7 @@ def check_temp(zone_id, zone_pin, zone_temp, target_temp, curr_zone_state):
       if DebugMode == "Y":
         print "Turning zone on as temp is below target"
       turn_on_zone(zone_id, zone_pin)
-      logtext = "Zone %d current %.2f target temp %.2f" % (zone_id, curr_zone_temp, target_temp)
+      logtext = "Zone %d current %.2f target temp is %.2f" % (zone_id, curr_zone_temp, target_temp)
       write_log('Zone Switch On',logtext)
 
 
