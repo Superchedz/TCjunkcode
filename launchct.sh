@@ -2,7 +2,7 @@
 
 cd /
 cd home/pi/led
-sleep 10
+sleep 30
 #nohup sudo python protosen.py &
 nohup sudo python control1.py &
 cd /

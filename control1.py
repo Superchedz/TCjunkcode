@@ -416,7 +416,7 @@ def check_temp(zone_id, zone_pin, zone_temp, target_temp, curr_zone_state):
       if DebugMode == "Y":
         print "Turning zone on as temp is below target"
       turn_on_zone(zone_id, zone_pin)
-      logtext = "Zone %d current %.2f target temp %.2f" % (zone_id, curr_zone_temp, target_temp)
+      logtext = "Zone %d current %.2f target temp is back %.2f" % (zone_id, curr_zone_temp, target_temp)
       write_log('Zone Switch On',logtext)
 
 
