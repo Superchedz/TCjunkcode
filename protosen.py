@@ -364,10 +364,10 @@ sendok = False
 sendcounter = 0
 while sendcounter < 10:
   sendcounter += 1				  
-  send_alert('Alert: Protosen - STARTUP','System starting')
+  send_alert('TC9000 Alert: Sensor Scanner Job - STARTUP','System starting')
   if sendok:
     sendcounter = 11;  
-    write_log('Protosen Main','Starting up ok - email sent')
+    write_log('Scanner Main','Starting up ok - email sent')
   else:
     print "Protosen Email error - sleeping for 15 seconds before retrying"
     sleep (15)
