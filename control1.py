@@ -29,6 +29,7 @@
 #  1.3      2016-01-31 GLC   Added function to get local ip address and include in the email.
 #  1.4      2016-01-31 GLC   Minor fix to show target temp when turning on sensor zone rather than
 #                            the upper temp of the curve.  (it may confuse people)
+#                            Also removed the sleep on startup as moved into cron to support git
 ################################################################################################
 
 import RPi.GPIO as GPIO 
@@ -453,7 +454,7 @@ def get_ip_address(ifname):
 
 # have a short delay to allow the DB to be started up on reboot
 # really this should be replaced with a retry on the open - put it on the todo list
-sleep (30)
+#sleep (30) removed this sleep as its moved into the cronjob to allow git to work.
 
 db = MySQLdb.connect (host   = "localhost",
                       user   = "root",
