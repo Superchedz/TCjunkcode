@@ -414,7 +414,7 @@ def check_temp(zone_id, zone_pin, zone_temp, target_temp, curr_zone_state):
       if DebugMode == "Y":
         print "Turning zone on as temp is below target"
       turn_on_zone(zone_id, zone_pin)
-      logtext = "Zone %d current %.2f upper target %.2f" % (zone_id, curr_zone_temp, Temp_Upper)
+      logtext = "Zone %d current %.2f target temp %.2f" % (zone_id, curr_zone_temp, target_temp)
       write_log('Zone Switch On',logtext)
 
 
@@ -632,7 +632,7 @@ while True:
                print "Override with no sensor so just turn on"
              turn_on_zone(curr_zone_id, curr_zone_pin)
              if curr_zone_state == "OFF":
-               logtext = "Zone %d turned on due to boost or override" % (curr_zone_id)
+               logtext = "Zone %d turned on due to boost or override1" % (curr_zone_id)
                write_log('Zone Switch on',logtext)
 
          else:
