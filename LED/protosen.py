@@ -399,6 +399,7 @@ while 1 :
      while buf[0] !='a':
        llapMsg = ser.read(12)
        print llapMsg
+	   print now
 #  display packet, helps to troubleshoot any errors
        now = datetime.datetime.now()
        now.strftime("%H:%M %m-%d-%Y")
