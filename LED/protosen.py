@@ -435,7 +435,7 @@ DebugMode = get_debug()
 print "Sensor mode parameter found: " + SensorMode
 
 print "Opening connection and waiting for response...."
-write_log ('Scanner Job', 'Startup')
+#write_log ('Scanner Job', 'Startup')
 sleep (1)
 
 # we need to send an email on start up, this is useful to alert the user the process has started up, 
@@ -450,7 +450,7 @@ while sendcounter < 10:
   send_alert('TC9000 Alert: Sensor Scanner Job (v1.4) - STARTUP','System starting')
   if sendok:
     sendcounter = 11;  
-    write_log('Scanner Main','Starting up ok - email sent')
+    write_log('Scanner Job','Started up ok - email sent')
   else:
     print "Protosen Email error - sleeping for 15 seconds before retrying"
     sleep (15)
