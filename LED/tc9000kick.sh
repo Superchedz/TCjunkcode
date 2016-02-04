@@ -2,7 +2,7 @@ echo "##########################################################################
 echo "################## Starting TC9000 system jobs ###########################"
 echo "##########################################################################"
 
-sleep 5
+sleep 30
 echo
 echo "##########################################################################"
 echo "############  Do a GIT repository PULL to check for updates ##############"
@@ -41,8 +41,6 @@ echo "################# Start the Control1 switching program ###################
 echo "##########################################################################"
 cd /
 cd home/pi/led
-echo sleep for 30 secs to allow git pulls to work
-sleep 30
 echo end of snooze
 nohup sudo python control1.py &
 cd /
