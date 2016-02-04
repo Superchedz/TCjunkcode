@@ -30,6 +30,7 @@
 #  1.4      2016-01-31 GLC   Minor fix to show target temp when turning on sensor zone rather than
 #                            the upper temp of the curve.  (it may confuse people)
 #                            Also removed the sleep on startup as moved into cron to support git
+#  1.5      2016-02-04 GLC   Added version number into the start up email.
 ################################################################################################
 
 import RPi.GPIO as GPIO 
@@ -477,7 +478,7 @@ ipaddress = get_ip_address('eth0')
 print ipaddress
 while sendcounter < 10:
   sendcounter += 1				  
-  send_alert('TC9000 Alert: Heating Control Job - STARTUP','System starting.  Local IP is %s' % str(ipaddress))
+  send_alert('TC9000 Alert: Heating switch Control Job (v1.5)- STARTUP','System starting.  Local IP is %s' % str(ipaddress))
   if sendok:
     sendcounter = 11;  
     write_log('Control1 - Main','Starting up ok - email sent')
