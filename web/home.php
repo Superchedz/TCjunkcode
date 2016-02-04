@@ -10,7 +10,7 @@ if (isset($_SESSION['myname'])) {
     header('Location:index.php?err=invalidsession');
 }
 ?>
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <link rel="shortcut icon" href="heat.ico" />
@@ -129,7 +129,7 @@ if (isset($_SESSION['myname'])) {
 
 <div class="jumbotron" id="content">
     <div class="container">
-          <p><img src='./img/flame.png' class='img-thumbnail img-responsive' alt='Home'/> Total Control 9000 - from here you xxx manage the system settings, monitor active zones and set heating controls</p>
+          <p><img src='./img/flame.png' class='img-thumbnail img-responsive' alt='Home'/> Total Control 9000 - from here you may manage the system settings, monitor active zones and set heating controls</p>
     </div>
 </div>
 
