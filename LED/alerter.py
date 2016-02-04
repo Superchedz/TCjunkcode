@@ -225,7 +225,7 @@ body = str(sys.argv[2])
 # really this should be replaced with a retry on the open - put it on the todo list
 sleep (30)
 
-write_log ('Alerter', 'Startup')
+#write_log ('Alerter', 'Startup')
 
 
 # we need to send an email on start up, this is useful to alert the user the process has started up, 
@@ -241,7 +241,7 @@ while sendcounter < 10:
 
   if sendok:
     sendcounter = 11;  
-    write_log('Alerter Main','Starting up ok - email sent')
+#    write_log('Alerter Main','Starting up ok - email sent')
   else:
     sleep (15)
     

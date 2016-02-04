@@ -18,7 +18,9 @@ echo "##########################################################################
 echo "##########  Modify any delivered shell scripts to executables ############"
 echo "##########################################################################"
 cd home/pi/led
+echo
 ls *.sh
+echo 
 sudo chmod +x *.sh
 sudo chown pi:root *.sh
 
@@ -52,20 +54,7 @@ echo "##########################################################################
 cd /
 cd home/pi/led
 nohup sudo python protosen.py &
-#nohup sudo python control1.py &
 cd /
-
-# shell script to auto run the protosen scanner process at startup - UDP VERSION
-
-#echo
-#echo "##########################################################################"
-#echo "############  Start the ProtoSen scanner job - UDP Version  ##############"
-#echo "##########################################################################"
-#echo starting protosen UDP
-#cd /
-#sleep 30
-#cd home/pi/led
-#nohup sudo python protosenUDP.py &
 
 
 

@@ -1,5 +1,5 @@
 ################################################################################################
-#                                       Protosen.py 
+#                                       ProtosenUDP.py
 #                                       ==========
 ################################################################################################
 #  This program is part of the TotalControl9000 system.
@@ -23,8 +23,9 @@
 #                            errors that occur when sending startup emails.
 #  1.2      2016-01-01 GLC   Modified so that the zone id is derived from the db config rather
 #                            than assuming the sensor id matches the zone id.
-#  1.3      2016-02-03 GLC   Removed sleep at start as have moved it to cron to support git.
-#  1.4      2016-02-04 GLC   Added debug checking to allow for printing of debug info.
+#  V2 2.01  2016-01-19 GLC   This is a branched version to work with the new sensors, Ciseco
+#                            bridge and UDP comms.
+#  2.1      2016-02-03 GLC   Removed sleep at startup as its now in crontab to support git  
 ################################################################################################
 import serial
 import sys
@@ -38,14 +39,22 @@ import smtplib
 import mimetypes 
 import email 
 import email.mime.application 
-
+import os
+import socket
 #
 # SETTINGS
 #
 # Default settings for program; port, baud rate, temperature threshold, number of readings to store
 # set up serial port for temperature readings
-DEVICE = '/dev/ttyAMA0'
-BAUD = 9600
+
+#  OLD SERIAL VALUES NOT NEEDED
+#DEVICE = '/dev/ttyAMA0'
+#BAUD = 9600
+#  UDP port settings
+FROM_PORT = 50140
+TO_PORT = 50141
+
+
 # END OF SETTINGS
 
 ################################################################################################
@@ -55,7 +64,12 @@ BAUD = 9600
 def write_log(Log_From, Log_Text):
   print "************** Creating log***************"
 
-  db = MySQLdb.connect("localhost","root","pass123","BoilerControl" )
+  try:
+    db = MySQLdb.connect("localhost","root","pass123","BoilerControl" )
+  except MySQLdb.Error as err:
+    print "Unable to connect to database - contact support and quote error code &5001"
+    critical_error('Write log', 'ERROR : 5001 - unable to connect to DB', '--!! Shutting down ^2 !!--')	
+	
   log_cursor = db.cursor()
  
   sql = """INSERT INTO log(Log_From, Log_Text) VALUES ('"""+Log_From+"""','"""+Log_Text+"""')""" 
@@ -175,7 +189,7 @@ def send_alert(subject, msgbody):
     return
   
 
-############################## Get the Email Password  ###################################
+############################## Get the Password  ###################################
   pwd_cursor = db.cursor ()
   pwd_query = "select * from params_b where Param_Name = 'EmailPwd'"
   try:
@@ -194,8 +208,8 @@ def send_alert(subject, msgbody):
     return
   global sendok
   sendok = True
-
-  msg = 'Subject: %s:%s\n\n%s' %(subject, SystemID, msgbody)
+  msg = "Subject: " + subject + " System Number: " + SystemID + "\n\n" + msgbody
+#  msg = 'Subject: %s:%s\n\n%s' %(subject, SystemID, msgbody)
   print "Sending....Alert %s" % msgbody
   
   try:
@@ -236,40 +250,40 @@ def send_alert(subject, msgbody):
 
 def writeTemp(zone_id, temp):
 
-    now = datetime.datetime.now()
+   now = datetime.datetime.now()
 # Open database connection
-    db = MySQLdb.connect("localhost","root","pass123",db = "BoilerControl" )
+   db = MySQLdb.connect("localhost","root","pass123",db = "BoilerControl" )
 
 # prepare a cursor for storing the temperature reading
-    cursor = db.cursor()
-    zone_id_short = zone_id[1:2]
+   cursor = db.cursor()
+   zone_id_short = zone_id[1:2]
     
 # Prepare SQL query to INSERT a record into the database.
-    sql = """INSERT INTO zone_temp_hist_b (log_date,
+   sql = """INSERT INTO zone_temp_hist_b (log_date,
                                            zone_id,
                                            temperature)
              VALUES ('"""+str(now)+"""','"""+zone_id_short+"""',"""+str(temp)+""")"""
    
-    try:
-        cursor.execute(sql)
-        db.commit()
-    except:
-        db.rollback()
+   try:
+       cursor.execute(sql)
+       db.commit()
+   except:
+       db.rollback()
 #
 #    # prepare a cursor for storing just the current temperature reading against the zone record
-    cursor3 = db.cursor()
+   cursor3 = db.cursor()
 #
 #    # Prepare SQL query to UPDATE a record into the database.
-    sql_update = """UPDATE zone_b set Zone_Last_Temp_Reading = '"""+str(temp)+"""',
+   sql_update = """UPDATE zone_b set Zone_Last_Temp_Reading = '"""+str(temp)+"""',
                               Zone_Last_Temp_Reading_Dtime = '"""+str(now)+"""'
                      where Zone_ID ='"""+zone_id_short+"""'"""
-    try:
-       cursor3.execute(sql_update)
-       db.commit()
-    except MYSQLdb.Error as err:
-       write_log ('ProtoSen Error writing temps', err)
-       db.rollback()
-    db.close()
+   try:
+      cursor3.execute(sql_update)
+      db.commit()
+   except MYSQLdb.Error as err:
+      write_log ('ProtoSen Error writing temps', err)
+      db.rollback()
+   db.close()
 
 
 def is_number(s):
@@ -304,46 +318,17 @@ def get_zone(sensor_id):
     zone_id = 0
     zone_found_ind = False
     if numrows > 1:
-      if DebugMode == "Y":
-        print "***  Error:  Multiple Zones with same sensor id Error  ***"
+#      print "***  Error:  Multiple Zones with same sensor id Error  ***"
       send_alert('Alert: Protosen - *** Error ***','Multiple Zones with same sensor ID - Shutting down %s' % str(sensor_id))
       write_log ('ProtoSen ERROR multiple zones configured for a single sensor', str(sensor_id))
       critical_error('Get Zone', 'ERROR : Multiple Zones set for a Sensor', '--!! Shutting down ^2 !!--')
     if numrows == 0:
-      if DebugMode == "Y":
-        print "***  Warning:  No Zone set for sensor id - Warning ***"
+#      print "***  Warning:  No Zone set for sensor id - Warning ***"
       send_alert('Warning: Protosen - *** Warning ***','Sensor reading recieved for unconfigured sensor - check config')
       write_log ('ProtoSen: Warning no zone configured for sensor', str(sensor_id))
   return (zone_id, 	zone_found_ind) 
 
-################################################################################################
-############################### Function to get debug mode flag ################################
-################################################################################################
 
-def get_debug():
-  db = MySQLdb.connect("localhost","root","pass123",db = "BoilerControl" )
-  debug_cursor = db.cursor ()
-  debug_query = "select * from params_b where Param_Name = 'DebugMode'"
-  global DebugMode
-  try:
-     debug_cursor.execute(debug_query)
-  except MySQLdb.Error as err:
-     print ("******* Error reading DebugMode param : ERROR : {}".format(err))
-     write_log ('ERROR: Get DebugMode',err)
-
-  numrows = int (debug_cursor.rowcount)
-  if numrows == 1:
-    Debug_res = debug_cursor.fetchone()
-    if Debug_res[1] != "Y" and Debug_res[1] != "N":
-      print ""
-      print "*******  ERROR : Loop_DebugMode param is not numeric  *********"
-      critical_error('DebugMode Check', 'Debug Param Not Y or N', '--!! Shutting down ^1 !!--')
-    else:
-      DebugMode = Debug_res[1]
-      return DebugMode
-  else:
-    critical_error('Get Debug', 'ERROR : Missing Debugmode Param', '--!! Shutting down ^2 !!--')
-    print "***  Error:  Missing Param Debugmode param  ***"
   
 def writeBatt(zone_id, battpct):
 
@@ -377,12 +362,13 @@ print
 # have a short delay to allow the DB to be started up on reboot
 # really this should be replaced with a retry on the open - put it on the todo list
 
-sleep (30)
+#sleep (30)
 
 print "Opening connection and waiting for response..."
 #
-ser = serial.Serial(DEVICE, BAUD)
-write_log ('ProtoSen', 'Startup')
+#ser = serial.Serial(DEVICE, BAUD)
+#write_log ('ProtoSen', 'Startup')
+
 
 # we need to send an email on start up, this is useful to alert the user the process has started up, 
 # for instance after a power cut.  if the router is slow to start up the email send can fail, so we need
@@ -393,10 +379,10 @@ sendok = False
 sendcounter = 0
 while sendcounter < 10:
   sendcounter += 1				  
-  send_alert('TC9000 Alert: Sensor Scanner Job (v1.4) - STARTUP','System starting')
+  send_alert('TC9000 Alert: Sensor Scanner (UDP) - STARTUP','System starting')
   if sendok:
     sendcounter = 11;  
-    write_log('Scanner Main','Starting up ok - email sent')
+    write_log('Scanner UDP Main','Starting up ok - email sent')
   else:
     print "Protosen Email error - sleeping for 15 seconds before retrying"
     sleep (15)
@@ -412,7 +398,20 @@ else:
 # read the time
 now = datetime.datetime.now()
 #flush the serial port to clear out any unwanted data before starting
-ser.flushInput()
+#ser.flushInput()
+print now
+
+# Set up the UDP socket
+sock = socket.socket(socket.AF_INET, # Internet
+              socket.SOCK_DGRAM) # UDP
+
+sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)    
+sock.bind(('', FROM_PORT))
+
+
+
+
 
 msg = 'monitor initialised : ' + now.strftime("%H:%M %m-%d-%Y")
 #
@@ -421,67 +420,60 @@ while 1 :
    # All XRF module read and write commands should have 12 characters and begin with the letter "a"
    # Wait for message, the 1 second pause seems to improve the reading when several messages
    # are arriving in sequence, such as: a--TMP22.12-a--AWAKE----a--BATT2.74-a--SLEEPINGtime.
-   time.sleep(0.1)
-   DebugMode = get_debug()
-   while ser.inWaiting()>0:
-     buf = 'x'
-     while buf[0] !='a':
-       llapMsg = ser.read(12)
-       if DebugMode == "Y":
-         print llapMsg
-         print now
-#  display packet, helps to troubleshoot any errors
-       now = datetime.datetime.now()
-       now.strftime("%H:%M %m-%d-%Y")
-#       print 'Received '+ llapMsg + ' at ' + str(now)
-     
-       if "@" in llapMsg:
-         if DebugMode == "Y":
-           print "found a @ i llap, ignoring it"
-#         read an single char to realign things		  
-         llapMsg = ser.read(1)
-       else: 
-         if 'TMP' in llapMsg:
- 
-           temp = llapMsg[7:12]
-# we need to make sure the temp is always just 2dp to match the database field        
-           if is_number(temp) == True:
-             sensor_id =llapMsg[1:3]
-             zone_id, found_zone_ind = get_zone(sensor_id)
-             if found_zone_ind:             
-               temp2dp = float(float(int(float(temp)*100)) / 100)
-# now write it to the db
-               writeTemp(str(zone_id), temp2dp)
-           else:
-             if DebugMode == "Y":
-               print "Temp reading was not numeric so ignoring"
-               print 'Received '+ llapMsg + ' at ' + str(now)
-# take a character off the port to try and resync.
-               print "Reading extra 1 char"
-             llapMsg = ser.read(1)
-          
+#   time.sleep(0.1)
 
-         if 'BATT' in llapMsg :
+   
+    data, addr = sock.recvfrom(1024)
+#    print("Got: {} from address {}".format(data, addr))   
+
+
+    llaptype = data[102:107]
+ 
+    now = datetime.datetime.now()
+    now.strftime("%H:%M %m-%d-%Y")
+     
+    llaptype = data[102:107]
+#    print "llaptype found was " + llaptype 
+    if 'TEMP' in llaptype:
+      temps = data[106:111]   
+#      print "temp found was " + temps
+      temp = float(data[106:111])
+  
+# we need to make sure the temp is always just 2dp to match the database field        
+      if is_number(temp) == True:
+        sensor_id = data[122:124]
+#        print "sensor id" + sensor_id + "gave temp of " + str(temp)
+        zone_id, found_zone_ind = get_zone(sensor_id)
+        if found_zone_ind:             
+#          print "zone was found"
+          temp2dp = float(float(int(float(temp)*100)) / 100)
+# now write it to the db
+          writeTemp(str(zone_id), temp2dp)
+# we don't need an else here as unfound zones are handled in the called function
+#      else:
+#        print "temp was not numeric"
+	   
+    if 'BATT' in llaptype :
 
            # Battery reading sent
-           if DebugMode == "Y":
-             print "Battery level is " + llapMsg[7:11] + "V"
-           # Save this value for later.
-           batt = llapMsg[7:11]
-           sensor_id =llapMsg[1:3]
+      batt = data[106:110]
+      sensor_id = data[121:123]
+#      print sensor_id
+      zone_id, found_zone_ind = get_zone(sensor_id)
+#      print "sensor " + sensor_id + "gave battery level of " + batt     
+      if found_zone_ind:
+#             print str(zone_id)
+#             print "zone found "
+#        print batt
+#       print "that was batt"
+        battlevel = float(batt)
+        battpcnt = int(float(battlevel / 3)*100)
+        
+        writeBatt(str(zone_id), battpcnt)
+      else:
+        continue
 
-           zone_id, found_zone_ind = get_zone(sensor_id)
-           
-           if found_zone_ind:
-             if DebugMode == "Y":
-               print str(zone_id)
-               print "zone found "
-
-             battlevel = float(batt)
-             battpcnt = int(float(battlevel / 3)*100)
-             writeBatt(str(zone_id), battpcnt)
-           else:
-             continue
-print "We should never get here.......somethings gone wrong"
+# end of program
+print "We should never get here.......somethings gone wrong - Exited protosen loop"
 send_alert ('ProtoSen', 'We have exited the main loop, something has gone wrong, call ghost busters')
 write_log ('ProtoSen', 'Main loop exit unexpected')
