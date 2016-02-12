@@ -25,7 +25,8 @@
 #                            than assuming the sensor id matches the zone id.
 #  1.3      2016-02-03 GLC   Removed sleep at start as have moved it to cron to support git.
 #  1.4      2016-02-04 GLC   Added debug checking to allow for printing of debug info.
-#  2.0      2014-02-04 GLC   Added code to support both UDP and Serial comms in single program
+#  2.0      2016-02-04 GLC   Added code to support both UDP and Serial comms in single program
+#  2.1      2016-02-10 GLC   Removed erroneous print statement within UDP loop
 ################################################################################################
 import serial
 import sys
@@ -585,7 +586,7 @@ else:
 		  print "*** TEMP *** Sensor id " + sensor_id + " gave temp of " + str(temp)
         zone_id, found_zone_ind = get_zone(sensor_id)
         if found_zone_ind:             
-          print "zone was found"
+#          print "zone was found"
           temp2dp = float(float(int(float(temp)*100)) / 100)
 # now write it to the db
           writeTemp(str(zone_id), temp2dp)
