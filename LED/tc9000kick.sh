@@ -26,8 +26,6 @@ echo
 sudo chmod +x *.sh
 sudo chown pi:root *.sh
 
-
-
 echo "##########################################################################"
 echo "########## Start the NOIP service to update fowarding service ############"
 echo "##########################################################################"
