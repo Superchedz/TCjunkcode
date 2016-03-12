@@ -8,7 +8,7 @@ echo "##########################################################################
 echo "############  Do a GIT repository PULL to check for updates ##############"
 echo "##########################################################################"
 cd /
-cd home/pi/git
+cd home/pi/git 
 sudo git pull https://github.com/Superchedz/TCjunkcode.git 
 sudo mv web/* /var/www/boiler
 sudo mv crons/* /etc/cron.d
