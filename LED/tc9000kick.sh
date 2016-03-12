@@ -11,6 +11,7 @@ cd /
 cd home/pi/git
 sudo git pull https://github.com/Superchedz/TCjunkcode.git 
 sudo mv web/* /var/www/boiler
+sudo mv crons/* /home/etc/cron.d
 sudo mv LED/* /home/pi/led
 cd /
 
