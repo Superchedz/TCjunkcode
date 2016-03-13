@@ -13,6 +13,7 @@
 #  Version  Date       Who   Description
 #  ======== ========== ====  ===========
 #  1.0      2016-04-02 GLC   Initial Version
+#  1.1      2016-04-03 GLC   Added battery spec to email
 ################################################################################################
 
 
@@ -317,7 +318,8 @@ for y in range (numrows):
     subject = "Warning - Zone sensor Fault"
     msgbody = "Zone : " + str(curr_zone_id) + " (" + curr_zone_name + ") has stopped receiving sensor readings.  "\
               "\nLast reading was received at : " + str(curr_zone_last_reading_dtime) + "\nMost recent battery level is " + str(curr_zone_batt_pcnt) + "%, "\
-              "\n\nYou should replace the battery immediately. \n\nNote: this message will be repeated every 6 hours until the sensor is active again, you can deactivate the zone to prevent it being sent in the meantime." \
+              "\n\nYou should replace the battery immediately. \n\nNote: This message is repeated every 9am and 6pm each day until the sensor is active again, you can deactivate the zone to prevent it being sent in the meantime." \
+              "\nThe battery is a CR2032 3v"
               "\n\n From the TotalControl9000 Support team"
     logtext = "Zone %d" % (curr_zone_id)    
     write_log ('Sensor inactive', logtext)
