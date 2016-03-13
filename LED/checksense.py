@@ -13,7 +13,7 @@
 #  Version  Date       Who   Description
 #  ======== ========== ====  ===========
 #  1.0      2016-04-02 GLC   Initial Version
-#  1.1      2016-04-03 GLC   Added battery spec to email
+#  1.1      2016-04-03 GLC   Added battery spec to email and added debug print switching
 ################################################################################################
 
 
@@ -68,9 +68,9 @@ def write_log(Log_From, Log_Text):
 ################################################################################################
 
 def send_alert(subject, msgbody):
-  print "***********************************************************"
-  print "*********************  SENDING ALERT  *********************"
-  print "***********************************************************"
+#  print "***********************************************************"
+#  print "*********************  SENDING ALERT  *********************"
+#  print "***********************************************************"
   
 
 ##############  Get the params from the database to set up sending alert #######################
@@ -186,7 +186,7 @@ def send_alert(subject, msgbody):
   sendok = True
 
   msg = 'Subject: %s: %s\n\n%s' %(subject,SystemID, msgbody)
-  print "Sending....Alert %s" % msgbody
+#  print "Sending....Alert %s" % msgbody
   
   try:
      SMTPServer = smtplib.SMTP(SMTPParam)
@@ -291,9 +291,12 @@ now = datetime.datetime.now()
 DebugMode = get_debug()
 
 checktime = now
-print checktime
+
+if DebugMode == "Y":
+  print checktime
 checktime = checktime - timedelta(hours=3)
-print checktime
+if DebugMode == "Y":
+  print checktime
 
 Zone_cursor = db.cursor()
 
@@ -305,7 +308,9 @@ Zone_cursor.execute("SELECT Zone_ID, Zone_Name, Zone_Last_Temp_Reading_Dtime, Zo
                                                                AND Zone_Type = 'T' \
                                                                AND Zone_Last_Temp_Reading_Dtime < (NOW() - INTERVAL 6 HOUR)")
 numrows = int (Zone_cursor.rowcount)
-
+if DebugMode == "Y":
+  print numrows
+  
 for y in range (numrows):
 
   Zone_res = Zone_cursor.fetchone()
@@ -319,11 +324,12 @@ for y in range (numrows):
     msgbody = "Zone : " + str(curr_zone_id) + " (" + curr_zone_name + ") has stopped receiving sensor readings.  "\
               "\nLast reading was received at : " + str(curr_zone_last_reading_dtime) + "\nMost recent battery level is " + str(curr_zone_batt_pcnt) + "%, "\
               "\n\nYou should replace the battery immediately. \n\nNote: This message is repeated every 9am and 6pm each day until the sensor is active again, you can deactivate the zone to prevent it being sent in the meantime." \
-              "\nThe battery is a CR2032 3v"
-              "\n\n From the TotalControl9000 Support team"
+              "\nThe battery is a CR2032 3v"\
+              "\n\nFrom the TotalControl9000 Support team"
     logtext = "Zone %d" % (curr_zone_id)    
     write_log ('Sensor inactive', logtext)
-    print msgbody
+    if DebugMode == "Y":
+      print msgbody
     send_alert(subject, msgbody)
 
 
