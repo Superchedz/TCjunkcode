@@ -21,6 +21,7 @@
 #  ======== ========== ====  ===========
 #  1.0      2014-11-01 GLC   Initial Version
 #  1.1      2015-12-05 GLC   Added deletion of log_b to the program.
+#  1.2      2016-03-29 GLC   Added Override_B as old boosts get lonely too
 #  
 ################################################################################################
  
@@ -277,11 +278,13 @@ db = MySQLdb.connect (host   = "localhost",
 write_log('Log Cleaner','Starting up')
 now = time.strftime('%Y-%m-%d %H:%M:%S')
 nowt = time.strftime('%H:%M:%S')
+print nowt
 DebugMode = get_debug()
 Log_Retention_days = int(get_retention())
 
 if DebugMode == "Y":
-  print Log_Retention_days
+  print "Param Log_Retention_days found : " + str(Log_Retention_days)
+
 
 Log_hist_clean = db.cursor()
 
@@ -295,9 +298,9 @@ except MySQLdb.Error as err:
 
 if not Error_state:  
   numrows = int (Log_hist_clean.rowcount)
-  print "##### %d Temp hist records deleted on zone_temp_hist_b table " % (numrows)
+
   if DebugMode == "Y":
-    print "##### %d Temp hist records deleted on zone_temp_hist_b table " % (numrows)
+    print "##### %d zone_temp_hist_b records deleted on zone_temp_hist_b table " % (numrows)
 
 # ironically lets write to the log 
   write_log('Log Cleaner', 'Deleted %d temp hist records, retention %d days' % (numrows, Log_Retention_days))
@@ -314,14 +317,33 @@ if not Error_state:
     send_alert('Log Cleaner Error', '***Error detected deleting from log during scheduled job')
     Error_state = True
 
+
 if not Error_state:  
   numrows = int (Log_clean.rowcount)
-  print "##### %d Temp hist records deleted on zone_temp_hist_b table " % (numrows)
   if DebugMode == "Y":
-    print "##### %d Temp hist records deleted on zone_temp_hist_b table " % (numrows)
+    print "##### %d Log records deleted on zone_temp_hist_b table " % (numrows)
 
 # ironically lets write to the log 
   write_log('Log Cleaner', 'Deleted %d log records, retention %d days' % (numrows, Log_Retention_days))
-    
+
+
+if not Error_state:  
+  Override_clean = db.cursor()
+
+  try:
+    Override_clean.execute("DELETE FROM override_b WHERE Override_end < ADDDATE(CURDATE(), -%s)", Log_Retention_days)
+  except MySQLdb.Error as err:
+    print "oh no!!! There was an error deleting from the override table"
+    write_log ('Override Cleaner', '*** ERROR *** Deleting from Override')
+    send_alert('Override Cleaner Error', '***Error detected deleting from Override during scheduled job')
+    Error_state = True
+
+if not Error_state:  
+  numrows = int (Override_clean.rowcount)
+  if DebugMode == "Y":
+    print "##### %d override_b record deleted on override_b table " % (numrows)
+
+  write_log('Override Cleaner', 'Deleted %d Override records, retention %d days' % (numrows, Log_Retention_days))
+
 db.commit()
 db.close()
