@@ -21,7 +21,7 @@
 #  ======== ========== ====  ===========
 #  1.0      2014-11-01 GLC   Initial Version
 #  1.1      2015-12-05 GLC   Added deletion of log_b to the program.
-#  1.2      2016-03-29 GLC   Added Override_B as old boosts get lonely too
+#  1.2      2016-03-29 GLC   Added Override_B as old boosts get lonely too..
 #  
 ################################################################################################
  
