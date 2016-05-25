@@ -1,0 +1,30 @@
+# script to support install of fobs, adds tables and sets comms to UDP - needs message bridge running
+
+UPDATE `params_b` SET `Param_Value`= 'UDP' WHERE `Param_Name` = 'Sensor_Mode';
+
+
+CREATE TABLE `fob_b` (
+  `Fob_ID` varchar(2) NOT NULL,
+  `Fob_Name` varchar(30) NOT NULL,
+  `Fob_Batt_Pcnt` int(2) NOT NULL,
+  `Fob_Butt_A_YN` tinyint(1) NOT NULL,
+  `Fob_Butt_B_YN` bit(1) NOT NULL,
+  `Fob_Butt_C_YN` tinyint(1) NOT NULL,
+  `Fob_Butt_D_YN` tinyint(1) NOT NULL,
+  `Fob_Butt_E_YN` tinyint(1) NOT NULL,
+  PRIMARY KEY (`Fob_ID`),
+  UNIQUE KEY `fob_name` (`Fob_Name`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+CREATE TABLE `fob_butt_action_b` (
+  `Fob_ID` varchar(2) NOT NULL,
+  `Fob_Butt` varchar(1) NOT NULL,
+  `Butt_Zone_ID` int(11) NOT NULL,
+  `Butt_Action_Type` varchar(1) NOT NULL,
+  `Butt_Boost_mins` int(4) NOT NULL,
+  `Butt_Boost_Temp` decimal(5,2) NOT NULL,
+  PRIMARY KEY (`Fob_ID`,`Fob_Butt`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+

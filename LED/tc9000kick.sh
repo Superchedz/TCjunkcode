@@ -8,7 +8,7 @@ echo "##########################################################################
 echo "############  Do a GIT repository PULL to check for updates ##############"
 echo "##########################################################################"
 cd /
-cd home/pi/git 
+cd home/pi/git
 sudo git pull https://github.com/Superchedz/TCjunkcode.git 
 sudo mv web/* /var/www/boiler
 sudo mv crons/* /etc/cron.d
@@ -25,6 +25,22 @@ ls *.sh
 echo 
 sudo chmod +x *.sh
 sudo chown pi:root *.sh
+
+
+echo ################## Fob installer #####################
+echo ##### We test for the existence of fobdone file ######
+echo ############ if not there run scripts ################
+echo created 25/5/2016
+echo
+if ! [ -f fobdone ]; then
+  echo 
+  echo The fobdone file wasnt found, so run sql script to add tables and set comms to UDP
+  touch fobdone
+  mysql --batch -h localhost -u root --password=pass123 -D  BoilerControl  < sqlfob1.txt > sqlout.txt    
+else
+  echo The fobdone file was found so its assumed fob tables are installed already - skipping
+fi
+
 
 echo "##########################################################################"
 echo "########## Start the NOIP service to update fowarding service ############"
