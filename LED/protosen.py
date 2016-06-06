@@ -13,24 +13,6 @@
 #  this can either go to the log file (logs/logpt) or a terminal session if run manually.
 #  The program also records the sensor battery level readings and writes these to the zone_b
 #  table.
-
-
-
-
-
-
-
-
-#   TEST VERSION FOR FOB
-#    find the foofoo for code to put back in such as the email sends
-
-
-
-
-
-
-
-
 ################################################################################################
 #  Change History
 #  ==============
@@ -45,6 +27,7 @@
 #  1.4      2016-02-04 GLC   Added debug checking to allow for printing of debug info.
 #  2.0      2016-02-04 GLC   Added code to support both UDP and Serial comms in single program
 #  2.1      2016-02-10 GLC   Removed erroneous print statement within UDP loop
+#  3.0      2016-04-02 GLC   Added support for fobs
 ################################################################################################
 import serial
 import sys
@@ -361,21 +344,9 @@ def get_zone(sensor_id):
     if numrows == 0:
       if DebugMode == "Y":
         print "***  Warning:  No Zone set for sensor id - Warning ***"
-# foofoo
-#     send_alert('Warning: Scanner Job - *** Warning ***','Sensor reading recieved for unconfigured sensor - check config')
+      send_alert('Warning: Scanner Job - *** Warning ***','Sensor reading recieved for unconfigured sensor - check config')
       write_log ('Scanner Job: Warning no zone configured for sensor', str(sensor_id))
   return (zone_id, 	zone_found_ind) 
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   
   
 def get_fob_action(fob_id, button_id):
@@ -535,8 +506,7 @@ def critical_error(Log_From, Log_Text, shutdownmsg):
   print "***********************************************************"
   
   write_log (Log_From, Log_Text)
-#foofoo
-#  send_alert('Alert: Scanner Job - *** CRASH *** ' + Code_Version + ' ', shutdownmsg)
+  send_alert('Alert: Scanner Job - *** CRASH *** ' + Code_Version + ' ', shutdownmsg)
   sys.exit (shutdownmsg)
 
   
@@ -641,8 +611,7 @@ sendcounter = 0
 while sendcounter < 10:
   sendcounter += 1
   
-#foofoo
-#  send_alert('TC9000 Alert: Sensor Scanner Job (v1.4) - STARTUP','System starting')
+  send_alert('TC9000 Alert: Sensor Scanner Job (v1.4) - STARTUP','System starting')
   sendok = True
 
 

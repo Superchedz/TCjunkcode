@@ -1,0 +1,13 @@
+# script to support install of sleep_b and frost and pre_heat columns to the zone table
+
+
+CREATE TABLE `system_sleep_b` (
+  `sleep_until_dtime` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+
+ALTER TABLE zone_b ADD frost_check BOOLEAN default 0;
+
+ALTER TABLE zone_b ADD pre_heat BOOLEAN default 0;
