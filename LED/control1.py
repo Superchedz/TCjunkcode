@@ -31,6 +31,7 @@
 #                            the upper temp of the curve.  (it may confuse people)
 #                            Also removed the sleep on startup as moved into cron to support git
 #  1.5      2016-02-04 GLC   Added version number into the start up email.
+#  1.6
 ################################################################################################
 
 import RPi.GPIO as GPIO 
