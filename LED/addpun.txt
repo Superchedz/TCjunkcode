@@ -1,0 +1,1 @@
+ ALTER TABLE `params_b` ADD UNIQUE(`Param_Name`);"?
