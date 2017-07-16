@@ -31,8 +31,9 @@ sudo chown pi:root *.sh
 echo ############### Shutdown installer #####################
 echo ## we can always do this as if the row exists it will just give an error.
 echo created 16/7/2017
-echo
-mysql --batch -h localhost -u root --password=pass123 -D  BoilerControl  < insshut.txt > ssqlout.txt    
+echo  Doing shutdown insert and table change - unique on param name
+mysql --batch -h localhost -u root --password=pass123 -D  BoilerControl  < insshut.txt > ssqlout.txt 
+echo Doing update to ensure shutdown value is always N   
 mysql --batch -h localhost -u root --password=pass123 -D  BoilerControl  < upshut.txt > supout.txt    
 
 
