@@ -1,4 +1,4 @@
 # script to support install of sleep_b and frost and pre_heat columns to the zone table
 
 
-INSERT INTO `params_b`(`Param_Name`, `Param_Value`) VALUES ('Shutdown','N');
+UPDATE `params_b` SET `Param_Value` = 'N' WHERE `params_b`.`Param_Name` = 'Shutdown';
