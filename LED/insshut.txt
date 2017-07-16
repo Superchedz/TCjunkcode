@@ -1,13 +1,13 @@
 # script to support install of sleep_b and frost and pre_heat columns to the zone table
 
 
-
+echo doing drop
 ALTER TABLE params_b DROP INDEX Param_Name;
 
 
-
+echo doing index
 ALTER TABLE `params_b` ADD UNIQUE(`Param_Name`);"?
 
 
-
+echo doing insert
 INSERT INTO `params_b`(`Param_Name`, `Param_Value`) VALUES ('Shutdown','N');
