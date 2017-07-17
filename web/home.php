@@ -132,7 +132,7 @@ if (isset($_SESSION['myname'])) {
 
 <div class="jumbotron" id="content">
     <div class="container">
-          <p><img src='./img/flame.png' class='img-thumbnail img-responsive' alt='Home'/> Total Control 9000 - from here you can manage the system settings, monitor active zones and set heating controls</p>
+          <p><img src='./img/flame.png' class='img-thumbnail img-responsive' alt='Home'/> Total Control 9000 - from here you can manage the system settings, monitor active zones and set heating controls (v1.2) </p>
     </div>
 </div>
 
