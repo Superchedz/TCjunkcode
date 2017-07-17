@@ -141,7 +141,7 @@ function submitZoneDelete(){
         }
 
     }
-    
+     
     var url = "deletezone.php?zoneid=" + zoneid;
     
     xmlhttp.open("GET", url, true);
