@@ -31,7 +31,7 @@
 #                            the upper temp of the curve.  (it may confuse people)
 #                            Also removed the sleep on startup as moved into cron to support git
 #  1.5      2016-02-04 GLC   Added version number into the start up email.
-#  1.6
+#  1.6      2017-07-15 GLC   Added check on shutdown param to see if we should reboot or shutdown
 ################################################################################################
 
 import RPi.GPIO as GPIO 
@@ -47,6 +47,7 @@ import datetime
 import socket
 import fcntl
 import struct
+import os
 
 ################################################################################################
 
@@ -319,7 +320,7 @@ def get_debug():
     Debug_res = debug_cursor.fetchone()
     if Debug_res[1] != "Y" and Debug_res[1] != "N":
       print ""
-      print "*******  ERROR : Loop_DebugMode param is not numeric  *********"
+      print "*******  ERROR : Loop_DebugMode param is not Y or N  *********"
       critical_error('DebugMode Check', 'Debug Param Not Y or N', '--!! Shutting down ^1 !!--')
     else:
       DebugMode = Debug_res[1]
@@ -328,6 +329,37 @@ def get_debug():
     critical_error('Get Debug', 'ERROR : Missing Debugmode Param', '--!! Shutting down ^2 !!--')
     print "***  Error:  Missing Param Debugmode param  ***"
 
+	
+################################################################################################
+############################# Function to get shutdown mode flag ###############################
+################################################################################################
+
+def get_shutdown():
+
+  shutdown_cursor = db.cursor ()
+  shutdown_query = "select * from params_b where Param_Name = 'Shutdown'"
+  global Shutdown
+  try:
+     shutdown_cursor.execute(shutdown_query)
+  except MySQLdb.Error as err:
+     print ("******* Error reading Shutdown param : ERROR : {}".format(err))
+     write_log ('ERROR: Get Shutdown',err)
+
+  numrows = int (shutdown_cursor.rowcount)
+  if numrows == 1:
+    Shutdown_res = shutdown_cursor.fetchone()
+    if Shutdown_res[1] != "S" and Shutdown_res[1] != "R" and Shutdown_res[1] != "N":
+      print ""
+      print "*******  ERROR : Shutdown param is not SRN  *********"
+      critical_error('Shutdown Check', 'Shutdown Param Not S R or N', '--!! Shutting down ^1 !!--')
+    else:
+      Shutdown = Shutdown_res[1]
+      return Shutdown
+  else:
+    critical_error('Get Shutdown', 'ERROR : Missing Shutdown Param', '--!! Shutting down ^2 !!--')
+    print "***  Error:  Missing Param Shutdown param  ***"
+
+	
 ################################################################################################
 ################################# Function to get sysstatus  ###################################
 ################################################################################################
@@ -503,7 +535,6 @@ DebugMode = get_debug()
 # initialise each GPIO pin based on the values stored in the Zone_b table #
 ###########################################################################
 
-
 GPIO.setmode(GPIO.BCM)
 
 Zone_cursor = db.cursor()
@@ -541,6 +572,50 @@ while True:
 #need to get interval param from the db each loop in case it changes.
   Interval = get_interval()
   DebugMode = get_debug()
+  
+# Check the shutdown param
+  Shutitdown = get_shutdown()
+
+  if DebugMode == "Y":
+    print "##### Shutdown Param was found %s " % Shutitdown
+	
+  if Shutitdown == "R":
+    print "User reboot requested - performing system reboot"
+    logtext = "User Restart detected"
+    write_log('Restart',logtext)
+    clear_cursor = db.cursor ()
+ 
+    clear_query = ("""UPDATE params_b SET Param_Value = '%s' where Param_Name = '%s'""" % ("N", "Shutdown"))
+    try:
+       clear_cursor.execute(clear_query)
+       db.commit()
+    except:
+       print ("******* Error updating Shutdown Param back to N(R): ERROR : {}")
+
+    db.rollback()
+    clear_cursor.close()		
+    os.system('sudo reboot')
+
+  if Shutitdown == "S": 
+    print "User shutdown requested - performing system shutdown"
+    logtext = "User Shutdown detected"
+    write_log('Shutdown',logtext)
+    clear_cursor = db.cursor ()
+ 
+    clear_query = ("""UPDATE params_b SET Param_Value = '%s' where Param_Name = '%s'""" % ("N", "Shutdown"))
+    try:
+       clear_cursor.execute(clear_query)
+       db.commit()
+    except:
+       print ("******* Error updating Shutdown Param back to N(S): ERROR : {}")
+
+    db.rollback()
+    clear_cursor.close()	
+    os.system('sudo shutdown now -h')
+	
+	
+
+ 
 # check is the main system switch has been turned off - if so, skip all processing and make sure all zones are off.
   Sysstatus = get_sysstatus()
 

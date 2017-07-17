@@ -97,6 +97,9 @@ if ($result->num_rows > 0) {
             <button type="button" class="btn btn-link" data-toggle="modal" data-target="#myModal" data-whatever="sysconfig"> <img src='./img/cog.png' class='img-responsive' alt='Configuration'/></button>
         </li>
         <li>
+            <button type="button" class="btn btn-link" data-toggle="modal" data-target="#myModalshutdown" data-whatever="shutdown"> <img src='./img/shutdown.png' class='img-responsive' alt='Shutdown'/></button>
+        </li>
+        <li>
             <a href="localtemp.php">Local Temperature</a>
         </li>
         <li>
@@ -516,6 +519,44 @@ if (isset($_SESSION['myname'])) {
     </div>
   </div>
 </div>
+
+
+
+<div class="modal fade" id="myModalshutdown" tabindex="-1" role="dialog" aria-labelledby="myForgotPwd4Label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myForgotPwd4Label">Shutdown System</h4>
+      </div>
+
+      <div class="modal-body">
+      <span id="mysysconfigdiv12345shutdown"> </span>
+      <input type="hidden" id="hdnzoneid3">
+      <form class="form-horizontal">
+
+    <div class='form-group'>
+        <label for='scparam_extendperiod' class='col-sm-12 control-label'>Select to Shutdown or Restart the system?</label>
+    </div>
+
+        
+      </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" onclick="submitShutdown()" class="btn btn-primary">Shutdown</button>
+		<button type="button" onclick="submitRestart()" class="btn btn-primary">Restart</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
 
 
 <div class="modal fade" id="myModalChangePassword" tabindex="-1" role="dialog" aria-labelledby="myForgotPwd5Label" aria-hidden="true">

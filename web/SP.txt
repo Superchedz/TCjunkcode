@@ -1,0 +1,41 @@
+
+CREATE PROCEDURE `getNextSchedule`(zoneid INT)
+BEGIN
+	DECLARE datenow DATETIME;
+	DECLARE dateto DATETIME;
+	DECLARE timefrom time;
+    DECLARE totaldays INT;
+    DECLARE currentday INT DEFAULT 0;
+    DECLARE currentworkingdate DATETIME;
+    DECLARE currentdayname VARCHAR(50);
+    DECLARE temp INT;
+    DECLARE RowExists int;  
+    SET RowExists = 0;    
+
+	SET datenow = current_date();
+	SET dateto = date_add(current_date(), interval 1 week);
+	SET timefrom = current_time;
+	SET totaldays = DATEDIFF(dateto,datenow);
+
+	label1: LOOP
+    IF currentday <= totaldays THEN
+        IF (currentday = 0) THEN
+            SET timefrom  = current_time;
+		else
+			SET timefrom = '00:00:00';
+        END IF;
+		SET currentworkingdate = DATE_ADD(datenow, INTERVAL currentday DAY);
+        SET currentdayname = DAYNAME(currentworkingdate);
+        SELECT count(*) INTO RowExists from schedule_b WHERE Schedule_Day = currentdayname AND Schedule_Starttime>=timefrom AND Schedule_Zone_ID = zoneid LIMIT 1;
+		IF (RowExists > 0) THEN 
+			SELECT Schedule_Starttime,Schedule_Temp INTO timefrom, temp from schedule_b WHERE Schedule_Day = currentdayname AND Schedule_Starttime>=timefrom AND Schedule_Zone_ID = zoneid LIMIT 1;
+			SELECT currentday, DATE_FORMAT(currentworkingdate, '%Y-%m-%d') AS formated_date, timefrom, currentdayname, temp;
+			LEAVE label1;
+        END IF;
+        SET currentday = currentday + 1;
+      ITERATE label1;
+    END IF;
+    LEAVE label1;
+  END LOOP label1;
+    
+END;
