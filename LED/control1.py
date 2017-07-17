@@ -61,7 +61,7 @@ print ""
 print "" 
 print "#####################################################" 
 print "########## Welcome to BoilerControl 9000 ############"
-print "##########          Version 1.2          ############"
+print "##########          Version 1.6          ############"
 print "#####################################################" 
 print ""
 
@@ -511,7 +511,7 @@ ipaddress = get_ip_address('eth0')
 print ipaddress
 while sendcounter < 10:
   sendcounter += 1				  
-  send_alert('TC9000 Alert: Heating switch Control Job (v1.5)- STARTUP','System starting.  Local IP is %s' % str(ipaddress))
+  send_alert('TC9000 Alert: Heating switch Control Job (v1.6)- STARTUP','System starting.  Local IP is %s' % str(ipaddress))
   if sendok:
     sendcounter = 11;  
     write_log('Control1 - Main','Starting up ok - email sent')
