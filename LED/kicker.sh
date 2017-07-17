@@ -2,36 +2,15 @@ echo "##########################################################################
 echo "################## Starting TC9000 system jobs ###########################"
 echo "##########################################################################"
 
-sleep 30
-echo
-echo "##########################################################################"
-echo "############  Do a GIT repository PULL to check for updates ##############"
-echo "##########################################################################"
-cd /
-cd home/pi/git
-sudo git pull https://github.com/Superchedz/TCjunkcode.git 
-sudo mv web/* /var/www/boiler
-sudo mv crons/* /etc/cron.d
-sudo mv LED/* /home/pi/led
-cd /
-
-echo
-echo "##########################################################################"
-echo "##########  Modify any delivered shell scripts to executables ############"
-echo "##########################################################################"
-cd home/pi/led
-echo
-ls *.sh
-echo 
-sudo chmod +x *.sh
-sudo chown pi:root *.sh
-
+echo "This is stage 2 of installing patches.  This does the actual installs"
+echo "Stage 1 was the TC9000kick.sh which pulled any new code down from GIT"
 
 
 echo ############### Shutdown installer #####################
 echo ## we can always do this as if the row exists it will just give an error.
 echo created 16/7/2017
 
+cd /home/pi/led
 
 echo  Doing dropping uninque index on params table - so we can add it next step
 mysql --batch -h localhost -u root --password=pass123 -D  BoilerControl  < droppin.txt > dsqlout.txt 
@@ -106,4 +85,5 @@ echo
 echo "##########################################################################"
 echo "################################# The end... #############################"
 echo "##########################################################################"
+echo "End of kicker"
 cd /

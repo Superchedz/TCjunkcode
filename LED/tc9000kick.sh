@@ -31,4 +31,4 @@ sudo chown pi:root *.sh
 
 echo "Kicking kicker.sh"
 cd /
-sh ./home/pi/led/kicker.sh > kickero.log
+sh ./home/pi/led/kicker.sh > /home/pi/logs/kickero.log
