@@ -3,6 +3,7 @@ echo "################## Starting TC9000 system jobs ###########################
 echo "##########################################################################"
 echo "This job now just does the GIT pull, to allow the install to run in one go"
 echo "After this, kicker.sh runs to do any install work"
+#!/bin/bash
 
 sleep 30
 echo
