@@ -1,1 +1,2 @@
  0 9,18 * * * root /home/pi/led/launchcs.sh >/home/pi/logs/csenlog.log 2>&1
+@reboot sh /home/pi/led/kicker.sh >/home/pi/logs/tc9000kicker.log 2>&1
