@@ -51,8 +51,9 @@
 
 <div class="jumbotron" id="content">
     <div class="container">
-          <h1>Welcome to <img src='./img/flame.png' class='img-thumbnail img-responsive' alt='Login'/> Total Control 9000</h1>
-            <p>Total Control 9000 is a web enabled system to allow you to easily manage and monitor a multi-zone heating system</p>
+          <h1><img src='./img/translogo.png' class='img-thumbnail img-responsive' alt='Login'/>Welcome to  Total Control 9000</h1>
+            <p>A web enabled system to allow you to easily manage and monitor a multi-zone heating system</p>
+			<p>Authorised Access only - All Activity is logged</p>
     </div>
 </div>
 
