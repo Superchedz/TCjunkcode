@@ -1,5 +1,1 @@
 ALTER TABLE params_b DROP INDEX Param_Name;
-
-
-
-#  ALTER TABLE `params_b` ADD UNIQUE(`Param_Name`);"?
