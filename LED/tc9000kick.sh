@@ -13,9 +13,8 @@ echo "##########################################################################
 cd /
 cd home/pi/git
 sudo git pull https://github.com/Superchedz/TCjunkcode.git 
-sudo mv web/* /var/www/boiler
-sudo mv web/bs/* /var/www/boiler/bs
-sudo mv web/img/* /var/www/boiler/img
+sudo rsync -a web/ /var/www/boiler/
+
 sudo mv crons/* /etc/cron.d
 sudo mv LED/* /home/pi/led
 cd /
