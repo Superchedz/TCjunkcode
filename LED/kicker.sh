@@ -16,7 +16,7 @@ echo  Doing dropping uninque index on params table - so we can add it next step
 mysql --batch -h localhost -u root --password=pass123 -D  BoilerControl  < droppin.txt > dsqlout.txt 
 
 echo  Add unique on param name
-mysql --batch -h localhost -u root --password=pass123 -D  BoilerControl  < addpun.txt > asqlout.txt 
+mysql --batch -h localhost -u root --password=pass123 -D  BoilerControl  < addpin.txt > asqlout.txt 
 
 echo Insert row for new install - will fail if already there  
 mysql --batch -h localhost -u root --password=pass123 -D  BoilerControl  < insshut.txt > issqlout.txt    
