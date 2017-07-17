@@ -30,4 +30,5 @@ sudo chmod +x *.sh
 sudo chown pi:root *.sh
 
 echo "Kicking kicker.sh"
+cd /
 sh ./home/pi/led/kicker.sh > kickero.log
