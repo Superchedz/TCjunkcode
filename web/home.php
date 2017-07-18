@@ -167,6 +167,8 @@ if (isset($_SESSION['myname'])) {
   <div class="container">
     <p>Total Control 9000 - This website is Copyright (©) G.Chedzoy, 2017.
 </p>
+    <p>All access and duplication is strightly with permission only.
+</p>
     </div>
 </footer>
 
