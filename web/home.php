@@ -100,8 +100,7 @@ if ($result->num_rows > 0) {
             <button type="button" class="btn btn-link" data-toggle="modal" data-target="#myModalshutdown" data-whatever="shutdown"> <img src='./img/shutdown.png' class='img-responsive' alt='Shutdown'/></button>
         </li>
         <li>
-            <button type="button" class="btn btn-link" data-toggle="modal" data-target="localtemp.php" data-whatever="Weather"> <img src='./img/weatheri.png' class='img-responsive' alt='Weather'/></button>
-            <a href="localtemp.php">Local Temperature</a>
+            <a href="localtemp.php"><img src='./img/weatheri.png'></a>
         </li>
         <li>
         <a href="#"> 
