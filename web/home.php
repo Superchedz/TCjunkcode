@@ -131,7 +131,7 @@ if (isset($_SESSION['myname'])) {
 </header>
 
 <div class="jumbotron" id="content">
-    <div class="container" style="margin-bottom:-20px; margin-top:-20px; height:30px">
+    <div class="container">
           <p><img src='./img/translogo.png' class='img-thumbnail img-responsive' alt='Home'/> Total Control 9000 - manage the system settings, monitor active zones and set controls<BR>          (Release v1.2) </p>
     </div>
 </div>
