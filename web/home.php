@@ -1,4 +1,4 @@
-<?php
+<?php 
 session_start();
 if (!isset($_SESSION['myemail'])) {
     header('Location:index.php?err=invalidsession');
@@ -69,7 +69,7 @@ if (isset($_SESSION['myname'])) {
                      <?php
 
 ob_start();
-$tbl_name = "params_b"; // Table name
+$tbl_name = "params_b"; // Table name 2
 include 'db.php';
 
 $sql = "SELECT * FROM $tbl_name where Param_Name='sysstatus'";
