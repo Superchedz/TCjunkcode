@@ -132,7 +132,7 @@ if (isset($_SESSION['myname'])) {
 
 <div class="jumbotron" id="content">
     <div class="container">
-          <p><img src='./img/translogo.png' class='img-thumbnail img-responsive' alt='Home'/> Total Control 9000 - manage the system settings, monitor active zones and set controls<BR>          (Release v1.2) </p>
+          <p><img src='./img/translogo.png' class='img-thumbnail img-responsive' alt='Home'/> Total Control 9000 - manage the system settings, monitor active zones and set controls<BR>          (Release v1.20) </p>
     </div>
 </div>
 
@@ -165,7 +165,8 @@ if (isset($_SESSION['myname'])) {
 
 <footer class="bs-docs-footer" role="contentinfo">
   <div class="container">
-    <p>Total Control 9000 v1.10 - Designed and Developed by the Total Control 9000 team</p>
+    <p>Total Control 9000 - This website is Copyright (©) G.Chedzoy, 2017.
+</p>
     </div>
 </footer>
 
