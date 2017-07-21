@@ -65,7 +65,6 @@ $('#myModalBoost').on('show.bs.modal', function (event) {
   
   document.getElementById("myForgotPwd2Label").innerHTML = zoneid + " - " + zonename + " Boost";
   document.getElementById("hdnzoneid1").value = zoneid;
-  document.getElementById("applytoallzones").checked = false;
   document.getElementById("timepickerboost").value = "01:00";
   
   document.getElementById("mysysconfigdiv123").innerHTML = "";

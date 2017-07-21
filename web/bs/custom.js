@@ -54,7 +54,6 @@ function clearalloverrides(zoneid){
 function submitBoostConfig(){
     var zoneid = document.getElementById("hdnzoneid1").value;
     var scparam_boostfordegree = document.getElementById("scparam_boostfordegree").value;
-    var scparamallzones = document.getElementById("applytoallzones").checked;
     var timepickerboost = document.getElementById("timepickerboost").value;
     var boosttime = timepickerboost.split(":"); 
     if (boosttime.length < 2){
@@ -86,9 +85,6 @@ function submitBoostConfig(){
 
     url += "&scparam_boostfordegree=";
     url +=  scparam_boostfordegree;
-
-    url += "&scparam_allzones=";
-    url +=  scparamallzones;
 
     xmlhttp.open("GET", url, true);
     xmlhttp.send();

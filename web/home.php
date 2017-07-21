@@ -132,7 +132,7 @@ if (isset($_SESSION['myname'])) {
 
 <div class="jumbotron" id="content">
     <div class="container">
-          <p><img src='./img/translogo.png' class='img-thumbnail img-responsive' alt='Home'/> Total Control 9000 - manage the system settings, monitor active zones and set controls<BR>          (Release v1.20) </p>
+          <p><img src='./img/translogo.png' class='img-thumbnail img-responsive' alt='Home'/> Total Control 9000 - manage the system settings, monitor active zones and set controls<BR>          (Release v1.21) </p>
     </div>
 </div>
 
@@ -399,7 +399,7 @@ if (isset($_SESSION['myname'])) {
       <form class="form-horizontal">
 
     <div class='form-group'>
-        <label for='timepickerboost' class='col-sm-4 control-label'>Boost For Another </label>
+        <label for='timepickerboost' class='col-sm-4 control-label'>Boost zone for: </label>
         <div class='col-sm-3'>
             <input type="time" class="form-control" id="timepickerboost" value="01:00">
         </div>
@@ -409,22 +409,15 @@ if (isset($_SESSION['myname'])) {
     </div>
     
     <div class='form-group'>
-        <label for='scparam_boostfordegree' class='col-sm-4 control-label'>at</label>
+        <label for='scparam_boostfordegree' class='col-sm-4 control-label'>at:</label>
         <div class='col-sm-2'>
             <input type='number' class='form-control' id='scparam_boostfordegree' value="">
         </div>
         <div class='col-sm-2'>
-            <label for='scparam_boostfordegree1' class='col-sm-6 control-label'>&deg;C</label>
+            <label for='scparam_boostfordegree1' class='col-sm-6 control-label'>&deg C</label>
         </div>
     </div>
 
-    <div class="checkbox">
-      <label>
-        <input type="checkbox" id="applytoallzones" value="">
-        Apply to all zones
-      </label>
-    </div>
-        
       </form>
       </div>
       <div class="modal-footer">
