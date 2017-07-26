@@ -695,7 +695,7 @@ if SensorMode == "SERIAL":
              writeTemp(llap_sensor_id, llap_temp)
    
            if "TEMP" in llapMsg:
-             if DebugMode == "Y":
+             if DebugMode == "Y": 
                print "DEBUG: Found a TEMP - new sensor in serial messages"		
 
              llap_sensor_id = llapMsg[1:3]
