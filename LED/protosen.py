@@ -29,6 +29,7 @@
 #  2.1      2016-02-10 GLC   Removed erroneous print statement within UDP loop
 #  3.0      2016-04-02 GLC   Added support for fobs
 #  3.1      2017-07-16 GLC   Added sensor id to alert for unconfigured sensor reading received
+#  3.1.1    2017-17-15 GCL   Reworded start up email to be more pro
 ################################################################################################
 import serial
 import sys
@@ -55,7 +56,7 @@ import socket
 DEVICE = '/dev/ttyAMA0'
 BAUD = 9600
 global Code_Version
-Code_Version = 'V2.0'
+Code_Version = 'V3.1.1'
  
 # for UDP IO
 FROM_PORT = 50140
@@ -612,7 +613,7 @@ sendcounter = 0
 while sendcounter < 10:
   sendcounter += 1
   
-  send_alert('TC9000 Alert: Sensor Scanner Job (v1.4) - STARTUP','System starting')
+  send_alert('TC9000 Alert: Primary Sensor Scan process (v3.1.1) - STARTUP','Process start successful.')
   sendok = True
 
 

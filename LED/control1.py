@@ -32,6 +32,7 @@
 #                            Also removed the sleep on startup as moved into cron to support git
 #  1.5      2016-02-04 GLC   Added version number into the start up email.
 #  1.6      2017-07-15 GLC   Added check on shutdown param to see if we should reboot or shutdown
+#  1.6.1    2017-17-15 GCL   Reworded start up email to be more pro
 ################################################################################################
 
 import RPi.GPIO as GPIO 
@@ -61,7 +62,7 @@ print ""
 print "" 
 print "#####################################################" 
 print "########## Welcome to BoilerControl 9000 ############"
-print "##########          Version 1.6          ############"
+print "##########         Version 1.6.1         ############"
 print "#####################################################" 
 print ""
 
@@ -511,7 +512,7 @@ ipaddress = get_ip_address('eth0')
 print ipaddress
 while sendcounter < 10:
   sendcounter += 1				  
-  send_alert('TC9000 Alert: Heating switch Control Job (v1.6)- STARTUP','System starting.  Local IP is %s' % str(ipaddress))
+  send_alert('TC9000 Alert: Primary switching process (v1.6.1)- STARTUP','Process start successful.  Your local IP is %s' % str(ipaddress))
   if sendok:
     sendcounter = 11;  
     write_log('Control1 - Main','Starting up ok - email sent')
