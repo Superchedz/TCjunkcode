@@ -346,7 +346,7 @@ def get_zone(sensor_id):
     if numrows == 0:
       if DebugMode == "Y":
         print "***  Warning:  No Zone set for sensor id - Warning ***"
-      send_alert('Warning: Scanner Job - *** Warning ***','Sensor reading recieved for unconfigured sensor - check config' + sensor_id)
+      send_alert('Warning: Scanner Job - *** Warning ***','Sensor reading recieved for unconfigured sensor - check config : Sensor : ' + sensor_id)
       write_log ('Scanner Job: Warning no zone configured for sensor', str(sensor_id))
   return (zone_id, 	zone_found_ind) 
   
