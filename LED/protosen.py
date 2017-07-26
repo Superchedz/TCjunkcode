@@ -28,6 +28,7 @@
 #  2.0      2016-02-04 GLC   Added code to support both UDP and Serial comms in single program
 #  2.1      2016-02-10 GLC   Removed erroneous print statement within UDP loop
 #  3.0      2016-04-02 GLC   Added support for fobs
+#  3.1      2017-07-16 GLC   Added sensor id to alert for unconfigured sensor reading received
 ################################################################################################
 import serial
 import sys
@@ -344,7 +345,7 @@ def get_zone(sensor_id):
     if numrows == 0:
       if DebugMode == "Y":
         print "***  Warning:  No Zone set for sensor id - Warning ***"
-      send_alert('Warning: Scanner Job - *** Warning ***','Sensor reading recieved for unconfigured sensor - check config')
+      send_alert('Warning: Scanner Job - *** Warning ***','Sensor reading recieved for unconfigured sensor - check config' + sensor_id)
       write_log ('Scanner Job: Warning no zone configured for sensor', str(sensor_id))
   return (zone_id, 	zone_found_ind) 
   
