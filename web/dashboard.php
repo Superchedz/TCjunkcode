@@ -14,12 +14,12 @@ $name = $_SESSION['myname'];
 <meta charset="utf-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<meta name="description" content="Boiler Control 9000 - Home"/>
-<meta name="keywords" content="Boiler Control 9000, Temperature Adjustments"/>
+<meta name="description" content="Total Control 9000 - Home"/>
+<meta name="keywords" content="Total Control 9000, Temperature Adjustments"/>
 <meta name="author" content="NagaKishore Movva"/>
 
 <title>
-   Boiler Control 9000 - Dashboard
+   Total Control 9000 - Dashboard
 </title>
 <link rel="stylesheet" href="./bs/css/bootstrap.min.css"/>
 <link rel="stylesheet" href="./bs/css/bootstrap-theme.min.css" id="bs-theme-stylesheet"/>
@@ -42,7 +42,7 @@ $name = $_SESSION['myname'];
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a href="./home.php" class="navbar-brand">Boiler Control</a>
+      <a href="./home.php" class="navbar-brand">Total Control</a>
     </div>
     <nav class="collapse navbar-collapse bs-navbar-collapse">
       <ul class="nav navbar-nav">
@@ -66,11 +66,8 @@ echo $name;
 
 <div class="jumbotron" id="content">
     <div class="container">
-    <h3>Hello
-      <?php
-echo $name;
-?>
-      </h3>
+    <h3>Temperature History
+    </h3>
     </div>
 </div>
 
@@ -233,7 +230,7 @@ mysqli_close($con);
 
 <footer class="bs-docs-footer" role="contentinfo">
   <div class="container">
-    <p>Designed and Developed by <a href="https://www.facebook.com/graham.chedzoy?fref=ts" target="_blank">Graham Chedzoy</a> and <a href="https://www.facebook.com/nagakishore.movva" target="_blank">NagaKishore Movva</a>.</p>
+    <p>For futher info and support visit <a href="http://www.totalcontrol9000.co.uk" target="_blank">Our Website</a></p>
     </div>
 </footer>
 
