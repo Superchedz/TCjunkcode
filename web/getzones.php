@@ -30,11 +30,11 @@ if ($result->num_rows > 0) {
 
  //       echo "<tr>";
         $zoneid = $row["Zone_ID"];
- //
- //       echo "<td style='vertical-align:middle'>";
- //       echo "<img src='./img/deletered.png' class='img-thumbnail img-responsive' data-toggle='modal' data-target='#myModalDelete'  data-zoneid='" .
- //           $row["Zone_ID"] . "' data-zonename='" . $row["Zone_Name"] . "' alt='Delete'>";
- //       echo "</td>";
+ 
+        echo "<td style='vertical-align:middle'>";
+        echo "<img src='./img/deletered.png' class='img-thumbnail img-responsive' data-toggle='modal' data-target='#myModalDelete'  data-zoneid='" .
+            $row["Zone_ID"] . "' data-zonename='" . $row["Zone_Name"] . "' alt='Delete'>";
+        echo "</td>";
 
 
  //       echo "<td style='vertical-align:middle'>";
@@ -100,7 +100,7 @@ if ($result->num_rows > 0) {
         $override = $row["Override_Temp"];
         $schedule = $row["Schedule_Temp"];
         $lastdate = $row["Zone_Last_Temp_Reading_Dtime"];
-		$battpct  = $row["Zone_Sensor_Batt_pcnt"];
+		$battpct  = $row["Zone_Sensor_Batt_Pcnt"];
 
 
         echo "<td style='text-align:center; vertical-align:middle'>";
@@ -142,7 +142,7 @@ if ($result->num_rows > 0) {
             echo "Temp: <span class='badge'>";
             echo $temper;
             echo "&deg;C</span>";
-			echo "Batt%: <span class='badge'>";
+			echo " Batt%: <span class='badge'>";
 			echo $battpct;
             echo "</td>";
             echo "</tr>";
