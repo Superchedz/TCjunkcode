@@ -101,6 +101,7 @@ if ($result->num_rows > 0) {
         $schedule = $row["Schedule_Temp"];
         $lastdate = $row["Zone_Last_Temp_Reading_Dtime"];
 		$battpct  = $row["Zone_Sensor_Batt_Pcnt"];
+		$zonetype = $row["Zone_Type"];
 
 
         echo "<td style='text-align:center; vertical-align:middle'>";
@@ -135,7 +136,7 @@ if ($result->num_rows > 0) {
 
 
         echo "<td style='vertical-align:middle'>";
-
+        if ($zonetype == "T") {    
             echo "<table>";
             echo "<tr>";
             echo "<td>";
@@ -146,7 +147,7 @@ if ($result->num_rows > 0) {
 			echo $battpct;
             echo "</td>";
             echo "</tr>";
-			
+		}
 			
 			
 			
@@ -171,7 +172,9 @@ if ($result->num_rows > 0) {
             echo "</tr>";
             echo "<tr>";
             echo "<td>";
-            echo "Target <span class='badge'>";
+            if ($zonetype == "T") {  
+                echo "Target <span class='badge'>";
+			}
             if ($schedule <> "") {
                 echo $schedule;
                 echo "&deg;C";
