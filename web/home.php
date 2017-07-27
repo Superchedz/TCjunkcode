@@ -412,8 +412,9 @@ if (isset($_SESSION['myname'])) {
     </div>
 
 
-
-			
+    if (zonetype == "T") {  
+        echo zonetype; 
+    }		
     <div class='form-group'>
         <label for='scparam_boostfordegree' class='col-sm-4 control-label'>at:</label>
         <div class='col-sm-2'>
