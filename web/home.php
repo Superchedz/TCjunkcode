@@ -400,7 +400,7 @@ if (isset($_SESSION['myname'])) {
       <span id="mysysconfigdiv123"> </span>
       <input type="hidden" id="hdnzoneid1">
       <form class="form-horizontal">
-
+      
     <div class='form-group'>
         <label for='timepickerboost' class='col-sm-4 control-label'>Boost zone for: </label>
         <div class='col-sm-3'>
@@ -412,9 +412,8 @@ if (isset($_SESSION['myname'])) {
     </div>
 
 
-    if (zonetype == "T") {  
-        echo zonetype; 
-    }		
+<!-- want to put an IF statement around this bit if zonetype = "T" else default temp to 1 -->	
+	
     <div class='form-group'>
         <label for='scparam_boostfordegree' class='col-sm-4 control-label'>at:</label>
         <div class='col-sm-2'>
