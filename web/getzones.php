@@ -120,7 +120,7 @@ if ($result->num_rows > 0) {
             echo "<img src='./img/boostdisable.png' class='img-thumbnail' alt='Boost'>";
         }
         echo "</td>";
-        echo "<td style='text-align:center; vertical-align:middle'>";
+//        echo "<td style='text-align:center; vertical-align:middle'>";
 //        if ($active == "Y" && $schedule == "" && $override == "") {
 //            echo "<img src='./img/extendenable.png' class='img-thumbnail' data-toggle='modal' data-target='#myModalExtend'  data-zoneid='" .
 //                $row["Zone_ID"] . "' data-zonename='" . $row["Zone_Name"] .
@@ -128,7 +128,7 @@ if ($result->num_rows > 0) {
 //        } else {
 //            echo "<img src='./img/extenddisable.png' class='img-thumbnail' alt='Boost'>";
 //        }
-        echo "</td>";
+//        echo "</td>";
         echo "<td style='vertical-align:middle'>";
         echo "<img src='./img/appointment.jpg' class='img-thumbnail' data-toggle='modal' data-target='#myModalSchedule'  data-zoneid='" .
             $row["Zone_ID"] . "' data-zonename='" . $row["Zone_Name"] . "' alt='Schedule'>";
