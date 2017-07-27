@@ -29,7 +29,7 @@ if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
 
  //       echo "<tr>";
- //       $zoneid = $row["Zone_ID"];
+        $zoneid = $row["Zone_ID"];
  //
  //       echo "<td style='vertical-align:middle'>";
  //       echo "<img src='./img/deletered.png' class='img-thumbnail img-responsive' data-toggle='modal' data-target='#myModalDelete'  data-zoneid='" .
