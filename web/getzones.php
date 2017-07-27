@@ -21,7 +21,7 @@ if ($result->num_rows > 0) {
     echo "<td>Zone Enabled?</td>";
     echo "<td>Zone Status</td>";
     echo "<td> Boost</td>";
-    echo "<td> Extend</td>";
+//    echo "<td> Extend</td>";
     echo "<td>Schedule</td>";
     echo "<td>Zone Info</td>";
     echo "</tr>";
@@ -121,13 +121,13 @@ if ($result->num_rows > 0) {
         }
         echo "</td>";
         echo "<td style='text-align:center; vertical-align:middle'>";
-        if ($active == "Y" && $schedule == "" && $override == "") {
-            echo "<img src='./img/extendenable.png' class='img-thumbnail' data-toggle='modal' data-target='#myModalExtend'  data-zoneid='" .
-                $row["Zone_ID"] . "' data-zonename='" . $row["Zone_Name"] .
-                "' data-currentexpiry='Boost until " . $row["Override_end"] . "'alt='Extend'>";
-        } else {
-            echo "<img src='./img/extenddisable.png' class='img-thumbnail' alt='Boost'>";
-        }
+//        if ($active == "Y" && $schedule == "" && $override == "") {
+//            echo "<img src='./img/extendenable.png' class='img-thumbnail' data-toggle='modal' data-target='#myModalExtend'  data-zoneid='" .
+//                $row["Zone_ID"] . "' data-zonename='" . $row["Zone_Name"] .
+//                "' data-currentexpiry='Boost until " . $row["Override_end"] . "'alt='Extend'>";
+//        } else {
+//            echo "<img src='./img/extenddisable.png' class='img-thumbnail' alt='Boost'>";
+//        }
         echo "</td>";
         echo "<td style='vertical-align:middle'>";
         echo "<img src='./img/appointment.jpg' class='img-thumbnail' data-toggle='modal' data-target='#myModalSchedule'  data-zoneid='" .

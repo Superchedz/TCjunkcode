@@ -407,7 +407,9 @@ if (isset($_SESSION['myname'])) {
             <label for='scparam_boostfor1' class='col-sm-6 control-label'>Hrs:Mins</label>
         </div>
     </div>
-    
+
+<!-- boost temp optional here here-->	
+
     <div class='form-group'>
         <label for='scparam_boostfordegree' class='col-sm-4 control-label'>at:</label>
         <div class='col-sm-2'>
