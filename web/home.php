@@ -385,6 +385,9 @@ if (isset($_SESSION['myname'])) {
   </div>
 </div>
 
+
+<!-- boost pop up here -->	
+
 <div class="modal fade" id="myModalBoost" tabindex="-1" role="dialog" aria-labelledby="myForgotPwd2Label" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -408,8 +411,9 @@ if (isset($_SESSION['myname'])) {
         </div>
     </div>
 
-<!-- boost temp optional here here-->	
 
+
+			
     <div class='form-group'>
         <label for='scparam_boostfordegree' class='col-sm-4 control-label'>at:</label>
         <div class='col-sm-2'>

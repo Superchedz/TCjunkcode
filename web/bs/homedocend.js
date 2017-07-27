@@ -62,8 +62,9 @@ $('#myModalBoost').on('show.bs.modal', function (event) {
 
   var zoneid = button.data('zoneid'); // Extract info from data-* attributes
   var zonename = button.data('zonename'); // Extract info from data-* attributes
+  var zonetype = button.data('zonetype');
   
-  document.getElementById("myForgotPwd2Label").innerHTML = zoneid + " - " + zonename + " Boost";
+  document.getElementById("myForgotPwd2Label").innerHTML = "Boost: " + zonename;
   document.getElementById("hdnzoneid1").value = zoneid;
   document.getElementById("timepickerboost").value = "01:00";
   

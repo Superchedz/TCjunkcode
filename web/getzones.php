@@ -115,7 +115,10 @@ if ($result->num_rows > 0) {
         echo "<td style='text-align:center; vertical-align:middle'>";
         if ($active == "Y") {
             echo "<img src='./img/boostenable.png' class='img-thumbnail' data-toggle='modal' data-target='#myModalBoost'  data-zoneid='" .
-                $row["Zone_ID"] . "' data-zonename='" . $row["Zone_Name"] . "'alt='Boost'>";
+                $row["Zone_ID"] . "' data-zonename='" . $row["Zone_Name"] . "' data-zonetype='" . $row["Zone_Type"] . "'alt='Boost'>";
+  				
+				
+				
         } else {
             echo "<img src='./img/boostdisable.png' class='img-thumbnail' alt='Boost'>";
         }
