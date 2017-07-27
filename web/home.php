@@ -484,7 +484,7 @@ if (isset($_SESSION['myname'])) {
             <input type='number' class='form-control' id='scparam_zonetype' value="0">
         </div>
         <div class='col-sm-2'>
-            <label for='scparam_offset1' class='col-sm-6 control-label'>T(Temperature Sensor) N(No Sensor)</label>
+            <label for='scparam_offset1' class='col-sm-6 control-label'>T(Temp) or N</label>
         </div>
     </div>
         
@@ -661,7 +661,7 @@ if (isset($_SESSION['myname'])) {
             <input type='number' class='form-control' id='scparam_addzonetype' value="0">
         </div>
         <div class='col-sm-2'>
-            <label for='scparam_addzonetype1' class='col-sm-6 control-label'>T(Temperature) N(No Sensor)</label>
+            <label for='scparam_addzonetype1' class='col-sm-6 control-label'>T(Temp) or N</label>
         </div>
     </div>    
       </form>

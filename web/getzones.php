@@ -52,7 +52,7 @@ if ($result->num_rows > 0) {
         echo "<button class='btn btn-link' data-toggle='modal' data-target='#myModalZoneConfig'  data-zoneid='" .
             $row["Zone_ID"] . "' data-zonename='" . $row["Zone_Name"] .
             "' data-zonesensor='" . $row["Zone_Sensor_ID"] . "' data-zoneoffset='" . $row["Zone_Offset"] .
-            "' data-pinnum='" . $pipinnum ."'>Settings</button>";
+            "' data-pinnum='" . $pipinnum ."' data-zonetype='" . $row["Zone_Type"] ."'>Settings</button>";
 
         echo "</td>";
 
