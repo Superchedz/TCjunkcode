@@ -237,6 +237,7 @@ function submitZoneConfig(){
     var scparam_zonename = document.getElementById("scparam_zonename").value;
     var scparam_zonesensor = document.getElementById("scparam_zonesensor").value;
     var scparam_offset = document.getElementById("scparam_offset").value;
+    var scparam_zonetype = document.getElementById("scparam_zonetype").value;	
     var scparam_pinnum = document.getElementById("scparam_pinnum").value;
     
     
@@ -262,8 +263,11 @@ function submitZoneConfig(){
 
     url += "&scparam_offset=";
     url +=  scparam_offset;
-
-    url += "&scparam_pinnum=";
+    
+	url += "&scparam_zonetype=";
+    url +=  scparam_zonetype;
+    
+	url += "&scparam_pinnum=";
     url +=  scparam_pinnum;
 
     xmlhttp.open("GET", url, true);
@@ -275,6 +279,7 @@ function submitNewZoneConfig(){
     var scparam_zonename = document.getElementById("scparam_addzonename").value;
     var scparam_zonesensor = document.getElementById("scparam_addzonesensor").value;
     var scparam_offset = document.getElementById("scparam_addoffset").value;
+	var scparam_zonetype = document.getElementById("scparam_zonetype").value;
     var scparam_pinnum = document.getElementById("scparam_addpinnum").value;
 
     
@@ -302,6 +307,9 @@ function submitNewZoneConfig(){
     url += "&scparam_addoffset=";
     url +=  scparam_offset;
 
+    url += "&scparam_addzonetype=";
+    url +=  scparam_zonetype;	
+	
     url += "&scparam_addpinnum=";
     url +=  scparam_pinnum;
 

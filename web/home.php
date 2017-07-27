@@ -478,7 +478,15 @@ if (isset($_SESSION['myname'])) {
             <label for='scparam_offset1' class='col-sm-6 control-label'>&deg;C</label>
         </div>
     </div>
-
+    <div class='form-group'>
+        <label for='scparam_zonetype' class='col-sm-4 control-label'>Zone Type</label>
+        <div class='col-sm-2'>
+            <input type='number' class='form-control' id='scparam_zonetype' value="0">
+        </div>
+        <div class='col-sm-2'>
+            <label for='scparam_offset1' class='col-sm-6 control-label'>T(Temperature Sensor) N(No Sensor)</label>
+        </div>
+    </div>
         
       </form>
       </div>
@@ -647,7 +655,15 @@ if (isset($_SESSION['myname'])) {
             <label for='scparam_addoffset1' class='col-sm-6 control-label'>&deg;C</label>
         </div>
     </div>
-    
+    <div class='form-group'>
+        <label for='scparam_addzonetype' class='col-sm-4 control-label'>Zone Type</label>
+        <div class='col-sm-2'>
+            <input type='number' class='form-control' id='scparam_addzonetype' value="0">
+        </div>
+        <div class='col-sm-2'>
+            <label for='scparam_addzonetype1' class='col-sm-6 control-label'>T(Temperature) N(No Sensor)</label>
+        </div>
+    </div>    
       </form>
       </div>
       <div class="modal-footer">
