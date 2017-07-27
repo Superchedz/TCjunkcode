@@ -20,7 +20,7 @@ if ($result->num_rows > 0) {
     echo "<td>Zone Name</td>";
     echo "<td>Zone Enabled?</td>";
     echo "<td>Zone Status</td>";
-    echo "<td> Boost</td>";
+    echo "<td>     Boost</td>";
 //    echo "<td> Extend</td>";
     echo "<td>Schedule</td>";
     echo "<td>Zone Info</td>";

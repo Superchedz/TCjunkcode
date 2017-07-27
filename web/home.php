@@ -392,7 +392,7 @@ if (isset($_SESSION['myname'])) {
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myForgotPwd2Label">Boost</h4>
       </div>
-
+<!-- myForgotPwd2Label-->	
       <div class="modal-body">
       <span id="mysysconfigdiv123"> </span>
       <input type="hidden" id="hdnzoneid1">
