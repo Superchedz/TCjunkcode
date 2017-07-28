@@ -453,18 +453,18 @@ if (isset($_SESSION['myname'])) {
     <div class='form-group'>
         <label for='timepickerboost' class='col-sm-4 control-label'>Boost zone for: </label>
         <div class='col-sm-3'>
-            <input type="time" class="form-control" id="timepickerboost" value="01:04">
+            <input type="time" class="form-control" id="timepickerboost1" value="01:04">
         </div>
         <div class='col-sm-2'>
             <label for='scparam_boostfor1' class='col-sm-6 control-label'>Hrs:Mins</label>
         </div>
     </div>
 
-
+<!-- REMOVE THIS BIT  -Default to 1 somewhere-->	
     <div class='form-group'>
         <label for='scparam_boostfordegree' class='col-sm-4 control-label'>at:</label>
         <div class='col-sm-2'>
-            <input type='number' class='form-control' id='scparam_boostfordegree' value="">
+            <input type='number' class='form-control' id='scparam_boostfordegree1' value="1">
         </div>
         <div class='col-sm-2'>
             <label for='scparam_boostfordegree1' class='col-sm-6 control-label'>&deg C</label>
