@@ -28,7 +28,7 @@ $scparam_zonetype = mysqli_real_escape_string($con, $scparam_zonetype);
 $scparam_pinnum = mysqli_real_escape_string($con, $scparam_pinnum);
 $zoneid = mysqli_real_escape_string($con, $zoneid);
 
-$sql = "update $tbl_name set Zone_Name='$scparam_zonename', Zone_Sensor_ID='$scparam_zonesensor', Zone_Offset=$scparam_offset, Pi_Pin_num=$scparam_pinnum, Zone_Type=$scparam_zonetype where Zone_ID=$zoneid";
+$sql = "update $tbl_name set Zone_Name='$scparam_zonename', Zone_Sensor_ID='$scparam_zonesensor', Zone_Offset=$scparam_offset, Pi_Pin_num=$scparam_pinnum, Zone_Type='$scparam_zonetype' where Zone_ID=$zoneid";
 $result = mysqli_query($con, $sql);
 
 echo "<div class='alert alert-info alert-dismissible' role='alert'>Zone settings updated. It might take upto few mins to apply the boost.";

@@ -35,7 +35,7 @@ if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
     $NewId = $row["Id"];
 
-    $sql1 = "insert into $tbl_name (Zone_ID, Zone_Name, Zone_Active_Ind, Zone_Current_State_Ind, Zone_Last_Temp_Reading, Zone_Last_Temp_Reading_Dtime, Zone_Sensor_ID, Zone_Offset, Pi_Pin_num, Zone_Type) value($NewId , '$scparam_zonename', 'N', 'OFF', 0, current_date, '$scparam_zonesensor', $scparam_offset, $scparam_pinnum, $scparam_zonetype)";
+    $sql1 = "insert into $tbl_name (Zone_ID, Zone_Name, Zone_Active_Ind, Zone_Current_State_Ind, Zone_Last_Temp_Reading, Zone_Last_Temp_Reading_Dtime, Zone_Sensor_ID, Zone_Offset, Pi_Pin_num, Zone_Type) value($NewId , '$scparam_zonename', 'N', 'OFF', 0, current_date, '$scparam_zonesensor', $scparam_offset, $scparam_pinnum, '$scparam_zonetype')";
     $result1 = mysqli_query($con, $sql1);
 
     echo "<div class='alert alert-info alert-dismissible' role='alert'>New Zone Created.";
