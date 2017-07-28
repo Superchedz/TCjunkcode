@@ -49,6 +49,7 @@ if ($result->num_rows > 0) {
         if ($pipinnum == ""){
             $pipinnum = 0;
         }
+		
         echo "<button class='btn btn-link' data-toggle='modal' data-target='#myModalZoneConfig'  data-zoneid='" .
             $row["Zone_ID"] . "' data-zonename='" . $row["Zone_Name"] .
             "' data-zonesensor='" . $row["Zone_Sensor_ID"] . "' data-zoneoffset='" . $row["Zone_Offset"] .
@@ -114,9 +115,11 @@ if ($result->num_rows > 0) {
 
         echo "<td style='text-align:center; vertical-align:middle'>";
         if ($active == "Y") {
-            echo "<img src='./img/boostenable.png' class='img-thumbnail' data-toggle='modal' data-target='#myModalBoost'  data-zoneid='" .
-                $row["Zone_ID"] . "' data-zonename='" . $row["Zone_Name"] . "' data-zonetype='" . $row["Zone_Type"] . "'alt='Boost'>";
-  				
+			if ($zonetype =="T"){
+              echo "<img src='./img/boostenable.png' class='img-thumbnail' data-toggle='modal' data-target='#myModalBoost'  data-zoneid='" .
+                  $row["Zone_ID"] . "' data-zonename='" . $row["Zone_Name"] . "' data-zonetype='" . $row["Zone_Type"] . "'alt='Boost'>";
+  			} else {
+           	  echo "non-t-zone";			
 				
 				
         } else {
