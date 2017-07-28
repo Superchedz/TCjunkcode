@@ -386,9 +386,9 @@ if (isset($_SESSION['myname'])) {
 </div>
 
 
-<!-- boost pop up here -->	
+<!-- Temperature Zone boost pop up here -->	
 
-<div class="modal fade" id="myModalBoost" tabindex="-1" role="dialog" aria-labelledby="myForgotPwd2Label" aria-hidden="true">
+<div class="modal fade" id="myModalBoostTemp" tabindex="-1" role="dialog" aria-labelledby="myForgotPwd2Label" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -412,8 +412,6 @@ if (isset($_SESSION['myname'])) {
     </div>
 
 
-<!-- want to put an IF statement around this bit if zonetype = "T" else default temp to 1 -->	
-	
     <div class='form-group'>
         <label for='scparam_boostfordegree' class='col-sm-4 control-label'>at:</label>
         <div class='col-sm-2'>
@@ -434,6 +432,44 @@ if (isset($_SESSION['myname'])) {
   </div>
 </div>
 
+
+
+
+<!-- Non-Temperature Zone boost pop up here - Simple switch -->	
+
+<div class="modal fade" id="myModalBoostTemp" tabindex="-1" role="dialog" aria-labelledby="myForgotPwd2Label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myForgotPwd2Label">Boost</h4>
+      </div>
+
+      <div class="modal-body">
+      <span id="mysysconfigdiv123"> </span>
+      <input type="hidden" id="hdnzoneid1">
+      <form class="form-horizontal">
+      
+    <div class='form-group'>
+        <label for='timepickerboost' class='col-sm-4 control-label'>Boost zone for: </label>
+        <div class='col-sm-3'>
+            <input type="time" class="form-control" id="timepickerboost" value="01:00">
+        </div>
+        <div class='col-sm-2'>
+            <label for='scparam_boostfor1' class='col-sm-6 control-label'>Hrs:Mins</label>
+        </div>
+    </div>
+
+
+         </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" onclick="submitBoostConfig()" class="btn btn-primary">Apply</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="modal fade" id="myModalZoneConfig" tabindex="-1" role="dialog" aria-labelledby="myForgotPwd3Label" aria-hidden="true">
   <div class="modal-dialog">
