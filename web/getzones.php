@@ -119,7 +119,9 @@ if ($result->num_rows > 0) {
               echo "<img src='./img/boostenable.png' class='img-thumbnail' data-toggle='modal' data-target='#myModalBoostTemp'  data-zoneid='" .
                   $row["Zone_ID"] . "' data-zonename='" . $row["Zone_Name"] . "' data-zonetype='" . $row["Zone_Type"] . "'alt='Boost'>";
           } else {
-              echo "non-t-zone";
+              echo "<img src='./img/boostenable.png' class='img-thumbnail' data-toggle='modal' data-target='#myModalBoost'  data-zoneid='" .
+                  $row["Zone_ID"] . "' data-zonename='" . $row["Zone_Name"] . "' data-zonetype='" . $row["Zone_Type"] . "'alt='Boost'>";
+
           }	
 
         } else {

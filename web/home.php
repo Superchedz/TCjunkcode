@@ -437,7 +437,7 @@ if (isset($_SESSION['myname'])) {
 
 <!-- Non-Temperature Zone boost pop up here - Simple switch -->	
 
-<div class="modal fade" id="myModalBoostTemp" tabindex="-1" role="dialog" aria-labelledby="myForgotPwd2Label" aria-hidden="true">
+<div class="modal fade" id="myModalBoost" tabindex="-1" role="dialog" aria-labelledby="myForgotPwd2Label" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
