@@ -90,6 +90,46 @@ function submitBoostConfig(){
     xmlhttp.send();
 }
 
+function submitBoostConfigTemp(){
+    var zoneid = document.getElementById("hdnzoneid1").value;
+    var scparam_boostfordegree = document.getElementById("scparam_boostfordegree").value;
+    var timepickerboost = document.getElementById("timepickerboost").value;
+    var boosttime = timepickerboost.split(":"); 
+    if (boosttime.length < 2){
+        document.getElementById("mysysconfigdiv123").innerHTML = "<div class='alert alert-info alert-danger' role='alert'>Invalid Time.</div>";
+        return false;
+    }
+    var scparam_boostfor = parseInt(boosttime[0]);
+    var scparam_boostformin = parseInt(boosttime[1]);
+
+    var xmlhttp = new XMLHttpRequest();
+
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            //alert(xmlhttp.responseText);
+            document.getElementById("mysysconfigdiv123").innerHTML = xmlhttp.responseText;
+            GetZonesInformation();
+            $('#myModalBoostTemp').modal('hide');
+            //window.location = "home.php";
+        }
+    }
+    
+    var url = "saveboost.php?zoneid=" + zoneid;
+
+    url += "&scparam_boostfor=";
+    url +=  scparam_boostfor;
+    
+    url += "&scparam_boostformin=";
+    url +=  scparam_boostformin;
+
+    url += "&scparam_boostfordegree=";
+    url +=  scparam_boostfordegree;
+
+    xmlhttp.open("GET", url, true);
+    xmlhttp.send();
+}
+
+
 function submitZoneExtend(){
     var zoneid = document.getElementById("hdnzoneid3").value;
     
