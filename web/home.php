@@ -524,7 +524,7 @@ if (isset($_SESSION['myname'])) {
     <div class='form-group'>
         <label for='scparam_zonetype' class='col-sm-4 control-label'>Zone Type</label>
         <div class='col-sm-2'>
-            <input type='number' class='form-control' id='scparam_zonetype' value="0">
+            <input type='text' class='form-control' id='scparam_zonetype' value="0">
         </div>
         <div class='col-sm-2'>
             <label for='scparam_offset1' class='col-sm-6 control-label'>T(Temp) or N</label>
