@@ -448,8 +448,10 @@ if (isset($_SESSION['myname'])) {
       <div class="modal-body">
       <span id="mysysconfigdiv123"> </span>
       <input type="hidden" id="hdnzoneid1">
+	  
       <form class="form-horizontal">
-      
+                  <input type="hidden" id='scparam_boostfordegree1' value="1">
+
     <div class='form-group'>
         <label for='timepickerboost1' class='col-sm-4 control-label'>Boost zone for: </label>
         <div class='col-sm-3'>
@@ -461,15 +463,7 @@ if (isset($_SESSION['myname'])) {
     </div>
 
 <!-- REMOVE THIS BIT  -Default to 1 somewhere-->	
-    <div class='form-group'>
-        <label for='scparam_boostfordegree' class='col-sm-4 control-label'>at:</label>
-        <div class='col-sm-2'>
-            <input type='number' class='form-control' id='scparam_boostfordegree1' value="1">
-        </div>
-        <div class='col-sm-2'>
-            <label for='scparam_boostfordegree1' class='col-sm-6 control-label'>&deg C</label>
-        </div>
-    </div>
+
 
       </form>
       </div>
