@@ -426,7 +426,7 @@ if (isset($_SESSION['myname'])) {
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" onclick="submitBoostConfig()" class="btn btn-primary">Apply</button>
+        <button type="button" onclick="submitBoostConfigt()" class="btn btn-primary">Apply</button>
       </div>
     </div>
   </div>
@@ -451,7 +451,7 @@ if (isset($_SESSION['myname'])) {
       <form class="form-horizontal">
       
     <div class='form-group'>
-        <label for='timepickerboost' class='col-sm-4 control-label'>Boost zone for: </label>
+        <label for='timepickerboost1' class='col-sm-4 control-label'>Boost zone for: </label>
         <div class='col-sm-3'>
             <input type="time" class="form-control" id="timepickerboost1" value="01:04">
         </div>
@@ -475,7 +475,7 @@ if (isset($_SESSION['myname'])) {
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" onclick="submitBoostConfigt()" class="btn btn-primary">Apply</button>
+        <button type="button" onclick="submitBoostConfig()" class="btn btn-primary">Apply</button>
       </div>
     </div>
   </div>

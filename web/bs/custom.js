@@ -53,8 +53,8 @@ function clearalloverrides(zoneid){
 
 function submitBoostConfig(){
     var zoneid = document.getElementById("hdnzoneid1").value;
-    var scparam_boostfordegree = document.getElementById("scparam_boostfordegree").value;
-    var timepickerboost = document.getElementById("timepickerboost").value;
+    var scparam_boostfordegree = document.getElementById("scparam_boostfordegree1").value;
+    var timepickerboost = document.getElementById("timepickerboost1").value;
     var boosttime = timepickerboost.split(":"); 
     if (boosttime.length < 2){
         document.getElementById("mysysconfigdiv123").innerHTML = "<div class='alert alert-info alert-danger' role='alert'>Invalid Time.</div>";
