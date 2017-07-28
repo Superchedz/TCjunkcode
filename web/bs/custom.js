@@ -70,7 +70,7 @@ function submitBoostConfig(){
             //alert(xmlhttp.responseText);
             document.getElementById("mysysconfigdiv123").innerHTML = xmlhttp.responseText;
             GetZonesInformation();
-            $('#myModalBoost').modal('hide');
+//            $('#myModalBoost').modal('hide');
             //window.location = "home.php";
         }
     }
@@ -109,7 +109,7 @@ function submitBoostConfigTemp(){
             //alert(xmlhttp.responseText);
             document.getElementById("mysysconfigdiv123").innerHTML = xmlhttp.responseText;
             GetZonesInformation();
-            $('#myModalBoostTemp').modal('hide');
+//            $('#myModalBoostTemp').modal('hide');
             //window.location = "home.php";
         }
     }
