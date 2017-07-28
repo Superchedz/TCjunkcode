@@ -107,7 +107,7 @@ $('#myModalZoneConfig').on('show.bs.modal', function (event) {
   var zonename = button.data('zonename'); // Extract info from data-* attributes
   var zonesensor = button.data('zonesensor'); // Extract info from data-* attributes
   var zoneoffset = button.data('zoneoffset'); // Extract info from data-* attributes
-  var zonezonetype = button.data('zonezonetype'); // Extract info from data-* attributes  
+  var zonezonetype = button.data('zonetype'); // Extract info from data-* attributes  
   var pinnum = button.data('pinnum'); // Extract info from data-* attributes
     
   document.getElementById("myForgotPwd3Label").innerHTML = zoneid + " - " + zonename + " Settings";
