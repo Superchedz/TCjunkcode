@@ -112,7 +112,7 @@ if ($result->num_rows > 0) {
             echo "<img src='./img/off.png' class='img-thumbnail img-responsive' alt='Current State'>";
         }
         echo "</td>";
-
+        
         echo "<td style='text-align:center; vertical-align:middle'>";
         if ($active == "Y") {
             if ($zonetype =="T"){
