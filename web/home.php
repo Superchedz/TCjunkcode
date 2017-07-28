@@ -404,7 +404,7 @@ if (isset($_SESSION['myname'])) {
     <div class='form-group'>
         <label for='timepickerboost' class='col-sm-4 control-label'>Boost zone for: </label>
         <div class='col-sm-3'>
-            <input type="time" class="form-control" id="timepickerboost" value="01:00">
+            <input type="time" class="form-control" id="timepickerboost" value="01:03">
         </div>
         <div class='col-sm-2'>
             <label for='scparam_boostfor1' class='col-sm-6 control-label'>Hrs:Mins</label>
@@ -426,7 +426,7 @@ if (isset($_SESSION['myname'])) {
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" onclick="submitBoostConfigTemp()" class="btn btn-primary">Apply</button>
+        <button type="button" onclick="submitBoostConfig()" class="btn btn-primary">Apply</button>
       </div>
     </div>
   </div>
@@ -453,7 +453,7 @@ if (isset($_SESSION['myname'])) {
     <div class='form-group'>
         <label for='timepickerboost' class='col-sm-4 control-label'>Boost zone for: </label>
         <div class='col-sm-3'>
-            <input type="time" class="form-control" id="timepickerboost" value="01:00">
+            <input type="time" class="form-control" id="timepickerboost" value="01:04">
         </div>
         <div class='col-sm-2'>
             <label for='scparam_boostfor1' class='col-sm-6 control-label'>Hrs:Mins</label>
@@ -475,11 +475,14 @@ if (isset($_SESSION['myname'])) {
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" onclick="submitBoostConfigTemp()" class="btn btn-primary">Apply</button>
+        <button type="button" onclick="submitBoostConfigt()" class="btn btn-primary">Apply</button>
       </div>
     </div>
   </div>
 </div>
+
+
+
 
 <div class="modal fade" id="myModalZoneConfig" tabindex="-1" role="dialog" aria-labelledby="myForgotPwd3Label" aria-hidden="true">
   <div class="modal-dialog">

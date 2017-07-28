@@ -70,8 +70,8 @@ function submitBoostConfig(){
             //alert(xmlhttp.responseText);
             document.getElementById("mysysconfigdiv123").innerHTML = xmlhttp.responseText;
             GetZonesInformation();
-//            $('#myModalBoost').modal('hide');
-            //window.location = "home.php";
+//            $('#myModalBoostTemp').modal('hide');
+            
         }
     }
     
@@ -90,13 +90,13 @@ function submitBoostConfig(){
     xmlhttp.send();
 }
 
-function submitBoostConfigTemp(){
+function submitBoostConfigt(){
     var zoneid = document.getElementById("hdnzoneid1").value;
     var scparam_boostfordegree = document.getElementById("scparam_boostfordegree").value;
     var timepickerboost = document.getElementById("timepickerboost").value;
     var boosttime = timepickerboost.split(":"); 
     if (boosttime.length < 2){
-        document.getElementById("mysysconfigdiv123").innerHTML = "<div class='alert alert-info alert-danger' role='alert'>Invalid Time.</div>";
+        document.getElementById("mysysconfigdiv123").innerHTML = "<div class='alert alert-info alert-danger' role='alert'>Invalid Timet.</div>";
         return false;
     }
     var scparam_boostfor = parseInt(boosttime[0]);
@@ -110,7 +110,6 @@ function submitBoostConfigTemp(){
             document.getElementById("mysysconfigdiv123").innerHTML = xmlhttp.responseText;
             GetZonesInformation();
 //            $('#myModalBoostTemp').modal('hide');
-            //window.location = "home.php";
         }
     }
     
