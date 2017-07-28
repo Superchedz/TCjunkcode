@@ -426,7 +426,7 @@ if (isset($_SESSION['myname'])) {
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" onclick="submitBoostConfig()" class="btn btn-primary">Apply</button>
+        <button type="button" onclick="submitBoostConfigTemp()" class="btn btn-primary">Apply</button>
       </div>
     </div>
   </div>
@@ -460,6 +460,21 @@ if (isset($_SESSION['myname'])) {
         </div>
     </div>
 
+	
+    <div class='form-group'>
+        <label for='scparam_boostfordegree' class='col-sm-4 control-label'>at:</label>
+        <div class='col-sm-2'>
+            <input type='number' class='form-control' id='scparam_boostfordegree' value="">
+        </div>
+        <div class='col-sm-2'>
+            <label for='scparam_boostfordegree1' class='col-sm-6 control-label'>&deg C</label>
+        </div>
+    </div>	
+	
+	
+	
+	
+	
 
          </form>
       </div>
