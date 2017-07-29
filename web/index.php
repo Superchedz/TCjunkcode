@@ -89,7 +89,7 @@ if (isset($_GET["err"])) {
 
 <footer class="bs-docs-footer" role="contentinfo">
   <div class="container">
-    <p>Designed and Developed by <a href="https://www.facebook.com/graham.chedzoy?fref=ts" target="_blank">Graham Chedzoy</a> and <a href="https://www.facebook.com/nagakishore.movva" target="_blank">NagaKishore Movva</a>.</p>
+    <p>Designed and Developed by Graham Chedzoy and Nagakishore Movva.</p>
     </div>
 </footer>
 

@@ -38,7 +38,6 @@ if ($scparam_boostfor >= 0 && $scparam_boostformin >= 0 && $scparam_boostfordegr
 
 echo "<div class='alert alert-info alert-dismissible' role='alert'>Inserted a new row to the override table. It might take upto few mins to apply the boost.";
 echo "</div>";
-echo $sql;
 
 mysqli_close($con);
 ob_end_flush();
