@@ -149,15 +149,6 @@ if ($result->num_rows > 0) {
             echo "</tr>";
 		} else {
 	        echo "<table>";
-//            echo "<tr>";
-//            echo "<td>";
-//            echo "Temp: <span class='badge'>";
-//            echo $temper;
-//            echo "&deg;C</span>";
-//			echo " Batt%: <span class='badge'>";
-//			echo $battpct;
-//            echo "</td>";
-//            echo "</tr>";		
 		}	
 			
 			

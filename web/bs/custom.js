@@ -70,7 +70,7 @@ function submitBoostConfig(){
             //alert(xmlhttp.responseText);
             document.getElementById("mysysconfigdiv123").innerHTML = xmlhttp.responseText;
             GetZonesInformation();
-            $('#myModalBoostTemp').modal('hide');
+            $('#myModalBoost').modal('hide');
             
         }
     }
