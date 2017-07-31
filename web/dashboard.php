@@ -66,7 +66,7 @@ echo $name;
 
 <div class="jumbotron" id="content">
     <div class="container">
-    <h3>Temperature History
+    <h3>48h Temperature History
     </h3>
     </div>
 </div>
