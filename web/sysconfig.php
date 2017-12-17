@@ -26,6 +26,7 @@ $YPlan = "";
 $YPlan_ch_zone = 0;
 $YPlan_hw_zone = 0;
 $YPlan_gpio = 0;
+$WebAddr = "";
 
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
