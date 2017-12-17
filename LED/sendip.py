@@ -11,6 +11,8 @@
 #  Version  Date       Who   Description
 #  ======== ========== ====  ===========
 #  1.0      2014-11-01 GLC   Initial Version
+#  2.0      2017-11-05 GLC   Modified get_ip_address to support various connection types, wlan,
+#                            eth0 etc
 ################################################################################################
 import socket
 import fcntl
@@ -55,13 +57,11 @@ def write_log(Log_From, Log_Text):
 ################I didn't write this, some clever chap on the internet wrote it, ta!#############
 ################################################################################################  
 
-def get_ip_address(ifname):
+def get_ip_address():
+
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    return socket.inet_ntoa(fcntl.ioctl(
-        s.fileno(),
-        0x8915,  # SIOCGIFADDR
-        struct.pack('256s', ifname[:15])
-    )[20:24])  
+    s.connect(("8.8.8.8", 80))
+    return s.getsockname()[0]
   
   
   
@@ -189,7 +189,8 @@ def send_alert(subject, msgbody):
   sendok = True
 
   msg = 'Subject: %s: %s\n\n%s' %(subject, SystemID, msgbody)
-  
+  print msg
+  print "hello"
   try:
      SMTPServer = smtplib.SMTP(SMTPParam)
   except:
@@ -238,6 +239,7 @@ print "Its %s" % now
 sleep (30)
 #####################################################################################################
 # first get the old IP from the params table:
+
 db = MySQLdb.connect("localhost","root","pass123",db = "BoilerControl" )
 
 oldExtip_cursor = db.cursor ()
@@ -259,7 +261,7 @@ else:
 
 # thanks to the clever chap who wrote this function, its cool, i got it from github
 NewEIP = ipgetter.myip()
-NewIIP = get_ip_address('eth0')  
+NewIIP = get_ip_address()  
 
 
 print NewEIP
@@ -287,7 +289,7 @@ else:
 
 
 if (OldEIP <> NewEIP) or (OldIIP <> NewIIP):
-  subject = 'TotalControl9000 - IP change notification Email'
+  subject = 'TotalControl9000 - IP change notification Email: System ID'
 
 
 #use the ipgetter code we imported to get the machines external IP Address

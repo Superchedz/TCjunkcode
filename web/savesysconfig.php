@@ -19,26 +19,38 @@ $scparam_fromemail = GetInputFromRequest('scparam_fromemail');
 $scparam_smtpserver = GetInputFromRequest('scparam_smtpserver');
 $scparam_emailpwd = GetInputFromRequest('scparam_emailpwd');
 $scparam_toemail = GetInputFromRequest('scparam_toemail');
+$scparam_webaddr = GetInputFromRequest('scparam_webaddr');
 $scparam_logret = GetInputFromRequest('scparam_logret');
 $scparam_frost = GetInputFromRequest('scparam_frost');
+$scparam_yplan = GetInputFromRequest('scparam_yplan');
+$scparam_yplan_chzone = GetInputFromRequest('scparam_yplan_chzone');
+$scparam_yplan_hwzone = GetInputFromRequest('scparam_yplan_hwzone');
+$scparam_yplan_gpio = GetInputFromRequest('scparam_yplan_gpio');
 
 $scparam_polinterval = mysqli_real_escape_string($con, $scparam_polinterval);
 $scparam_fromemail = mysqli_real_escape_string($con, $scparam_fromemail);
 $scparam_smtpserver = mysqli_real_escape_string($con, $scparam_smtpserver);
 $scparam_emailpwd = mysqli_real_escape_string($con, $scparam_emailpwd);
 $scparam_toemail = mysqli_real_escape_string($con, $scparam_toemail);
+$scparam_webaddr = mysqli_real_escape_string($con, $scparam_webaddr);
 $scparam_logret = mysqli_real_escape_string($con, $scparam_logret);
 $scparam_frost = mysqli_real_escape_string($con, $scparam_frost);
-
+$scparam_yplan = mysqli_real_escape_string($con, $scparam_yplan);
+$scparam_yplan_chzone = mysqli_real_escape_string($con, $scparam_yplan_chzone);
+$scparam_yplan_hwzone = mysqli_real_escape_string($con, $scparam_yplan_hwzone);
+$scparam_yplan_gpio = mysqli_real_escape_string($con, $scparam_yplan_gpio);
 
 $scparam_polinterval_exist = "no";
 $scparam_fromemail_exist = "no";
 $scparam_smtpserver_exist = "no";
 $scparam_emailpwd_exist = "no";
 $scparam_toemail_exist = "no";
+$scparam_webaddr_exist = "no";
 $scparam_logret_exist = "no";
-$scparam_frost_exist = "no";
-
+$scparam_yplan_exist = "no";
+$scparam_yplan_chzone_exist = "no";
+$scparam_yplan_hwzone_exist = "no";
+$scparam_yplan_gpio_exist = "no";
 
 $sql = "SELECT * FROM $tbl_name";
 $result = mysqli_query($con, $sql);
@@ -68,6 +80,10 @@ if ($result->num_rows > 0) {
             $scparam_emailpwd_exist = "yes";
         }
 
+        if ($row["Param_Name"] == "Ext_Web_Address") {
+            $scparam_emailpwd_exist = "yes";
+        }
+
         if ($row["Param_Name"] == "FrostTemp") {
             $scparam_frost_exist = "yes";
         }
@@ -76,6 +92,21 @@ if ($result->num_rows > 0) {
             $scparam_logret_exist = "yes";
         }
 
+        if ($row["Param_Name"] == "YPlan_YN") {
+            $scparam_yplan_exist = "yes";
+        }
+
+        if ($row["Param_Name"] == "YPlan_CH_Zone") {
+            $scparam_yplan_chzone_exist = "yes";
+        }
+
+        if ($row["Param_Name"] == "YPlan_HW_Zone") {
+            $scparam_yplan_hwzone_exist = "yes";
+        }
+
+        if ($row["Param_Name"] == "YPlan_GPIO") {
+            $scparam_yplan_gpio_exist = "yes";
+        }
     }
 }
 
@@ -118,6 +149,13 @@ if ($scparam_toemail_exist == "no") {
     $sql = "update $tbl_name set Param_Value='$scparam_toemail' where Param_Name='ToEmail'";
     $result = mysqli_query($con, $sql);
 }
+if ($scparam_webaddr_exist == "no") {
+    $sql = "insert into $tbl_name value('Ext_Web_Address','$scparam_webaddr')";
+    $result = mysqli_query($con, $sql);
+} else {
+    $sql = "update $tbl_name set Param_Value='$scparam_webaddr' where Param_Name='Ext_Web_Address'";
+    $result = mysqli_query($con, $sql);
+}
 
 if ($scparam_logret_exist == "no") {
     $sql = "insert into $tbl_name value('Log_Ret','$scparam_logret')";
@@ -135,7 +173,42 @@ if ($scparam_frost_exist == "no") {
     $result = mysqli_query($con, $sql);
 }
 
-echo "<div class='alert alert-info alert-dismissible' role='alert'>Configuration has been updated. It might take upto few mins to apply the new configuration to the system.";
+if ($scparam_yplan_exist == "no") {
+    $sql = "insert into $tbl_name value('YPlan_YN','$scparam_yplan')";
+    $result = mysqli_query($con, $sql);
+} else {
+    $sql = "update $tbl_name set Param_Value='$scparam_yplan' where Param_Name='YPlan_YN'";
+    $result = mysqli_query($con, $sql);
+}
+
+if ($scparam_yplan_chzone_exist == "no") {
+    $sql = "insert into $tbl_name value('YPlan_CH_Zone','$scparam_yplan_chzone')";
+    $result = mysqli_query($con, $sql);
+} else {
+    $sql = "update $tbl_name set Param_Value='$scparam_yplan_chzone' where Param_Name='YPlan_CH_Zone'";
+    $result = mysqli_query($con, $sql);
+}
+
+
+if ($scparam_yplan_hwzone_exist == "no") {
+    $sql = "insert into $tbl_name value('YPlan_HW_Zone','$scparam_yplan_hwzone')";
+    $result = mysqli_query($con, $sql);
+} else {
+    $sql = "update $tbl_name set Param_Value='$scparam_yplan_hwzone' where Param_Name='YPlan_HW_Zone'";
+    $result = mysqli_query($con, $sql);
+}
+
+if ($scparam_yplan_gpio_exist == "no") {
+    $sql = "insert into $tbl_name value('YPlan_GPIO','$scparam_yplan_gpio')";
+    $result = mysqli_query($con, $sql);
+} else {
+    $sql = "update $tbl_name set Param_Value='$scparam_yplan_gpio' where Param_Name='YPlan_GPIO'";
+	
+    $result = mysqli_query($con, $sql);
+}
+
+ 
+echo "<div class='alert alert-info alert-dismissible' role='alert'>Configuration has been updated. You may need to refresh to see changes ( Press F5)";
 echo "</div>";
 
 mysqli_close($con);

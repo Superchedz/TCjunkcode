@@ -357,23 +357,37 @@ function submitNewZoneConfig(){
     
 }
 
+
+
+
+function YPlanSelect() 
+{
+
+if(isset($_POST['formSubmit']) ) 
+{ 
+  
+  $YPlanSelect = $_POST['YPlanSelect']; 
+  $errorMessage = ""; 
+}}
+
+
 function submitConfig() {
     var scparam_polinterval = document.getElementById("scparam_polinterval").value;
     var scparam_fromemail = document.getElementById("scparam_fromemail").value;
     var scparam_smtpserver = document.getElementById("scparam_smtpserver").value;
     var scparam_emailpwd = document.getElementById("scparam_emailpwd").value;
+    var scparam_webaddr = document.getElementById("scparam_webaddr").value;	
     var scparam_toemail = document.getElementById("scparam_toemail").value;
     var scparam_logret = document.getElementById("scparam_logret").value;
     var scparam_frost = document.getElementById("scparam_frost").value;
-    
-    var xmlhttp = new XMLHttpRequest();
+    var scparam_yplan = document.getElementById("scparam_yplan").value;
+	
+    var scparam_yplan_chzone = document.getElementById("scparam_yplanchzone").value;
+    var scparam_yplan_hwzone = document.getElementById("scparam_yplanhwzone").value;
+	  
+	  
+      var scparam_yplan_gpio = document.getElementById("scparam_yplan_gpio").value;
 
-    xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            //alert(xmlhttp.responseText);
-            document.getElementById("mysysconfigdiv").innerHTML = xmlhttp.responseText;
-        }
-    }
     var url = "savesysconfig.php?scparam_polinterval=" + scparam_polinterval;
 
     url += "&scparam_fromemail=";
@@ -388,12 +402,36 @@ function submitConfig() {
     url += "&scparam_toemail=";
     url +=  scparam_toemail;
 
+    url += "&scparam_webaddr=";
+    url +=  scparam_webaddr;
+	
     url += "&scparam_logret=";
     url +=  scparam_logret;
 
     url += "&scparam_frost=";
     url +=  scparam_frost;
 
+	url += "&scparam_yplan=";
+    url +=  scparam_yplan;
+
+	url += "&scparam_yplan_chzone=";
+    url +=  scparam_yplan_chzone;
+
+	url += "&scparam_yplan_hwzone=";
+    url +=  scparam_yplan_hwzone;
+
+    url += "&scparam_yplan_gpio=";
+    url +=  scparam_yplan_gpio;
+    
+    var xmlhttp = new XMLHttpRequest();
+
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            //alert(xmlhttp.responseText);
+            document.getElementById("mysysconfigdiv").innerHTML = xmlhttp.responseText;
+        }
+    }
+	
     xmlhttp.open("GET", url, true);
     xmlhttp.send();
 }

@@ -32,7 +32,10 @@
 #                            Also removed the sleep on startup as moved into cron to support git
 #  1.5      2016-02-04 GLC   Added version number into the start up email.
 #  1.6      2017-07-15 GLC   Added check on shutdown param to see if we should reboot or shutdown
-#  1.6.1    2017-17-15 GCL   Reworded start up email to be more pro
+#  1.6.1    2017-17-15 GLC   Reworded start up email to be more pro
+#  2.0      2017-10-27 GLC	 Added logic to handle a Y-Plan zone valve system.
+#                            Modified code to get the IP correctly for when connected to wifi or
+#                            ethernet etc.  Also added external web address to startup email.
 ################################################################################################
 
 import RPi.GPIO as GPIO 
@@ -62,7 +65,7 @@ print ""
 print "" 
 print "#####################################################" 
 print "########## Welcome to BoilerControl 9000 ############"
-print "##########         Version 1.6.1         ############"
+print "##########         Version 2.0           ############"
 print "#####################################################" 
 print ""
 
@@ -90,11 +93,11 @@ def write_log(Log_From, Log_Text):
 ################################ Function to send and email ####################################
 ################################################################################################
 
-def send_alert(subject, msgbody):
+def send_alert(subject, msgbody, WebAddr):
   print "***********************************************************"
   print "*********************  SENDING ALERT  *********************"
   print "***********************************************************"
-  
+ 
 
 ##############  Get the params from the database to set up sending alert #######################
 ############################## Get the From email address ###################################
@@ -186,8 +189,8 @@ def send_alert(subject, msgbody):
     critical_error('Get SysID', 'ERROR : Missing Param', '--!! Shutting down ^2 !!--')
     print "***  Error:  Missing Param SystemID  ***"
     return
-	
-	
+
+
 ############################## Get the Password  ###################################
   pwd_cursor = db.cursor ()
   pwd_query = "select * from params_b where Param_Name = 'EmailPwd'"
@@ -208,7 +211,7 @@ def send_alert(subject, msgbody):
   global sendok
   sendok = True
 
-  msg = 'Subject: %s: %s\n\n%s' %(subject,SystemID, msgbody)
+  msg = 'Subject: %s: %s\n\n%s\nYour Web Address is %s' %(subject,SystemID, msgbody, WebAddr)
   print "Sending....Alert %s" % msgbody
   
   try:
@@ -298,8 +301,9 @@ def get_interval():
 #      print "The interval param was found : %s" % (Interval)
       return Interval
   else:
-    critical_error('Get Interval', 'ERROR : Missing interval', '--!! Shutting down ^2 !!--')
     print "***  Error:  Missing Param Loop_Intvl  ***"
+    critical_error('Get Interval', 'ERROR : Missing interval', '--!! Shutting down ^2 !!--')
+
 
 ################################################################################################
 ############################### Function to get debug mode flag ################################
@@ -327,10 +331,170 @@ def get_debug():
       DebugMode = Debug_res[1]
       return DebugMode
   else:
-    critical_error('Get Debug', 'ERROR : Missing Debugmode Param', '--!! Shutting down ^2 !!--')
     print "***  Error:  Missing Param Debugmode param  ***"
+    critical_error('Get Debug', 'ERROR : Missing Debugmode Param', '--!! Shutting down ^2 !!--')
+
 
 	
+def get_web():
+  global WebAddr
+  web_cursor = db.cursor ()
+  web_query = "select * from params_b where Param_Name = 'Ext_Web_Address'"
+  global WebAddr
+  try:
+     web_cursor.execute(web_query)
+  except MySQLdb.Error as err:
+     print ("******* Error reading Ext_Web_Address param : ERROR : {}".format(err))
+     write_log ('ERROR: Get Ext_Web_Address',err)
+
+  numrows = int (web_cursor.rowcount)
+  if numrows == 1:
+    Web_res = web_cursor.fetchone()
+    WebAddr = Web_res[1]
+    return WebAddr
+  else:
+    WebAddr = "Not Found"
+    return WebAddr
+    print "***  Error:  Missing Param Ext_Web_Address param  ***"
+
+
+################################################################################################
+############################### Function to get YPlan mode flag ################################
+################################################################################################
+
+def get_yplan():
+# we only need to do this once, no one will ever switch to yplan without rebooting so only needed at startup
+  yplan_cursor = db.cursor ()
+  yplan_query = "select * from params_b where Param_Name = 'YPlan_YN'"
+  global YPlanMode
+
+  try:
+     yplan_cursor.execute(yplan_query)
+  except MySQLdb.Error as err:
+     print ("******* Error reading YPlan_YN param : ERROR : {}".format(err))
+     write_log ('ERROR: Get YPlan_YN',err)
+
+  numrows = int (yplan_cursor.rowcount)
+  if numrows == 1:
+    YPlan_res = yplan_cursor.fetchone()
+    if YPlan_res[1] != "Y" and YPlan_res[1] != "N":
+      print "*******  Warning : YPlan param is not Y or N - defaulting to N *********"
+      print ""
+      YPlanMode = "N";
+      return YPlanMode
+    else:
+      YPlanMode = YPlan_res[1]
+      print "##### YPlanMode Param was found value: %s " % YPlanMode	 
+      return YPlanMode
+  else:
+#  again lets not get stressed about it, if the param isn't there just default to N, its only added by the gui anyway
+    print "***  Warning:  Missing Param YPlan_YN param   - defaulting to OFF ***"
+    YPlanMode = "N";
+    return YPlanMode
+	
+	
+	
+	
+################################################################################################
+############################### Function to get YPlan CH zone   ################################
+################################################################################################
+
+def get_yplan_ch_zone():
+# we only need to do this once, no one will ever switch to yplan without rebooting so only needed at startup
+  yplan_ch_cursor = db.cursor ()
+  yplan_ch_query = "select * from params_b where Param_Name = 'YPlan_CH_Zone'"
+  global YPlanCH
+
+  try:
+     yplan_ch_cursor.execute(yplan_ch_query)
+  except MySQLdb.Error as err:
+     print ("******* Error reading YPlan_CH_Zone param : ERROR : {}".format(err))
+     write_log ('ERROR: Get YPlan_CH_Zone',err)
+ 
+  numrows = int (yplan_ch_cursor.rowcount)	 	 
+  if numrows == 1:
+    YPlan_ch_res = yplan_ch_cursor.fetchone()
+    if not YPlan_ch_res[1].isdigit():
+      print ""
+      print "*******  ERROR : YPlan CH Zone param is not numeric  *********"
+      critical_error('YPlan CH Zone Check', 'YPlan CH Zone Not Digit', '--!! Shutting down ^1 !!--')
+    else:
+      YPlanCH = YPlan_ch_res[1]
+      print "##### YPlanCH Param was found value: %s " % YPlanCH	 
+      return YPlanCH
+  else:
+    print "***  Error:  Missing Param YPlan CH Zone   - Y-PLAN Mode is ON so this should exist ***"	 
+    critical_error('Get YPlan CH Zone', 'ERROR : Missing param', '--!! Shutting down ^2 !!--')
+
+	 
+
+################################################################################################
+############################### Function to get YPlan HW zone   ################################
+################################################################################################
+
+def get_yplan_hw_zone():
+# we only need to do this once, no one will ever switch to yplan without rebooting so only needed at startup
+  yplan_hw_cursor = db.cursor ()
+  yplan_hw_query = "select * from params_b where Param_Name = 'YPlan_HW_Zone'"
+  global YPlanHW
+
+  try:
+     yplan_hw_cursor.execute(yplan_hw_query)
+  except MySQLdb.Error as err:
+     print ("******* Error reading YPlan_HW_Zone param : ERROR : {}".format(err))
+     write_log ('ERROR: Get YPlan_HW_Zone',err)
+	 
+  numrows = int (yplan_hw_cursor.rowcount)	 	 
+  if numrows == 1:
+    YPlan_hw_res = yplan_hw_cursor.fetchone()
+    if not YPlan_hw_res[1].isdigit():
+      print ""
+      print "*******  ERROR : YPlan HW Zone param is not numeric  *********"
+      critical_error('YPlan HW Zone Check', 'YPlan HW Zone Not Digit', '--!! Shutting down ^1 !!--')
+    else:
+      YPlanHW = YPlan_hw_res[1]
+      print "##### YPlanHW Param was found value: %s " % YPlanHW	 
+      return YPlanHW
+  else:
+    print "***  Error:  Missing Param YPlan HW Zone  - Y-PLAN Mode is ON so this should exist ***"	 
+    critical_error('Get YPlan HW Zone', 'ERROR : Missing param', '--!! Shutting down ^2 !!--')
+
+
+################################################################################################
+############################### Function to get YPlan GPIO ID   ################################
+################################################################################################
+
+def get_yplan_gpio_zone():
+# we only need to do this once, no one will ever switch to yplan without rebooting so only needed at startup
+  yplan_gpio_cursor = db.cursor ()
+  yplan_gpio_query = "select * from params_b where Param_Name = 'YPlan_GPIO'"
+  global YPlanGPIO
+
+  try:
+     yplan_gpio_cursor.execute(yplan_gpio_query)
+  except MySQLdb.Error as err:
+     print ("******* Error reading YPlan_GPIO_Zone param : ERROR : {}".format(err))
+     write_log ('ERROR: Get YPlan_GPIO_Zone',err)
+	 
+  numrows = int (yplan_gpio_cursor.rowcount)	 	 
+  if numrows == 1:
+    YPlan_gpio_res = yplan_gpio_cursor.fetchone()
+    if not YPlan_gpio_res[1].isdigit():
+      print ""
+      print "*******  ERROR : YPlan GPIO Zone param is not numeric  *********"
+      critical_error('YPlan GPIO Zone Check', 'YPlan GPIO Zone Not Digit', '--!! Shutting down ^1 !!--')
+    else:
+      YPlanGPIO = YPlan_gpio_res[1]
+      print "##### YPlanGPIO Param was found value: %s " % YPlanGPIO	 
+      return YPlanGPIO
+  else:
+    print "***  Error:  Missing Param YPlan GPIO Zone  - Y-PLAN Mode is ON so this should exist  ***"	 
+    critical_error('Get YPlan GPIO Zone', 'ERROR : Missing param', '--!! Shutting down ^2 !!--')
+
+
+
+
+
 ################################################################################################
 ############################# Function to get shutdown mode flag ###############################
 ################################################################################################
@@ -415,7 +579,7 @@ def critical_error(Log_From, Log_Text, shutdownmsg):
   print "***********************************************************"
   
   write_log (Log_From, Log_Text)
-  send_alert('Alert: Heating Control - *** CRASH ***',shutdownmsg)
+  send_alert('Alert: Heating Control - *** CRASH ***',shutdownmsg, WebAddr)
   sys.exit (shutdownmsg)
 
 ################################################################################################
@@ -423,12 +587,18 @@ def critical_error(Log_From, Log_Text, shutdownmsg):
 ################################################################################################
 
 def turn_off_zone(zone_id, zone_pin):
+ 
   if DebugMode == "Y":
     print "Inside function to turn a zone %d off pin = %d" % (zone_id, zone_pin)
   GPIO.output(int(zone_pin), 1)
   set_zone_graphic(zone_id, "OFF")
 
+ 
+  
 def check_temp(zone_id, zone_pin, zone_temp, target_temp, curr_zone_state):
+
+  global YPlan_CH_IS_ON
+  global YPlan_HW_IS_ON
   if DebugMode == "Y":
     print "Inside function to check zone %d on pin id =  %d temp is %.2f target temp is %.2f" % (zone_id, zone_pin, curr_zone_temp, target_temp)
   
@@ -438,9 +608,21 @@ def check_temp(zone_id, zone_pin, zone_temp, target_temp, curr_zone_state):
   Temp_Upper = float(target_temp) + 0.3
   Temp_Lower = float(target_temp) - 0.3
   if DebugMode == "Y":
-    print"Temp check - current teamp is %.2f, upper is %.2f and lower is %.2f" % (curr_zone_temp, Temp_Upper, Temp_Lower) 
+    print"Temp check - current temp is %.2f, upper is %.2f and lower is %.2f" % (curr_zone_temp, Temp_Upper, Temp_Lower) 
 
   if curr_zone_state == "ON":
+# we need to check if the zone being turned on is a YPLAN zone and if so, set the flags. 
+
+    if YPlanMode == "Y": 
+      if int(zone_id) == int(YPlanCH):
+        if DebugMode == "Y":
+          print "Yplan is on, CH is on, Setting CH ON flag to True";
+        YPlan_CH_IS_ON = True;
+      if int(zone_id) == int(YPlanHW):
+        if DebugMode == "Y":
+          print "Yplan is on, HW is on, Setting HW ON flag to True";       
+        YPlan_HW_IS_ON = True;
+
     if curr_zone_temp >= Temp_Upper:
       if DebugMode == "Y":
         print "Turning zone off as target temp reached"
@@ -454,27 +636,33 @@ def check_temp(zone_id, zone_pin, zone_temp, target_temp, curr_zone_state):
       turn_on_zone(zone_id, zone_pin)
       logtext = "Zone %d current %.2f target temp is back %.2f" % (zone_id, curr_zone_temp, target_temp)
       write_log('Zone Switch On',logtext)
-
+   
 
 def turn_on_zone(zone_id, zone_pin):
-
+  global YPlan_CH_IS_ON
+  global YPlan_HW_IS_ON
+  
   if DebugMode == "Y":
     print "Inside function to turn zone %d on pin id =  %d" % (zone_id, zone_pin)
   
   GPIO.output(int(zone_pin), 0)
   set_zone_graphic(zone_id, "ON")
-
+  
+ # we need to check if the zone being turned on is a YPLAN zone and if so, set the flags. 
+  if YPlanMode == "Y": 
+    if int(zone_id) == int(YPlanCH):
+      YPlan_CH_IS_ON = True;
+    if int(zone_id) == int(YPlanHW):
+      YPlan_HW_IS_ON = True;
 
 ##############################################################################################
 # function to get the local ip address to be included in the startup email.
 ##############################################################################################
-def get_ip_address(ifname):
+
+def get_ip_address():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    return socket.inet_ntoa(fcntl.ioctl(
-        s.fileno(),
-        0x8915,  # SIOCGIFADDR
-        struct.pack('256s', ifname[:15])
-    )[20:24])    
+    s.connect(("8.8.8.8", 80))
+    return s.getsockname()[0]
   
 ###############################################################################################
 ###############################################################################################
@@ -505,14 +693,18 @@ db = MySQLdb.connect (host   = "localhost",
 #write_log ('Control1', 'Startup')
 
 global sendok
+global YPlan_CH_IS_ON
+global YPlan_HW_IS_ON
+	
 sendok = False
 sendcounter = 0
+WebAddr = get_web()
 
-ipaddress = get_ip_address('eth0')
+ipaddress = get_ip_address()
 print ipaddress
 while sendcounter < 10:
   sendcounter += 1				  
-  send_alert('TC9000 Alert: Primary switching process (v1.6.1)- STARTUP','Process start successful.  Your local IP is %s' % str(ipaddress))
+  send_alert('TC9000 Alert: Primary switching process (v2.0)- STARTUP: System ID ','Process start successful.  Your local IP is %s' % str(ipaddress), WebAddr)
   if sendok:
     sendcounter = 11;  
     write_log('Control1 - Main','Starting up ok - email sent')
@@ -528,9 +720,10 @@ if not sendok:
 else:
   print "Control 1 - Email Sent ok - start up complete"
   
-  now = time.strftime('%Y-%m-%d %H:%M:%S')
+now = time.strftime('%Y-%m-%d %H:%M:%S')
 nowt = time.strftime('%H:%M:%S')
 DebugMode = get_debug()
+
 
 ###########################################################################
 # initialise each GPIO pin based on the values stored in the Zone_b table #
@@ -556,24 +749,45 @@ for y in range (numrows):
     GPIO.setup(initialise_zone_pin, GPIO.OUT)
 
 Interval = 60
+YPlanMode = get_yplan()
+if YPlanMode == "Y":
+  print "System is set to YPLAN mode, so getting other params";
+  YPlanCH = get_yplan_ch_zone()
+  YPlanHW = get_yplan_hw_zone()
+  YPlanGPIO = int(get_yplan_gpio_zone())
+  
+#######  We also need to additionally initialise the GPIO pin used for the YPlan HW-Off config
+#######  as this is not set up in a specific zone record - its from the params table
 
-#create an infinte loop - 
+  GPIO.setup(YPlanGPIO, GPIO.OUT)
+
+  
+  
+  
+############################################################################################
+#################################         Main loop        #################################
+############################################################################################
+############################################################################################
+############################################################################################
+  
+#OK, we're now ready to run the main process which is infinite - create an infinte loop - 
 while True:
 
-# get current datetime
+# get current datetime and time
   now = datetime.datetime.now()
-#  print "now is set to %s" % now
-
   nowt = time.strftime('%H:%M:%S')
-#  print "nowt is set to %s" % nowt
 
 # ### Get the interval param for the loop delay - need to read it each loop
 # ### incase it's changed since last loop
 
 #need to get interval param from the db each loop in case it changes.
   Interval = get_interval()
-  DebugMode = get_debug()
   
+  DebugMode = get_debug()
+  if DebugMode == "Y":
+    print "##### Debugging flag is set on (Y) - Sending debug info (lots of it) to console."
+  
+ 
 # Check the shutdown param
   Shutitdown = get_shutdown()
 
@@ -617,31 +831,25 @@ while True:
 	
 
  
-# check is the main system switch has been turned off - if so, skip all processing and make sure all zones are off.
+# check is the main system switch has been turned off - if so, skip all processing and just make sure all zones are off.
   Sysstatus = get_sysstatus()
 
-# this if is only here for info, can be removed later
-#  if Sysstatus == "false":
-#    print "Main system switch is turned off"
-    
-#  else:
-#    print "Main system switch is turned on"
+
  
 #  Get day of week using function, again in case its changed
   day = get_day()
-#  print "Today is currently %s" % day
-# ### Get all zones from Zones_B table
- 
-#  write_log('Main','Main loop')
-  
+
+# reset the YPlan flags so we only need to set them to true later on if the zone is turned on.  
+  if YPlanMode == "Y": 
+    YPlan_CH_IS_ON = False;
+    YPlan_HW_IS_ON = False;	
+	
+# Get all zones from Zones_B table
   Zone_cursor = db.cursor()
   Zone_cursor.execute("SELECT * from zone_b")
   numrows = int (Zone_cursor.rowcount)
   if DebugMode == "Y":
     print "##### %d Zone records found on Zone_B table " % (numrows)
-
-#  logtext = "Number of Zones found was "+str(numrows)
-#  write_log('getzones', logtext)
 
   # loop round for each zone found in the table
   for y in range (numrows):
@@ -670,8 +878,6 @@ while True:
 #  we need to do this here rather than in the sql so we can pick up zones that have been turned off dynamically.
 
       if curr_zone_active == "N" or Sysstatus == 'false':
-
-
         if curr_zone_state == "ON":
           logtext = "Zone %d turned off due to zone deactivation" % (curr_zone_id)
           write_log('Zone Switch off',logtext)
@@ -692,18 +898,19 @@ while True:
 
          numrows = int (Override_cursor.rowcount)
          if numrows > 0:
-
            Over_res = Override_cursor.fetchone()
            if DebugMode == "Y":
              print "Override row found Zone: %s Starttime :%s Endtime: %s Duration: %d Temp: %d" % (Over_res[0], Over_res[1], Over_res[2], Over_res[3], Over_res[4])
            target_temp = Over_res[4]
        
-#  we have an active override!!!!
-#  it doesnt matter if we find more than 1...put the zone on.
-#     we have the latest temp reading from the zone cursor (written by other process)
-#     compare the temps (write a function to do this to allow for hysteresis)
+#  we have an active override/boost!!!!
+#  it doesn't matter if we find more than 1...put the zone on.
+#     we have the latest temp reading from the zone cursor (written by other process PROTOSEN)
+#     compare the temps 
 #######  call function to turn on zone, set the status in DB
-#     but first check if the zone has no temp, it could be hot water, a light or a pump...TotalControl9000!!! 
+#     but first check if the zone has no temp, it could be hot water, a light or a pump...Woot Woot Go TotalControl9000!!!
+#     Stick that up your arse Nest and Hive
+
            if curr_zone_has_temp == "T":  
              if DebugMode == "Y":
                print "Override with a sensor so about to check temps"
@@ -712,10 +919,10 @@ while True:
              if DebugMode == "Y":
                print "Override with no sensor so just turn on"
              turn_on_zone(curr_zone_id, curr_zone_pin)
+ 
              if curr_zone_state == "OFF":
                logtext = "Zone %d turned on due to boost or override1" % (curr_zone_id)
                write_log('Zone Switch on',logtext)
-
          else:
 # no override, so lets see if the schedule is on.
            if numrows == 0:
@@ -756,8 +963,24 @@ while True:
 
                 turn_off_zone(curr_zone_id, curr_zone_pin)   
 
+# so we've just been through and sorted out all the zones being on and off, but we now need to work out if we need to 
+# set the YPlan HW-OFF GPIO pin on or off
 
-#  print "waiting %s secs....." % Interval
+  if DebugMode == "Y":
+    print "Yplan mode is set to %s" % (YPlanMode)
+    if YPlanMode == "Y":
+      print "YPlan_CH_IS_ON = %s" % (YPlan_CH_IS_ON)
+      print "YPlan_HW_IS_ON = %s" % (YPlan_HW_IS_ON)
+ 
+  if (YPlanMode == "Y"):
+    if(YPlan_CH_IS_ON) and (YPlan_HW_IS_ON == False):	
+      if DebugMode == "Y":
+        print "HW zone is OFF and CH zone is ON so set HW-OFF to be on"
+      GPIO.output(int(YPlanGPIO), 0)
+    else:
+      if DebugMode == "Y":
+        print "Turning HW-OFF to off as either neither, both or just HW are on"
+      GPIO.output(int(YPlanGPIO), 1)
   sleep (float(Interval))
   Zone_cursor.close()
 

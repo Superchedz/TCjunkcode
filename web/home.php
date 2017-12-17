@@ -132,7 +132,7 @@ if (isset($_SESSION['myname'])) {
 
 <div class="jumbotron" id="content">
     <div class="container">
-          <p><img src='./img/translogo.png' class='img-thumbnail img-responsive' alt='Home'/> Total Control 9000 - manage the system settings, monitor active zones and set controls<BR>          (Release v1.30) </p>
+          <p><img src='./img/translogo.png' class='img-thumbnail img-responsive' alt='Home'/> Total Control 9000 - manage the system settings, monitor active zones and set controls<BR>          (Release v2.00) </p>
     </div>
 </div>
 
@@ -514,23 +514,27 @@ if (isset($_SESSION['myname'])) {
 
     <div class='form-group'>
         <label for='scparam_offset' class='col-sm-4 control-label'>Offset</label>
-        <div class='col-sm-2'>
+        <div class='col-sm-3'>
             <input type='number' class='form-control' id='scparam_offset' value="0">
         </div>
-        <div class='col-sm-2'>
-            <label for='scparam_offset1' class='col-sm-6 control-label'>&deg;C</label>
+        <div class='col-sm-5'>
+            <label for='scparam_offset1' control-label'>&deg;C</label>
         </div>
     </div>
+
+
     <div class='form-group'>
         <label for='scparam_zonetype' class='col-sm-4 control-label'>Zone Type</label>
-        <div class='col-sm-2'>
+        <div class='col-sm-3'>
             <input type='text' class='form-control' id='scparam_zonetype' value="0">
         </div>
-        <div class='col-sm-2'>
-            <label for='scparam_offset1' class='col-sm-6 control-label'>T(Temp) or N</label>
+        <div class='col-sm-5'>
+            <label for='scparam_zonetype'  text-left control-label'>T (Temp) or N (No Sensor)</label>
         </div>
     </div>
-        
+
+
+	
       </form>
       </div>
       <div class="modal-footer">
