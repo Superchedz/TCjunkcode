@@ -12,18 +12,13 @@ echo created 16/7/2017
 
 cd /home/pi/led
 
-echo  Doing dropping uninque index on params table - so we can add it next step
-mysql --batch -h localhost -u root --password=pass123 -D  BoilerControl  < droppin.txt > dsqlout.txt 
-
-echo  Add unique on param name
-mysql --batch -h localhost -u root --password=pass123 -D  BoilerControl  < addpin.txt > asqlout.txt 
-
-echo Insert row for new install - will fail if already there  
-mysql --batch -h localhost -u root --password=pass123 -D  BoilerControl  < insshut.txt > issqlout.txt    
-
 
 echo Doing update to ensure shutdown value is always N   - for when its not new
 mysql --batch -h localhost -u root --password=pass123 -D  BoilerControl  < upshut.txt > supout.txt    
+
+echo 
+echo "################# this should be removed once everyone has the new params length ######################"
+mysql --batch -h localhost -u root --password=pass123 -D  BoilerControl  < extparam.txt > sqlout.txt 
 
 
 echo ################## Sleep installer #####################

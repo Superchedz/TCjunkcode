@@ -35,6 +35,4 @@ echo "Kicking kicker.sh"
 cd /
 sh ./home/pi/led/kicker.sh > /home/pi/logs/kickero.log
 
-echo 
-echo "################# this should be removed once everyone has the new params length ######################"
-mysql --batch -h localhost -u root --password=pass123 -D  BoilerControl  < extparam.txt > sqlout.txt  
+ 
