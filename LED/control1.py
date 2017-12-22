@@ -812,7 +812,7 @@ while True:
     db.rollback()
     clear_cursor.close()		
     os.system('sudo reboot')
-	sys.exit("Stopping Control1 program")
+    sys.exit("Stopping Control1 program")
 
   if Shutitdown == "S": 
     print "User shutdown requested - performing system shutdown"
@@ -830,7 +830,7 @@ while True:
     db.rollback()
     clear_cursor.close()	
     os.system('sudo shutdown now -h')
-	sys.exit("Stopping Control1 program")
+    sys.exit("Stopping Control1 program")
  
 # check is the main system switch has been turned off - if so, skip all processing and just make sure all zones are off.
   Sysstatus = get_sysstatus()
