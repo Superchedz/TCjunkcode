@@ -36,6 +36,7 @@
 #  2.0      2017-10-27 GLC	 Added logic to handle a Y-Plan zone valve system.
 #                            Modified code to get the IP correctly for when connected to wifi or
 #                            ethernet etc.  Also added external web address to startup email.
+#  2.1      2017-12-21 GCL   Minor amendment to log message wording.
 ################################################################################################
 
 import RPi.GPIO as GPIO 
@@ -65,7 +66,7 @@ print ""
 print "" 
 print "#####################################################" 
 print "########## Welcome to BoilerControl 9000 ############"
-print "##########         Version 2.0           ############"
+print "##########         Version 2.1           ############"
 print "#####################################################" 
 print ""
 
@@ -627,14 +628,14 @@ def check_temp(zone_id, zone_pin, zone_temp, target_temp, curr_zone_state):
       if DebugMode == "Y":
         print "Turning zone off as target temp reached"
       turn_off_zone(zone_id, zone_pin)
-      logtext = "Zone %d current %.2f lower target %.2f" % (zone_id, curr_zone_temp, Temp_Lower)
-      write_log('Zone Switch off',logtext)
+      logtext = "Zone %d current %.2f new lower target is %.2f" % (zone_id, curr_zone_temp, Temp_Lower)
+      write_log('Zone Switched off',logtext)
   else:
     if curr_zone_temp <= target_temp:
       if DebugMode == "Y":
         print "Turning zone on as temp is below target"
       turn_on_zone(zone_id, zone_pin)
-      logtext = "Zone %d current %.2f target temp is back %.2f" % (zone_id, curr_zone_temp, target_temp)
+      logtext = "Zone %d current temp is %.2f target is %.2f" % (zone_id, curr_zone_temp, target_temp)
       write_log('Zone Switch On',logtext)
    
 
@@ -704,7 +705,7 @@ ipaddress = get_ip_address()
 print ipaddress
 while sendcounter < 10:
   sendcounter += 1				  
-  send_alert('TC9000 Alert: Primary switching process (v2.0)- STARTUP: System ID ','Process start successful.  Your local IP is %s' % str(ipaddress), WebAddr)
+  send_alert('TC9000 Alert: Primary switching process (v2.1)- STARTUP: System ID ','Process start successful.  Your local IP is %s' % str(ipaddress), WebAddr)
   if sendok:
     sendcounter = 11;  
     write_log('Control1 - Main','Starting up ok - email sent')

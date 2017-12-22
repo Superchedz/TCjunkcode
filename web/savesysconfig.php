@@ -91,6 +91,10 @@ if ($result->num_rows > 0) {
         if ($row["Param_Name"] == "Log_Ret") {
             $scparam_logret_exist = "yes";
         }
+		
+        if ($row["Param_Name"] == "Ext_Web_Address") {
+            $scparam_webaddr_exist = "yes";
+        }
 
         if ($row["Param_Name"] == "YPlan_YN") {
             $scparam_yplan_exist = "yes";
@@ -135,7 +139,7 @@ if ($scparam_smtpserver_exist == "no") {
 }
 
 if ($scparam_emailpwd_exist == "no") {
-    $sql = "insert into $tbl_name value('EmailPwd','$scparam_emailpwd')";
+    $sql = "insert into $tbl_name value('EmailPwd','$scparam_emailpwd')";	
     $result = mysqli_query($con, $sql);
 } else {
     $sql = "update $tbl_name set Param_Value='$scparam_emailpwd' where Param_Name='EmailPwd'";
@@ -149,6 +153,7 @@ if ($scparam_toemail_exist == "no") {
     $sql = "update $tbl_name set Param_Value='$scparam_toemail' where Param_Name='ToEmail'";
     $result = mysqli_query($con, $sql);
 }
+
 if ($scparam_webaddr_exist == "no") {
     $sql = "insert into $tbl_name value('Ext_Web_Address','$scparam_webaddr')";
     $result = mysqli_query($con, $sql);
