@@ -36,7 +36,8 @@
 #  2.0      2017-10-27 GLC	 Added logic to handle a Y-Plan zone valve system.
 #                            Modified code to get the IP correctly for when connected to wifi or
 #                            ethernet etc.  Also added external web address to startup email.
-#  2.1      2017-12-21 GCL   Minor amendment to log message wording.
+#  2.1      2017-12-21 GLC   Minor amendment to log message wording.
+#  2.2      2017-12-21 GLC   Added exit into shutdown and restart to prevent errors after it starts	
 ################################################################################################
 
 import RPi.GPIO as GPIO 
@@ -66,7 +67,7 @@ print ""
 print "" 
 print "#####################################################" 
 print "########## Welcome to BoilerControl 9000 ############"
-print "##########         Version 2.1           ############"
+print "##########         Version 2.2           ############"
 print "#####################################################" 
 print ""
 
@@ -705,7 +706,7 @@ ipaddress = get_ip_address()
 print ipaddress
 while sendcounter < 10:
   sendcounter += 1				  
-  send_alert('TC9000 Alert: Primary switching process (v2.1)- STARTUP: System ID ','Process start successful.  Your local IP is %s' % str(ipaddress), WebAddr)
+  send_alert('TC9000 Alert: Primary switching process (v2.2)- STARTUP: System ID ','Process start successful.  Your local IP is %s' % str(ipaddress), WebAddr)
   if sendok:
     sendcounter = 11;  
     write_log('Control1 - Main','Starting up ok - email sent')
@@ -811,6 +812,7 @@ while True:
     db.rollback()
     clear_cursor.close()		
     os.system('sudo reboot')
+	sys.exit("Stopping Control1 program")
 
   if Shutitdown == "S": 
     print "User shutdown requested - performing system shutdown"
@@ -828,9 +830,7 @@ while True:
     db.rollback()
     clear_cursor.close()	
     os.system('sudo shutdown now -h')
-	
-	
-
+	sys.exit("Stopping Control1 program")
  
 # check is the main system switch has been turned off - if so, skip all processing and just make sure all zones are off.
   Sysstatus = get_sysstatus()
