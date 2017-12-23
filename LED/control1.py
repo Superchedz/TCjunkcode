@@ -385,8 +385,7 @@ def get_yplan():
       YPlanMode = "N";
       return YPlanMode
     else:
-      YPlanMode = YPlan_res[1]
-      print "##### YPlanMode Param was found value: %s " % YPlanMode	 
+      YPlanMode = YPlan_res[1] 
       return YPlanMode
   else:
 #  again lets not get stressed about it, if the param isn't there just default to N, its only added by the gui anyway
@@ -630,14 +629,14 @@ def check_temp(zone_id, zone_pin, zone_temp, target_temp, curr_zone_state):
         print "Turning zone off as target temp reached"
       turn_off_zone(zone_id, zone_pin)
       logtext = "Zone %d current %.2f new lower target is %.2f" % (zone_id, curr_zone_temp, Temp_Lower)
-      write_log('Zone Switched off',logtext)
+      write_log('Zone Above Target',logtext)
   else:
     if curr_zone_temp <= target_temp:
       if DebugMode == "Y":
         print "Turning zone on as temp is below target"
       turn_on_zone(zone_id, zone_pin)
-      logtext = "Zone %d current temp is %.2f target is %.2f" % (zone_id, curr_zone_temp, target_temp)
-      write_log('Zone Switch On',logtext)
+      logtext = "Zone %d current %.2f upper target is %.2f" % (zone_id, curr_zone_temp, Temp_Upper)
+      write_log('Zone Below Target',logtext)
    
 
 def turn_on_zone(zone_id, zone_pin):
