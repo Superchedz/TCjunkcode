@@ -797,7 +797,7 @@ while True:
 	
   if Shutitdown == "R":
     print "User reboot requested - performing system reboot"
-    logtext = "User Restart detected"
+    logtext = "User Restart Initiated"
     write_log('Restart',logtext)
     clear_cursor = db.cursor ()
  
