@@ -16,10 +16,6 @@ cd /home/pi/led
 echo Doing update to ensure shutdown value is always N   - for when its not new
 mysql --batch -h localhost -u root --password=pass123 -D  BoilerControl  < upshut.txt > supout.txt    
 
-echo 
-echo "################# this should be removed once everyone has the new params length ######################"
-mysql --batch -h localhost -u root --password=pass123 -D  BoilerControl  < extparam.txt > sqlout.txt 
-
 
 echo ################## Sleep installer #####################
 echo ##### We test for the existence of sleepdone file ######
