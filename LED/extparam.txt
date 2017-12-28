@@ -1,3 +1,3 @@
-ALTER TABLE `params_b` CHANGE `Param_Value` `Param_Value` VARCHAR( 60 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
+ALTER TABLE `params_b` CHANGE `Param_Value` `Param_Value` VARCHAR( 60 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL; 
 
   
