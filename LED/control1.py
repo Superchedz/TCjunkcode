@@ -687,7 +687,7 @@ db = MySQLdb.connect (host   = "localhost",
 
 
 # we need to send an email on start up, this is useful to alert the user the process has started up, 
-# for instance after a power cut.  if the router is slow to start up the email send can fail, so we need
+# for instance after a power cut or a reboot.  If the router is slow to start up the email send can fail, so we need
 # to try a few times with a short delay.  if eventually it doesnt work, lets not lose any sleep, just
 # write to the log and carry on.					  
 

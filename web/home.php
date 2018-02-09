@@ -499,21 +499,21 @@ if (isset($_SESSION['myname'])) {
     </div>
 
     <div class='form-group'>
-    <label for='scparam_zonesensor' class='col-sm-4 control-label'>Sensor</label>
+    <label for='scparam_zonesensor' class='col-sm-4 control-label'>Wireless Sensor ID</label>
         <div class='col-sm-4'>
             <input type='text' class='form-control' id='scparam_zonesensor'>
         </div>
     </div>
 
     <div class='form-group'>
-    <label for='scparam_pinnum' class='col-sm-4 control-label'>Pin Num (Pi)</label>
+    <label for='scparam_pinnum' class='col-sm-4 control-label'>Relay Pin Num (Pi)</label>
         <div class='col-sm-2'>
             <input type='number' class='form-control' id='scparam_pinnum'>
         </div>
     </div>
 
     <div class='form-group'>
-        <label for='scparam_offset' class='col-sm-4 control-label'>Offset</label>
+        <label for='scparam_offset' class='col-sm-4 control-label'>Temp Offset</label>
         <div class='col-sm-3'>
             <input type='number' class='form-control' id='scparam_offset' value="0">
         </div>
