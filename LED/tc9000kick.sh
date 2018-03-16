@@ -35,4 +35,9 @@ echo "Kicking kicker.sh"
 cd /
 sh ./home/pi/led/kicker.sh > /home/pi/logs/kickero.log
 
+echo '######################################################'
+echo "Tidying up MessageBridge logs to avoid getting too big"
+
+sudo rm /home/pi/WirelessThings-LaunchPad/MessageBridge/MessageBridge.log
+
  
