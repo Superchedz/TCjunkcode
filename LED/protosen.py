@@ -29,7 +29,8 @@
 #  2.1      2016-02-10 GLC   Removed erroneous print statement within UDP loop
 #  3.0      2016-04-02 GLC   Added support for fobs
 #  3.1      2017-07-16 GLC   Added sensor id to alert for unconfigured sensor reading received
-#  3.1.1    2017-17-15 GCL   Reworded start up email to be more pro
+#  3.1.1    2017-09-15 GLC   Reworded start up email to be more pro
+#  3.2      2018-06-23 GLC   Changed battery calc to zero percentage at 2v when sensors stop
 ################################################################################################
 import serial
 import sys
@@ -613,7 +614,7 @@ sendcounter = 0
 while sendcounter < 10:
   sendcounter += 1
   
-  send_alert('TC9000 Alert: Primary Sensor Scan process (v3.1.1) - STARTUP','Process start successful.')
+  send_alert('TC9000 Alert: Primary Sensor Scan process (v3.2) - STARTUP','Process start successful.')
   sendok = True
 
 
@@ -743,7 +744,10 @@ if SensorMode == "SERIAL":
                    print "DEBUG: zone found "
 
                  battlevel = float(batt)
-                 battpcnt = int(float(battlevel / 3)*100)
+                 if battlevel < 2:
+                   battpcnt = 0 
+                 else:
+                   battpcnt = int(float((battlevel - 1.95) / 1.05)*100)
 # new batteries can read slightly over, so max out the reading at 100% 
 
                  if battpcnt > 100:
