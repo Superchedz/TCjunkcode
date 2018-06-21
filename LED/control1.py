@@ -38,6 +38,9 @@
 #                            ethernet etc.  Also added external web address to startup email.
 #  2.1      2017-12-21 GLC   Minor amendment to log message wording.
 #  2.2      2017-12-21 GLC   Added exit into shutdown and restart to prevent errors after it starts	
+#  2.3      2018-02-10 GLC   Proper-Gator9000 upgrade.
+#                            Added: Support for wired sensors - new zonetype "W" - not complete
+#  2.4      2018-02-23 GLC   Removed shutdown and restart functionality as moved to bootloop.py                            
 ################################################################################################
 
 import RPi.GPIO as GPIO 
@@ -67,7 +70,7 @@ print ""
 print "" 
 print "#####################################################" 
 print "########## Welcome to BoilerControl 9000 ############"
-print "##########         Version 2.2           ############"
+print "##########         Version 2.4           ############"
 print "#####################################################" 
 print ""
 
@@ -496,36 +499,7 @@ def get_yplan_gpio_zone():
 
 
 
-################################################################################################
-############################# Function to get shutdown mode flag ###############################
-################################################################################################
 
-def get_shutdown():
-
-  shutdown_cursor = db.cursor ()
-  shutdown_query = "select * from params_b where Param_Name = 'Shutdown'"
-  global Shutdown
-  try:
-     shutdown_cursor.execute(shutdown_query)
-  except MySQLdb.Error as err:
-     print ("******* Error reading Shutdown param : ERROR : {}".format(err))
-     write_log ('ERROR: Get Shutdown',err)
-
-  numrows = int (shutdown_cursor.rowcount)
-  if numrows == 1:
-    Shutdown_res = shutdown_cursor.fetchone()
-    if Shutdown_res[1] != "S" and Shutdown_res[1] != "R" and Shutdown_res[1] != "N":
-      print ""
-      print "*******  ERROR : Shutdown param is not SRN  *********"
-      critical_error('Shutdown Check', 'Shutdown Param Not S R or N', '--!! Shutting down ^1 !!--')
-    else:
-      Shutdown = Shutdown_res[1]
-      return Shutdown
-  else:
-    critical_error('Get Shutdown', 'ERROR : Missing Shutdown Param', '--!! Shutting down ^2 !!--')
-    print "***  Error:  Missing Param Shutdown param  ***"
-
-	
 ################################################################################################
 ################################# Function to get sysstatus  ###################################
 ################################################################################################
@@ -661,9 +635,23 @@ def turn_on_zone(zone_id, zone_pin):
 ##############################################################################################
 
 def get_ip_address():
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("8.8.8.8", 80))
-    return s.getsockname()[0]
+#    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+#    s.connect(("8.8.8.8", 80))
+#    return s.getsockname()[0]
+	
+  s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        # doesn't even have to be reachable
+      s.connect(('10.255.255.255', 1))
+      IP = s.getsockname()[0]
+      print "ip get routine"
+      print IP	  
+    except:
+    print "error getting ip, defaulting to 127.0.0.1"
+	IP = '127.0.0.1'
+    finally:
+      s.close()
+    return IP
   
 ###############################################################################################
 ###############################################################################################
@@ -787,49 +775,6 @@ while True:
   DebugMode = get_debug()
   if DebugMode == "Y":
     print "##### Debugging flag is set on (Y) - Sending debug info (lots of it) to console."
-  
- 
-# Check the shutdown param
-  Shutitdown = get_shutdown()
-
-  if DebugMode == "Y":
-    print "##### Shutdown Param was found %s " % Shutitdown
-	
-  if Shutitdown == "R":
-    print "User reboot requested - performing system reboot"
-    logtext = "User Restart Initiated"
-    write_log('Restart',logtext)
-    clear_cursor = db.cursor ()
- 
-    clear_query = ("""UPDATE params_b SET Param_Value = '%s' where Param_Name = '%s'""" % ("N", "Shutdown"))
-    try:
-       clear_cursor.execute(clear_query)
-       db.commit()
-    except:
-       print ("******* Error updating Shutdown Param back to N(R): ERROR : {}")
-
-    db.rollback()
-    clear_cursor.close()		
-    os.system('sudo reboot')
-    sys.exit("Stopping Control1 program")
-
-  if Shutitdown == "S": 
-    print "User shutdown requested - performing system shutdown"
-    logtext = "User Shutdown detected"
-    write_log('Shutdown',logtext)
-    clear_cursor = db.cursor ()
- 
-    clear_query = ("""UPDATE params_b SET Param_Value = '%s' where Param_Name = '%s'""" % ("N", "Shutdown"))
-    try:
-       clear_cursor.execute(clear_query)
-       db.commit()
-    except:
-       print ("******* Error updating Shutdown Param back to N(S): ERROR : {}")
-
-    db.rollback()
-    clear_cursor.close()	
-    os.system('sudo shutdown now -h')
-    sys.exit("Stopping Control1 program")
  
 # check is the main system switch has been turned off - if so, skip all processing and just make sure all zones are off.
   Sysstatus = get_sysstatus()
@@ -869,7 +814,7 @@ while True:
       curr_zone_sensor = Zone_res[6]
       curr_zone_offset = Zone_res[7]
       curr_zone_pin = Zone_res[8]
-      curr_zone_has_temp = Zone_res[9]
+      curr_zone_type = Zone_res[9]
 
 #  first lets add the zone setting offset onto the temp reading
       curr_zone_temp = curr_zone_temp + curr_zone_offset
@@ -911,17 +856,20 @@ while True:
 #     but first check if the zone has no temp, it could be hot water, a light or a pump...Woot Woot Go TotalControl9000!!!
 #     Stick that up your arse Nest and Hive
 
-           if curr_zone_has_temp == "T":  
+
+# checking if the zone type = "T" is suitable for both wired and wireless sensors as its just the latest temperature reading
+# for the zone
+           if curr_zone_type == "T":  
              if DebugMode == "Y":
-               print "Override with a sensor so about to check temps"
+               print "Override with a sensor:check_temp"
              check_temp(curr_zone_id, curr_zone_pin, curr_zone_temp, target_temp, curr_zone_state)
            else:  
              if DebugMode == "Y":
-               print "Override with no sensor so just turn on"
+               print "Override for zone with no sensor: so just turn on"
              turn_on_zone(curr_zone_id, curr_zone_pin)
  
              if curr_zone_state == "OFF":
-               logtext = "Zone %d turned on due to boost or override1" % (curr_zone_id)
+               logtext = "Zone %d switched on due to boost or override1" % (curr_zone_id)
                write_log('Zone Switch on',logtext)
          else:
 # no override, so lets see if the schedule is on.
@@ -940,7 +888,7 @@ while True:
                 if DebugMode == "Y":
                   print "schedule found - res = %d %s %s %s %d" % (schedule_res[0], schedule_res[1], schedule_res[2], schedule_res[3], schedule_res[4])
                 target_temp = schedule_res[4]
-                if curr_zone_has_temp == "T":
+                if curr_zone_type == "T":
                   if DebugMode == "Y":
                     print "++ This zone has a sensor so checking temp"
                   check_temp(curr_zone_id, curr_zone_pin, curr_zone_temp, target_temp, curr_zone_state)  
