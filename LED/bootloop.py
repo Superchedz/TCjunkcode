@@ -308,10 +308,10 @@ def get_shutdown():
       print ""
       print "*******  ERROR : Shutdown param is not SRN  *********"
       critical_error('Shutdown Check', 'Shutdown Param Not S R or N', '--!! Shutting down ^1 !!--')
-	  shutdown_cursor.close()
+      shutdown_cursor.close()
     else:
       Shutdown = Shutdown_res[1]
-	  shutdown_cursor.close()
+      shutdown_cursor.close()
       return Shutdown
   else:
     critical_error('Get Shutdown', 'ERROR : Missing Shutdown Param', '--!! Shutting down ^2 !!--')
