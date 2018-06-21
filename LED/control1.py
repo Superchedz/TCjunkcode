@@ -648,7 +648,7 @@ def get_ip_address():
     print IP	  
   except:
     print "error getting ip, defaulting to 127.0.0.1"
-	IP = '127.0.0.1'
+    IP = '127.0.0.1'
   finally:
       s.close()
   return IP
@@ -693,7 +693,7 @@ ipaddress = get_ip_address()
 print ipaddress
 while sendcounter < 10:
   sendcounter += 1				  
-  send_alert('TC9000 Alert: Primary switching process (v2.2)- STARTUP: System ID ','Process start successful.  Your local IP is %s' % str(ipaddress), WebAddr)
+  send_alert('TC9000 Alert: Primary switching process (v2.4)- STARTUP: System ID ','Process start successful.  Your local IP is %s' % str(ipaddress), WebAddr)
   if sendok:
     sendcounter = 11;  
     write_log('Control1 - Main','Starting up ok - email sent')
