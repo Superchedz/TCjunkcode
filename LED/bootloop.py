@@ -196,49 +196,9 @@ nowt = time.strftime('%H:%M:%S')
 DebugMode = get_debug()
 
 
-###########################################################################
-# initialise each GPIO pin based on the values stored in the Zone_b table #
-###########################################################################
 
-GPIO.setmode(GPIO.BCM)
-
-Zone_cursor = db.cursor()
-Zone_cursor.execute("SELECT Zone_ID, PI_Pin_num from zone_b")
-numrows = int (Zone_cursor.rowcount)
-
-if DebugMode == "Y":
-  print "##### %d Zone records found on Zone_B table " % (numrows)
-# loop round for each zone found in the table
-for y in range (numrows): 
-  Zone_res = Zone_cursor.fetchone()
-  if (Zone_res):
-    if DebugMode == "Y":
-      print "Initialising Zone %d - pin %d" % (Zone_res[0], Zone_res[1]) 
-      
-    initialise_zone_id = Zone_res[0]
-    initialise_zone_pin = int (Zone_res[1])
-    GPIO.setup(initialise_zone_pin, GPIO.OUT)
-
-Interval = 60
-YPlanMode = get_yplan()
-if YPlanMode == "Y":
-  print "System is set to YPLAN mode, so getting other params";
-  YPlanCH = get_yplan_ch_zone()
-  YPlanHW = get_yplan_hw_zone()
-  YPlanGPIO = int(get_yplan_gpio_zone())
-  
-#######  We also need to additionally initialise the GPIO pin used for the YPlan HW-Off config
-#######  as this is not set up in a specific zone record - its from the params table
-
-  GPIO.setup(YPlanGPIO, GPIO.OUT)
-
-  
-  
-  
 ############################################################################################
 #################################         Main loop        #################################
-############################################################################################
-############################################################################################
 ############################################################################################
   
 #OK, we're now ready to run the main process which is infinite - create an infinte loop - 
