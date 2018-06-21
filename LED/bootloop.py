@@ -93,7 +93,166 @@ def get_interval():
     print "***  Error:  Missing Param Loop_Intvl  ***"
     critical_error('Get Interval', 'ERROR : Missing interval', '--!! Shutting down ^2 !!--')
 
+################################################################################################
+################################ Function to send and email ####################################
+################################################################################################
 
+def send_alert(subject, msgbody):  print "***********************************************************"
+  print "*********************  SENDING ALERT  *********************"
+  print "***********************************************************"
+  
+
+##############  Get the params from the database to set up sending alert #######################
+############################## Get the From email address ###################################
+  from_cursor = db.cursor ()
+  from_query = "select * from params_b where Param_Name = 'FromEmail'"
+  try:
+     from_cursor.execute(from_query)
+  except MySQLdb.Error as err:
+     print ("******* Error reading FromEmail : ERROR : {}".format(err))
+     write_log ('Get FromEmail',err)
+
+  numrows = int (from_cursor.rowcount)
+  if numrows == 1:
+    Fromres = from_cursor.fetchone()
+    FromEmail = Fromres[1]
+  else:
+    critical_error('Get FromEmail', 'ERROR : Missing Param', '--!! Shutting down ^2 !!--')
+    print "***  Error:  Missing Param FromEmail  ***"
+    return
+  
+############################## Get the To email address ###################################
+  to_cursor = db.cursor ()
+  to_query = "select * from params_b where Param_Name = 'ToEmail'"
+  try:
+     to_cursor.execute(to_query)
+  except MySQLdb.Error as err:
+     print ("******* Error reading ToEmail : ERROR : {}".format(err))
+     write_log ('Get ToEmail',err)
+
+  numrows = int (to_cursor.rowcount)
+  if numrows == 1:
+    Tores = to_cursor.fetchone()
+    ToEmail = Tores[1]
+  else:
+    critical_error('Get ToEmail', 'ERROR : Missing Param', '--!! Shutting down ^2 !!--')
+    print "***  Error:  Missing Param ToEmail  ***"
+    return
+
+############################## Get the Support email address ###################################
+  support_cursor = db.cursor ()
+  support_query = "select * from params_b where Param_Name = 'SupportEmail'"
+  try:
+     support_cursor.execute(support_query)
+  except MySQLdb.Error as err:
+     print ("******* Error reading SupportEmail : ERROR : {}".format(err))
+     write_log ('Get SupportEmail',err)
+
+  numrows = int (support_cursor.rowcount)
+  if numrows == 1:
+    Suppres = support_cursor.fetchone()
+    SupportEmail = Suppres[1]
+  else:
+    critical_error('Get SupportEmail', 'ERROR : Missing Param', '--!! Shutting down ^2 !!--')
+    print "***  Error:  Missing Param SupportEmail  ***"
+    return	
+
+############################## Get the From SMTP address ###################################
+  SMTP_cursor = db.cursor ()
+  SMTP_query = "select * from params_b where Param_Name = 'ServerSMTP'"
+  try:
+    SMTP_cursor.execute(SMTP_query)
+  except MySQLdb.Error as err:
+    print ("******* Error reading ServerSMTP : ERROR : {}".format(err))
+    write_log ('Get ServerSMTP',err)
+
+  numrows = int (SMTP_cursor.rowcount)
+  if numrows == 1:
+    SMTPres = SMTP_cursor.fetchone()
+    SMTPParam = SMTPres[1]
+  else:
+    critical_error('Get ServerSMTP', 'ERROR : Missing', '--!! Shutting down ^2 !!--')
+    print "***  Error:  Missing Param SMTPServer  ***"
+    return
+  
+############################## Get the To SystemID ###################################
+  SID_cursor = db.cursor () 
+  SID_query = "select * from params_b where Param_Name = 'SystemID'"
+  try:
+     SID_cursor.execute(SID_query)
+  except MySQLdb.Error as err:
+     print ("******* Error reading SystemID : ERROR : {}".format(err))
+     write_log ('Get SystemID',err)
+
+  numrows = int (SID_cursor.rowcount)
+  if numrows == 1:
+    SIDres = SID_cursor.fetchone()
+    SystemID = SIDres[1]
+  else:
+    critical_error('Get SysID', 'ERROR : Missing Param', '--!! Shutting down ^2 !!--')
+    print "***  Error:  Missing Param SystemID  ***"
+    return
+	
+	
+############################## Get the Password  ###################################
+  pwd_cursor = db.cursor ()
+  pwd_query = "select * from params_b where Param_Name = 'EmailPwd'"
+  try:
+     pwd_cursor.execute(pwd_query)
+  except MySQLdb.Error as err:
+     print ("******* Error reading Email Password : ERROR : {}".format(err))
+     write_log ('Get EmailPwd',err)
+
+  numrows = int (pwd_cursor.rowcount)
+  if numrows == 1:
+    Passres = pwd_cursor.fetchone()
+    password = Passres[1]
+  else:
+    critical_error('Get Email Password', 'ERROR : Missing', '--!! Shutting down ^2 !!--')
+    print "***  Error:  Missing Param EmailPwd  ***"
+    return
+  global sendok
+  sendok = True
+
+  msg = 'Subject: %s: %s\n\n%s' %(subject,SystemID, msgbody)
+  print "Sending....Alert %s" % msgbody
+  
+  try:
+     SMTPServer = smtplib.SMTP(SMTPParam)
+  except:
+     sendok = False
+     write_log('Protosen - sending Alert', 'Error Setting SMTP Server - check internet')
+
+
+  if sendok:
+    try:
+      SMTPServer.starttls()
+    except:
+      sendok = False
+      write_log('Protosen - sending Alert', 'Error Setting SMTP starttls - check internet')   
+
+  if sendok:
+    try:
+      SMTPServer.login(FromEmail, password) 
+    except:
+      sendok = False
+      write_log('Protosen - sending Alert', 'Error Setting SMTP login - check internet')   
+
+
+  if sendok:
+    toadrs = [ToEmail] + [SupportEmail]
+    try:
+      SMTPServer.sendmail(FromEmail, toadrs, msg)
+    except:
+      sendok = False
+      write_log('Protosen - sending Alert', 'Error Setting SMTP sendmail - check internet')   
+  if sendok:
+    try:
+      SMTPServer.quit()
+    except:
+      sendok = False
+      write_log('Protosen - sending Alert', 'Error SMTPServerquit - check internet')     
+	  
 ################################################################################################
 ############################### Function to get debug mode flag ################################
 ################################################################################################
@@ -134,7 +293,7 @@ def get_shutdown():
 
   shutdown_cursor = db.cursor ()
   shutdown_query = "select * from params_b where Param_Name = 'Shutdown'"
-  global Shutdown
+ 
   try:
      shutdown_cursor.execute(shutdown_query)
   except MySQLdb.Error as err:
@@ -148,13 +307,15 @@ def get_shutdown():
       print ""
       print "*******  ERROR : Shutdown param is not SRN  *********"
       critical_error('Shutdown Check', 'Shutdown Param Not S R or N', '--!! Shutting down ^1 !!--')
+	  shutdown_cursor.close()
     else:
       Shutdown = Shutdown_res[1]
+	  shutdown_cursor.close()
       return Shutdown
   else:
     critical_error('Get Shutdown', 'ERROR : Missing Shutdown Param', '--!! Shutting down ^2 !!--')
     print "***  Error:  Missing Param Shutdown param  ***"
-
+    shutdown_cursor.close()
 	
 ################################################################################################
 ################################# Function to get sysstatus  ###################################
@@ -260,7 +421,8 @@ while True:
     clear_cursor.close()	
     os.system('sudo shutdown now -h')
     sys.exit("Stopping Control1 program")
- 
+  sleep (float(Interval))
+  db.commit()
 
 
 write_log('Main','Closing down - shouldnt be doing this really')
