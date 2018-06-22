@@ -31,6 +31,7 @@
 #  3.1      2017-07-16 GLC   Added sensor id to alert for unconfigured sensor reading received
 #  3.1.1    2017-09-15 GLC   Reworded start up email to be more pro
 #  3.2      2018-06-23 GLC   Changed battery calc to zero percentage at 2v when sensors stop
+#  3.3      2018-06-23 GLC   Fixed bug that assumed sensor started with a "Z" in battery calcs
 ################################################################################################
 import serial
 import sys
@@ -614,7 +615,7 @@ sendcounter = 0
 while sendcounter < 10:
   sendcounter += 1
   
-  send_alert('TC9000 Alert: Primary Sensor Scan process (v3.2) - STARTUP','Process start successful.')
+  send_alert('TC9000 Alert: Primary Sensor Scan process (v3.3) - STARTUP','Process start successful.')
   sendok = True
 
 
@@ -814,28 +815,28 @@ else:
 
       if DebugMode == "Y":
         print "DEBUG: Battery reading for sensor type (F/Z) of " + llap_batt_sensor_type
-      if llap_batt_sensor_type == "Z":
-        zone_id, found_zone_ind = get_zone(llap_sensor_id)
-        if DebugMode == "Y":
-          print "DEBUG: ***  BATT ***  Sensor " + llap_sensor_id + " gave battery level of " + batt     
-        if found_zone_ind:
-          battlevel = float(batt)
-          battpcnt = int(float(battlevel / 3)*100)
-          if battpcnt > 100:
-            battpcnt  = 100        
-          writeBatt(str(zone_id), battpcnt)
-        else:
-          print "ERROR: Didn't find the zone for that battery reading, no drama"
-     
-      if llap_batt_sensor_type == "F":
-        battlevel = float(batt)
-        battpcnt = int(float(battlevel / 3)*100)
+      battlevel = float(batt)
+      if battlevel < 2:
+        battpcnt = 0 
+      else:
+        battpcnt = int(float((battlevel - 1.95) / 1.05)*100)
+# new batteries can read slightly over, so max out the reading at 100% 
         if battpcnt > 100:
-          battpcnt  = 100
+          battpcnt = 100
+ 
+      if llap_batt_sensor_type == "F":
         update_fob_batt(llap_sensor_id, battpcnt)
         if DebugMode == "Y":
           print "DEBUG: ***  BATT ***  Sensor " + llap_sensor_id + " gave battery level of " + batt     
- 
+      else:
+	    zone_id, found_zone_ind = get_zone(llap_sensor_id)
+        if DebugMode == "Y":
+          print "DEBUG: ***  BATT ***  Sensor " + llap_sensor_id + " gave battery level of " + batt     
+        if found_zone_ind:
+          writeBatt(str(zone_id), battpcnt)
+        else:
+          print "ERROR: Didn't find the zone for that battery reading, no drama"
+  
 	 
 	 
 	 
