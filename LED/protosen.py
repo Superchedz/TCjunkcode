@@ -829,7 +829,7 @@ else:
         if DebugMode == "Y":
           print "DEBUG: ***  BATT ***  Sensor " + llap_sensor_id + " gave battery level of " + batt     
       else:
-	    zone_id, found_zone_ind = get_zone(llap_sensor_id)
+        zone_id, found_zone_ind = get_zone(llap_sensor_id)
         if DebugMode == "Y":
           print "DEBUG: ***  BATT ***  Sensor " + llap_sensor_id + " gave battery level of " + batt     
         if found_zone_ind:
