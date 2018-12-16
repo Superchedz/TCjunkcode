@@ -1,4 +1,5 @@
 ################################################################################################
+################################################################################################
 #                                       Control1.py
 #                                       ==========
 ################################################################################################
@@ -40,7 +41,8 @@
 #  2.2      2017-12-21 GLC   Added exit into shutdown and restart to prevent errors after it starts	
 #  2.3      2018-02-10 GLC   Proper-Gator9000 upgrade.
 #                            Added: Support for wired sensors - new zonetype "W" - not complete
-#  2.4      2018-06-23 GLC   Removed shutdown and restart functionality as moved to bootloop.py                            
+#  2.4      2018-06-23 GLC   Removed shutdown and restart functionality as moved to bootloop.py
+#  2.5      2018-12-16 GLC   Added PID to the start up email and tidied it up                            
 ################################################################################################
 
 import RPi.GPIO as GPIO 
@@ -98,7 +100,7 @@ def write_log(Log_From, Log_Text):
 ################################ Function to send and email ####################################
 ################################################################################################
 
-def send_alert(subject, msgbody, WebAddr):
+def send_alert(subject, msgbody):
   print "***********************************************************"
   print "*********************  SENDING ALERT  *********************"
   print "***********************************************************"
@@ -216,7 +218,7 @@ def send_alert(subject, msgbody, WebAddr):
   global sendok
   sendok = True
 
-  msg = 'Subject: %s: %s\n\n%s\nYour Web Address is %s' %(subject,SystemID, msgbody, WebAddr)
+  msg = 'Subject: %s: %s\n\n%s' %(subject,SystemID, msgbody)
   print "Sending....Alert %s" % msgbody
   
   try:
@@ -554,7 +556,7 @@ def critical_error(Log_From, Log_Text, shutdownmsg):
   print "***********************************************************"
   
   write_log (Log_From, Log_Text)
-  send_alert('Alert: Heating Control - *** CRASH ***',shutdownmsg, WebAddr)
+  send_alert('Alert: Heating Control - *** CRASH ***',shutdownmsg)
   sys.exit (shutdownmsg)
 
 ################################################################################################
@@ -688,12 +690,23 @@ global YPlan_HW_IS_ON
 sendok = False
 sendcounter = 0
 WebAddr = get_web()
+PID = os.getpid()
 
 ipaddress = get_ip_address()
 print ipaddress
 while sendcounter < 10:
-  sendcounter += 1				  
-  send_alert('TC9000 Alert: Primary switching process (v2.4)- STARTUP: System ID ','Process start successful.  Your local IP is %s' % str(ipaddress), WebAddr)
+  sendcounter += 1	
+  subject = "TC9000 Startup Alert: Primary switching process (v2.5). System ID: "
+  msgbody = "The main Control job has started successfully.\n\n" \
+            "Your local IP address is " + str(ipaddress) + "\n" \
+            "Your web Address is " + str(WebAddr) + "\n" \
+			"Process ID : " + str(PID) + "\n"\
+            "\nFrom \n" \
+			"The TotalControl9000 Support Team"
+	
+			
+  send_alert(subject, msgbody) 
+
   if sendok:
     sendcounter = 11;  
     write_log('Control1 - Main','Starting up ok - email sent')
