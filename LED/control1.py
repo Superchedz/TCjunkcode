@@ -40,7 +40,7 @@
 #  2.2      2017-12-21 GLC   Added exit into shutdown and restart to prevent errors after it starts	
 #  2.3      2018-02-10 GLC   Proper-Gator9000 upgrade.
 #                            Added: Support for wired sensors - new zonetype "W" - not complete
-#  2.4      2018-02-23 GLC   Removed shutdown and restart functionality as moved to bootloop.py                            
+#  2.4      2018-06-23 GLC   Removed shutdown and restart functionality as moved to bootloop.py                            
 ################################################################################################
 
 import RPi.GPIO as GPIO 

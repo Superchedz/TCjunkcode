@@ -14,6 +14,8 @@
 #  ======== ========== ====  ===========
 #  1.0      2016-04-02 GLC   Initial Version
 #  1.1      2016-04-03 GLC   Added battery spec to email and added debug print switching
+#  2.0      2018-12-16 GLC   Modified so that the zone is deactivated to prevent zones being
+#                            jammed on when activated and overheating.
 ################################################################################################
 
 
@@ -224,7 +226,24 @@ def send_alert(subject, msgbody):
       sendok = False
       write_log('Protosen - sending Alert', 'Error SMTPServerquit - check internet')     
 	  
+def turn_zone_off(Zone_id, ZoneOnOff):
 
+  zone_off_cursor = db.cursor ()
+  zone_off_query = ("""UPDATE zone_b SET Zone_Active_Ind = '%s' where Zone_ID = %d""" % (ZoneOnOff, Zone_id))
+  try:
+     zone_off_cursor.execute(zone_off_query)
+     db.commit()
+
+  except:
+     print ("******* Error updating Current_Zone_Active_Ind : ERROR : {}")
+     db.rollback()
+  zone_off_cursor.close()
+  
+  logtext = "Zone %d deactivated as no sensor readings." % (Zone_id)
+  write_log('Zone Deactivated',logtext)	  
+	  
+	  
+	  
 ################################################################################################
 ############################### Function to get debug mode flag ################################
 ################################################################################################
@@ -244,7 +263,6 @@ def get_debug():
   if numrows == 1:
     Debug_res = debug_cursor.fetchone()
     if Debug_res[1] != "Y" and Debug_res[1] != "N":
-      print ""
       print "*******  ERROR : Loop_DebugMode param is not numeric  *********"
       critical_error('DebugMode Check', 'Debug Param Not Y or N', '--!! Shutting down ^1 !!--')
     else:
@@ -300,13 +318,16 @@ if DebugMode == "Y":
 
 Zone_cursor = db.cursor()
 
-
-
 Zone_cursor.execute("SELECT Zone_ID, Zone_Name, Zone_Last_Temp_Reading_Dtime, Zone_Sensor_Batt_Pcnt \
                                                               FROM zone_b \
-                                                             WHERE Zone_Active_Ind = 'Y' \
-                                                               AND Zone_Type = 'T' \
+                                                             WHERE Zone_Type = 'T' \
                                                                AND Zone_Last_Temp_Reading_Dtime < (NOW() - INTERVAL 6 HOUR)")
+#Zone_cursor.execute("SELECT Zone_ID, Zone_Name, Zone_Last_Temp_Reading_Dtime, Zone_Sensor_Batt_Pcnt \
+#                                                              FROM zone_b \
+#                                                             WHERE Zone_Active_Ind = 'Y' \
+#                                                               AND Zone_Type = 'T' \
+#                                                               AND Zone_Last_Temp_Reading_Dtime < (NOW() - INTERVAL 6 HOUR)")
+
 numrows = int (Zone_cursor.rowcount)
 if DebugMode == "Y":
   print numrows
@@ -320,17 +341,27 @@ for y in range (numrows):
     curr_zone_last_reading_dtime = Zone_res[2]
     curr_zone_batt_pcnt	 = Zone_res[3]
 
+# turn the zone off - this is needed as if no sensor readings are coming in, we need to stop heating immediately.
+    if DebugMode == "Y":
+      print 'turning zone off'
+    turn_zone_off(curr_zone_id, 'N')
+
+# Send an email to inform the user that system needs attention
+    if DebugMode == "Y":
+      print 'sending a nice email'
     subject = "Warning - Zone sensor Fault"
     msgbody = "Zone : " + str(curr_zone_id) + " (" + curr_zone_name + ") has stopped receiving sensor readings.  "\
               "\nLast reading was received at : " + str(curr_zone_last_reading_dtime) + "\nMost recent battery level is " + str(curr_zone_batt_pcnt) + "%. "\
-              "\n\nYou should replace the battery immediately. \n\nNote: This message is repeated at 9am and 6pm each day until the sensor starts again, you can deactivate the zone to prevent it being sent in the meantime." \
-              "\n\nThe battery is a CR2032 3v."\
+              "\n\nYou should check the battery immediately. " \
+              "\n\nThis message is repeated every 20mins until the problem is resolved. " \
+              "\n\n(The battery is a CR2032 3v)"\
+              "\n\nAlso try a reboot or call support if problem persists."\
               "\n\nFrom the TotalControl9000 Support team"
     logtext = "Zone %d" % (curr_zone_id)    
     write_log ('Sensor inactive', logtext)
     if DebugMode == "Y":
       print msgbody
     send_alert(subject, msgbody)
-
+    print "Detected a zone without recent readings %d" % (curr_zone_id)	
 
 db.close()
