@@ -1,3 +1,3 @@
- */5 * * * * root /home/pi/led/launchcs.sh >/home/pi/logs/csenlog.log 2>&1
+ */20 * * * * root /home/pi/led/launchcs.sh >/home/pi/logs/csenlog.log 2>&1
  0 9,16 * * * root /home/pi/led/checkboot.sh >/home/pi/logs/chkbootlog.log 2>&1
  
