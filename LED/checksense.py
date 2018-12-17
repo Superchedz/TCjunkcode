@@ -356,6 +356,7 @@ for y in range (numrows):
               "\nLast reading was received at : " + str(curr_zone_last_reading_dtime) + "\nMost recent battery level is " + str(curr_zone_batt_pcnt) + "%. "\
               "\n\nYou should check the battery immediately. " \
               "\n\nThis message is repeated every 20mins until the problem is resolved. " \
+              "\nThe zone has been deactivated to prevent overheating, you must renable it manually once the sensor is back online." \
               "\n\n(The battery is a CR2032 3v)"\
               "\n\nAlso try a reboot or call support if problem persists."\
               "\n\nFrom the TotalControl9000 Support team"
