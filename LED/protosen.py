@@ -32,6 +32,7 @@
 #  3.1.1    2017-09-15 GLC   Reworded start up email to be more pro
 #  3.2      2018-06-23 GLC   Changed battery calc to zero percentage at 2v when sensors stop
 #  3.3      2018-06-23 GLC   Fixed bug that assumed sensor started with a "Z" in battery calcs
+#  3.4      2018-12-16 GLC   Added PID to the start up email and tidied it.
 ################################################################################################
 import serial
 import sys
@@ -612,14 +613,18 @@ sleep (1)
 global sendok
 sendok = False
 sendcounter = 0
+PID = os.getpid()
 while sendcounter < 10:
   sendcounter += 1
   
-  send_alert('TC9000 Alert: Primary Sensor Scan process (v3.3) - STARTUP','Process start successful.')
+  subject = "TC9000 Startup Alert: Primary sensor scanner process (v3.4). System ID: "
+  msgbody = "The job that receives temp sensors readings has started successfully.\n\n" \
+            "Process ID : " + str(PID) + "\n"\
+            "\nFrom \n" \
+            "The TotalControl9000 Support Team"
+   
   sendok = True
-
-
-
+  send_alert(subject, msgbody) 
 
   if sendok:
     sendcounter = 11;  
