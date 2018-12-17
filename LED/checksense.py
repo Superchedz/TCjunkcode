@@ -15,7 +15,7 @@
 #  1.0      2016-04-02 GLC   Initial Version
 #  1.1      2016-04-03 GLC   Added battery spec to email and added debug print switching
 #  2.0      2018-12-16 GLC   Modified so that the zone is deactivated to prevent zones being
-#                            jammed on when activated and overheating.
+#                            jammed on when activated and overheating.  Interval dropped to 20mins
 ################################################################################################
 
 
@@ -41,7 +41,7 @@ print ""
 print "" 
 print "#####################################################" 
 print "########## Welcome to BoilerControl 9000 ############"
-print "##########    CheckSense Version 1.0     ############"
+print "##########    CheckSense Version 1.1     ############"
 print "#####################################################" 
 print ""
 
@@ -311,26 +311,27 @@ DebugMode = get_debug()
 checktime = now
 
 if DebugMode == "Y":
-  print checktime
-checktime = checktime - timedelta(hours=3)
+  print "Current time is %s" % (checktime)
+checktime = checktime - timedelta(minutes=20)
 if DebugMode == "Y":
-  print checktime
+  print "Lower comparison time is %s" % (checktime)
 
 Zone_cursor = db.cursor()
 
 Zone_cursor.execute("SELECT Zone_ID, Zone_Name, Zone_Last_Temp_Reading_Dtime, Zone_Sensor_Batt_Pcnt \
                                                               FROM zone_b \
                                                              WHERE Zone_Type = 'T' \
-                                                               AND Zone_Last_Temp_Reading_Dtime < (NOW() - INTERVAL 6 HOUR)")
+                                                               AND Zone_Last_Temp_Reading_Dtime < (NOW() - INTERVAL 20 MINUTE)")
 #Zone_cursor.execute("SELECT Zone_ID, Zone_Name, Zone_Last_Temp_Reading_Dtime, Zone_Sensor_Batt_Pcnt \
 #                                                              FROM zone_b \
 #                                                             WHERE Zone_Active_Ind = 'Y' \
 #                                                               AND Zone_Type = 'T' \
-#                                                               AND Zone_Last_Temp_Reading_Dtime < (NOW() - INTERVAL 6 HOUR)")
+#                                                               AND Zone_Last_Temp_Reading_Dtime < (NOW() - INTERVAL 20 MINUTE)")
 
 numrows = int (Zone_cursor.rowcount)
 if DebugMode == "Y":
-  print numrows
+  
+  print "SQL to find expired zones returned %d rows" % (numrows)
   
 for y in range (numrows):
 
@@ -343,12 +344,13 @@ for y in range (numrows):
 
 # turn the zone off - this is needed as if no sensor readings are coming in, we need to stop heating immediately.
     if DebugMode == "Y":
-      print 'turning zone off'
+      print "Detected a zone without recent readings %d" % (curr_zone_id)	      
+      print "Turning zone %d - %s OFF" % (curr_zone_id, curr_zone_name)
     turn_zone_off(curr_zone_id, 'N')
 
 # Send an email to inform the user that system needs attention
     if DebugMode == "Y":
-      print 'sending a nice email'
+      print 'sending alert email'
     subject = "Warning - Zone sensor Fault"
     msgbody = "Zone : " + str(curr_zone_id) + " (" + curr_zone_name + ") has stopped receiving sensor readings.  "\
               "\nLast reading was received at : " + str(curr_zone_last_reading_dtime) + "\nMost recent battery level is " + str(curr_zone_batt_pcnt) + "%. "\
@@ -362,6 +364,6 @@ for y in range (numrows):
     if DebugMode == "Y":
       print msgbody
     send_alert(subject, msgbody)
-    print "Detected a zone without recent readings %d" % (curr_zone_id)	
+
 
 db.close()
