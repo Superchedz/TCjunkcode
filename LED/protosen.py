@@ -851,9 +851,9 @@ else:
         else:
           print "ERROR: Didn't find the zone for that battery reading, no drama"
   
-	 
-	 
-	 
+ 
+ 
+ 
 # old sensor in via message bridge and UDP port
     if 'TMP' in llap_type:	
       if DebugMode == "Y":
