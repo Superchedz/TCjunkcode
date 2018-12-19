@@ -591,13 +591,12 @@ def update_fob_batt(Fob_ID, battpct):
 	   
 print "***********************************************************************"
 print "** Starting Protosen - the scanner process to read temps from sensor **"
+print "**             Program writes logs to the log folder                 **"
 print "***********************************************************************"
 print
-# have a short delay to allow the DB to be started up on reboot
-# really this should be replaced with a retry on the open - put it on the todo list
 
-#sleep (30)
-# find out from the params table what type of sensor is installed
+#determine is the sensors are serial or udp
+
 SensorMode = get_Sensor_Mode()
 DebugMode = get_debug()
 print "Sensor mode parameter found: " + SensorMode
@@ -634,6 +633,10 @@ while sendcounter < 10:
     sleep (15)
     
 #  sending the email is not essential so if it failed after 10 goes, lets continue anyway
+#  this job can run without internet so no need to worry, the temps can still be logged
+#  also the other job that checks the schedules and compares to the temps can also run 
+#  ....you can also use the gui on a local ip address if there's no internet but lan ok
+
 if not sendok:
   write_log('Scanner Job Main','Startup - sending email failed, but continuing anyway') 
   print "Protosen - Email failed, but running main program anyway"	
@@ -645,6 +648,8 @@ else:
   now = datetime.datetime.now()
 
 # I realise this next IF is a bit naff, but it'll do for now and i'll sort it out properly in the future when i'm rich
+# check what mode the sensors are - this is needed as wirelessthings seemed to change them at some point.
+
 if SensorMode == "SERIAL":
   ser = serial.Serial(DEVICE, BAUD)
 #flush the serial port to clear out any unwanted data before starting
@@ -659,8 +664,10 @@ if SensorMode == "SERIAL":
    # are arriving in sequence, such as: a--TMP22.12-a--AWAKE----a--BATT2.74-a--SLEEPINGtime.
      time.sleep(0.1)
      while ser.inWaiting()>0:
-#      This is inside loop so it can be turned on without a restart
+#      This is inside loop so it can be turned on without a restart - used when running from command prompt
        DebugMode = get_debug()
+	   
+#      make sure we dont have a random a in there and mess things up
        buf = 'x'
        while buf[0] !='a':
          llapMsg = ser.read(12)
@@ -714,9 +721,9 @@ if SensorMode == "SERIAL":
                print "DEBUG: llap_sensor_id was " + llap_sensor_id
                print "DEBUG: llap temp was" + llap_temp
 
-  # now write it to the db
+# now write it to the db
              writeTemp(llap_sensor_id, llap_temp)
-
+#  code to work with the key fobs - if a button press is detected we need to work out what it means.
            if 'FOB' in llapMsg:
 
              if DebugMode == "Y":
@@ -758,11 +765,13 @@ if SensorMode == "SERIAL":
 
                  if battpcnt > 100:
                    battpcnt = 100
+# write the battery percentage to the zone so it can be displayed on the gui, also used to drive early 
+# low battery warning alerts.
                  writeBatt(str(zone_id), battpcnt)
                else:
                  continue
 else:
-#run code for UDP Sensors
+# run code for UDP Sensors
 # Set up the UDP socket
   sock = socket.socket(socket.AF_INET, # Internet
               socket.SOCK_DGRAM) # UDP
@@ -875,6 +884,6 @@ else:
       
 # End of UDP code
   
-print "ERROR: We should never get here.......somethings gone wrong"
+print "ERROR: We should never get here.......somethings gone horribly wrong"
 send_alert ('Scanner Job', 'We have exited the main protosen loop, something has gone wrong, call ghost busters')
 write_log ('Scanner Job', 'Main loop exit unexpected')
