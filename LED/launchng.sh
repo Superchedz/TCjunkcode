@@ -1,3 +1,3 @@
 cd /
-nohup sudo /home/pi/ledngrok/ngrok http 5000 &
+nohup sudo ngrok http 5000 &
 cd /
