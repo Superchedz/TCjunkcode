@@ -1,12 +1,14 @@
  */20 * * * * root /home/pi/led/launchcs.sh >/home/pi/logs/csenlog.log 2>&1
  0 9,16 * * * root /home/pi/led/checkboot.sh >/home/pi/logs/chkbootlog.log 2>&1
- @reboot sh root   /home/pi/led/tc9000kick.sh >/home/pi/logs/tc9000kick.log 2>&1
- @reboot sh root   /home/pi/led/launchng.sh >/home/pi/logs/lnglog.log 2>&1
- @reboot sh root   /home/pi/led/launchalexa.sh >/home/pi/logs/launchalexa.log 2>&1
- @reboot sh /home/pi/led/startbrg.sh >/home/pi/logs/startbrg.log 2>&1
- 
+ @reboot  root   /home/pi/led/tc9000kick.sh >/home/pi/logs/tc9000kick.log 2>&1
+ @reboot  root   /home/pi/led/launchng.sh >/home/pi/logs/lnglog.log 2>&1
+ @reboot  root   /home/pi/led/launchalexa.sh >/home/pi/logs/launchalexa.log 2>&1
+ @reboot  root   /home/pi/led/startbrg.sh >/home/pi/logs/startbrg.log 2>&1
 
-  0 1 * * * /home/pi/led/launchcl.sh >/home/pi/logs/cllog.log 2>&1
- */20 * * * * /home/pi/led/checkcnt.sh >/home/pi/logs/chclog.log 2>&1
- */20 * * * * /home/pi/led/checkpro.sh >/home/pi/logs/chplog.log 2>&1
- */30 * * * * /home/pi/led/launchip.sh >/home/pi/logs/iplog.log 2>&1
+
+ 0 1 * * * root /home/pi/led/launchcl.sh >/home/pi/logs/cllog.log 2>&1
+*/20 * * * * root /home/pi/led/checkcnt.sh >/home/pi/logs/chclog.log 2>&1
+*/20 * * * * root /home/pi/led/checkpro.sh >/home/pi/logs/chplog.log 2>&1
+*/30 * * * * root /shome/pi/led/launchip.sh >/home/pi/logs/iplog.log 2>&1
+
+
