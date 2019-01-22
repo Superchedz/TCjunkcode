@@ -11,8 +11,8 @@
 #  Version  Date       Who   Description
 #  ======== ========== ====  ===========
 #  1.0      2014-11-01 GLC   Initial Version
-#  2.0      2017-11-05 GLC   Modified get_ip_address to support various connection types, wlan,
-#                            eth0 etc
+#  1.1      2017-01-10 GLC   Added code to obtain and email out the NGROK address to support 
+#                            Alexa integration
 ################################################################################################
 import socket
 import fcntl
@@ -29,6 +29,8 @@ import smtplib
 import mimetypes 
 import email 
 import email.mime.application 
+import os
+import json
 
 ################################################################################################
 ###################### Function to write to the event log table ################################
@@ -57,11 +59,13 @@ def write_log(Log_From, Log_Text):
 ################I didn't write this, some clever chap on the internet wrote it, ta!#############
 ################################################################################################  
 
-def get_ip_address():
-
+def get_ip_address(ifname):
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("8.8.8.8", 80))
-    return s.getsockname()[0]
+    return socket.inet_ntoa(fcntl.ioctl(
+        s.fileno(),
+        0x8915,  # SIOCGIFADDR
+        struct.pack('256s', ifname[:15])
+    )[20:24])  
   
   
   
@@ -189,8 +193,7 @@ def send_alert(subject, msgbody):
   sendok = True
 
   msg = 'Subject: %s: %s\n\n%s' %(subject, SystemID, msgbody)
-  print msg
-  print "hello"
+  
   try:
      SMTPServer = smtplib.SMTP(SMTPParam)
   except:
@@ -239,7 +242,6 @@ print "Its %s" % now
 sleep (30)
 #####################################################################################################
 # first get the old IP from the params table:
-
 db = MySQLdb.connect("localhost","root","pass123",db = "BoilerControl" )
 
 oldExtip_cursor = db.cursor ()
@@ -261,7 +263,7 @@ else:
 
 # thanks to the clever chap who wrote this function, its cool, i got it from github
 NewEIP = ipgetter.myip()
-NewIIP = get_ip_address()  
+NewIIP = get_ip_address('eth0')  
 
 
 print NewEIP
@@ -289,12 +291,23 @@ else:
 
 
 if (OldEIP <> NewEIP) or (OldIIP <> NewIIP):
-  subject = 'TotalControl9000 - IP change notification Email: System ID'
+  subject = 'TotalControl9000 - IP change notification Email'
 
+  
+  os.system("curl  http://localhost:4040/api/tunnels > tunnels.json")
+  with open('tunnels.json') as data_file:
+      datajson = json.load(data_file)
+
+for i in datajson['tunnels']:
+  ngmsg = i['public_url'] + '\n'
+
+  
 
 #use the ipgetter code we imported to get the machines external IP Address
   body = "Your external IP address is currently : " + NewEIP + "  \nYour old external IP was : " + OldEIP \
-         + "\nYour internal IP address is currently : " + NewIIP + "\nYour old interal IP address was : " + OldIIP          
+         + "\nYour internal IP address is currently : " + NewIIP + "\nYour old interal IP address was : " + OldIIP \
+         + "\nYour Alexa voice control endpoint address is : " + ngmsg 
+		 
 # have a short delay to allow the DB to be started up on reboot
 # really this should be replaced with a retry on the open - put it on the todo list
 

@@ -16,6 +16,8 @@
 #  1.1      2016-04-03 GLC   Added battery spec to email and added debug print switching
 #  2.0      2018-12-16 GLC   Modified so that the zone is deactivated to prevent zones being
 #                            jammed on when activated and overheating.  Interval dropped to 20mins
+#  2.1      2019-01-04 GLC   Added sleep so starting is delayed, this prevents problems after a period
+#                            of the system being off when no readings were found.
 ################################################################################################
 
 
@@ -309,6 +311,8 @@ now = datetime.datetime.now()
 DebugMode = get_debug()
 
 checktime = now
+# have a little sleep to let protosen get a reading after a period of being shut down and avoid confusion
+sleep (300)
 
 if DebugMode == "Y":
   print "Current time is %s" % (checktime)
