@@ -13,6 +13,7 @@
 #  ======== ========== ====  ===========
 #  1.0      2014-11-01 GLC   Initial Version
 #  1.1      2015-11-27 GLC   Modified to tidy a few parts of the code
+#  1.2      2019-01-20 GLC   Hardened DB security
 ################################################################################################
 
 import sys
@@ -26,7 +27,7 @@ import smtplib
 import mimetypes 
 import email 
 import email.mime.application 
-
+from getpw import getpass
 
 
 ################################################################################################
@@ -35,7 +36,12 @@ import email.mime.application
 
 def write_log(Log_From, Log_Text):
 
-  db = MySQLdb.connect("localhost","root","pass123","BoilerControl" )
+  dbpass = getpass()
+  db = MySQLdb.connect (host   = "localhost",
+                        user   = "TCROOT9000",
+                        passwd = dbpass,
+                        db     = "BoilerControl")
+
   log_cursor = db.cursor()
  
   sql = """INSERT INTO log(Log_From, Log_Text) VALUES ('"""+Log_From+"""','"""+Log_Text+"""')""" 
@@ -57,7 +63,11 @@ def write_log(Log_From, Log_Text):
 
 def send_alert(subject, msgbody):
   
-  db = MySQLdb.connect("localhost","root","pass123",db = "BoilerControl" )
+  dbpass = getpass()
+  db = MySQLdb.connect (host   = "localhost",
+                        user   = "TCROOT9000",
+                        passwd = dbpass,
+                        db     = "BoilerControl")
 
 ##############  Get the params from the database to set up sending alert #######################
 ############################## Get the From email address ###################################

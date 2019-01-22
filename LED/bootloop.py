@@ -13,6 +13,7 @@
 #  Version  Date       Who   Description
 #  ======== ========== ====  ===========
 #  1.0      2018-06-23 GLC   Initial Version
+#  1.1      2019-01-20 GLC   Hardened DB security
 ################################################################################################
 
 import time 
@@ -24,6 +25,7 @@ import datetime
 import fcntl
 import struct
 import os
+from getpw import getpass
 
 ################################################################################################
 
@@ -346,10 +348,11 @@ def critical_error(Log_From, Log_Text, shutdownmsg):
 # really this should be replaced with a retry on the open - put it on the todo list
 #sleep (30) removed this sleep as its moved into the cronjob to allow git to work.
 
+dbpass = getpass()
 db = MySQLdb.connect (host   = "localhost",
-                      user   = "root",
-                      passwd = "pass123",
-                      db     = "BoilerControl")
+                        user   = "TCROOT9000",
+                        passwd = dbpass,
+                        db     = "BoilerControl")
 
 
   

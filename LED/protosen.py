@@ -33,6 +33,7 @@
 #  3.2      2018-06-23 GLC   Changed battery calc to zero percentage at 2v when sensors stop
 #  3.3      2018-06-23 GLC   Fixed bug that assumed sensor started with a "Z" in battery calcs
 #  3.4      2018-12-16 GLC   Added PID to the start up email and tidied it.
+#  3.5      2019-01-20 GLC   Hardened DB security
 ################################################################################################
 import serial
 import sys
@@ -48,6 +49,8 @@ import email
 import email.mime.application 
 import os
 import socket
+from getpw import getpass
+
 #
 # SETTINGS
 #
@@ -75,7 +78,13 @@ TO_PORT = 50141
 def write_log(Log_From, Log_Text):
 #  print "************** Creating log***************"
 
-  db = MySQLdb.connect("localhost","root","pass123","BoilerControl" )
+  dbpass = getpass()
+
+
+  db = MySQLdb.connect (host   = "localhost",
+                      user   = "TCROOT9000",
+                      passwd = dbpass,
+                      db     = "BoilerControl")
   log_cursor = db.cursor()
  
   sql = """INSERT INTO log(Log_From, Log_Text) VALUES ('"""+Log_From+"""','"""+Log_Text+"""')""" 
@@ -97,7 +106,13 @@ def write_log(Log_From, Log_Text):
 
 def send_alert(subject, msgbody):
   
-  db = MySQLdb.connect("localhost","root","pass123",db = "BoilerControl" )
+  dbpass = getpass()
+
+
+  db = MySQLdb.connect (host   = "localhost",
+                        user   = "TCROOT9000",
+                        passwd = dbpass,
+                        db     = "BoilerControl")
 
 ##############  Get the params from the database to set up sending alert #######################
 ############################## Get the From email address ###################################
@@ -267,8 +282,13 @@ def writeTemp(llap_sensor_id, llap_temp):
       temp2dp = float(float(int(float(llap_temp)*100)) / 100)
       now = datetime.datetime.now()
 # Open database connection
-      db = MySQLdb.connect("localhost","root","pass123",db = "BoilerControl" )
+      dbpass = getpass() 
 
+
+      db = MySQLdb.connect (host   = "localhost",
+                            user   = "TCROOT9000",
+                            passwd = dbpass,
+                            db     = "BoilerControl")
 # prepare a cursor for storing the temperature reading
       cursor = db.cursor()
 
@@ -318,7 +338,15 @@ def is_number(s):
 def get_zone(sensor_id):
 
 # Open database connection
-  db = MySQLdb.connect("localhost","root","pass123",db = "BoilerControl" )
+
+  dbpass = getpass()
+
+
+  db = MySQLdb.connect (host   = "localhost",
+                      user   = "TCROOT9000",
+                      passwd = dbpass,
+                      db     = "BoilerControl")
+
   if DebugMode == "Y":
     print "DEBUG: Get_zone: about to do zone lookup"
     print "DEBUG: Sensor id for lookup is : " + sensor_id
@@ -357,7 +385,15 @@ def get_zone(sensor_id):
 def get_fob_action(fob_id, button_id):
 
 # Open database connection
-  db = MySQLdb.connect("localhost","root","pass123",db = "BoilerControl" )
+
+  dbpass = getpass()
+
+
+  db = MySQLdb.connect (host   = "localhost",
+                        user   = "TCROOT9000",
+                        passwd = dbpass,
+                        db     = "BoilerControl")
+
   if DebugMode == "Y":
     print "DEBUG: Get_fob action - about to do fob_butt_action_b lookup"
     print "DEBUG: Fob id for lookup is : " + fob_id
@@ -481,7 +517,13 @@ def get_fob_action(fob_id, button_id):
 ################################################################################################
 
 def get_debug():
-  db = MySQLdb.connect("localhost","root","pass123",db = "BoilerControl" )
+
+  dbpass = getpass()
+  db = MySQLdb.connect (host   = "localhost",
+                        user   = "TCROOT9000",
+                        passwd = dbpass,
+                        db     = "BoilerControl")
+						
   debug_cursor = db.cursor ()
   debug_query = "select * from params_b where Param_Name = 'DebugMode'"
   global DebugMode
@@ -517,7 +559,12 @@ def critical_error(Log_From, Log_Text, shutdownmsg):
   
   
 def get_Sensor_Mode():
-  db = MySQLdb.connect("localhost","root","pass123",db = "BoilerControl" )
+  dbpass = getpass()
+  db = MySQLdb.connect (host   = "localhost",
+                        user   = "TCROOT9000",
+                        passwd = dbpass,
+                        db     = "BoilerControl")
+						
   sensormode_cursor = db.cursor ()
   sensormode_query = "select * from params_b where Param_Name = 'Sensor_Mode'"
   global SensorMode
@@ -544,10 +591,12 @@ def get_Sensor_Mode():
 
 def writeBatt(zone_id, battpct):
 
-#    now = datetime.datetime.now()
 # Open database connection
-    db = MySQLdb.connect("localhost","root","pass123",db = "BoilerControl" )
-
+    dbpass = getpass()
+    db = MySQLdb.connect (host   = "localhost",
+                        user   = "TCROOT9000",
+                        passwd = dbpass,
+                        db     = "BoilerControl")
 # prepare a cursor for storing the temperature reading
     cursor = db.cursor()
 
@@ -573,7 +622,11 @@ def update_fob_batt(Fob_ID, battpct):
 ###############################################################################################
 
 # Open database connection
-    db = MySQLdb.connect("localhost","root","pass123",db = "BoilerControl" )
+    dbpass = getpass()
+    db = MySQLdb.connect (host   = "localhost",
+                          user   = "TCROOT9000",
+                          passwd = dbpass,
+                          db     = "BoilerControl")
 
 # prepare a cursor for storing the temperature reading
     cursorb = db.cursor()
@@ -616,7 +669,7 @@ PID = os.getpid()
 while sendcounter < 10:
   sendcounter += 1
   
-  subject = "TC9000 Startup Alert: Primary sensor scanner process (v3.4). System ID: "
+  subject = "TC9000 Startup Alert: Primary sensor scanner process (v3.5). System ID: "
   msgbody = "The job that receives temp sensors readings has started successfully.\n\n" \
             "Process ID : " + str(PID) + "\n"\
             "\nFrom \n" \

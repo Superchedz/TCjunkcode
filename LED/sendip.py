@@ -13,6 +13,7 @@
 #  1.0      2014-11-01 GLC   Initial Version
 #  1.1      2017-01-10 GLC   Added code to obtain and email out the NGROK address to support 
 #                            Alexa integration
+#  1.2      2019-01-20 GLC   Hardened DB security
 ################################################################################################
 import socket
 import fcntl
@@ -31,6 +32,7 @@ import email
 import email.mime.application 
 import os
 import json
+from getpw import getpass
 
 ################################################################################################
 ###################### Function to write to the event log table ################################
@@ -38,7 +40,13 @@ import json
 
 def write_log(Log_From, Log_Text):
 
-  db = MySQLdb.connect("localhost","root","pass123","BoilerControl" )
+  dbpass = getpass()
+
+  db = MySQLdb.connect (host   = "localhost",
+                        user   = "TCROOT9000",
+                        passwd = dbpass,
+                        db     = "BoilerControl")  
+
   log_cursor = db.cursor()
  
   sql = """INSERT INTO log(Log_From, Log_Text) VALUES ('"""+Log_From+"""','"""+Log_Text+"""')""" 
@@ -76,8 +84,14 @@ def get_ip_address(ifname):
 
 def send_alert(subject, msgbody):
   
-  db = MySQLdb.connect("localhost","root","pass123",db = "BoilerControl" )
+ dbpass = getpass()
 
+
+  db = MySQLdb.connect (host   = "localhost",
+                        user   = "TCROOT9000",
+                        passwd = dbpass,
+                        db     = "BoilerControl")
+						
 ##############  Get the params from the database to set up sending alert #######################
 ############################## Get the From email address ######################################
   from_cursor = db.cursor ()
@@ -242,7 +256,13 @@ print "Its %s" % now
 sleep (30)
 #####################################################################################################
 # first get the old IP from the params table:
-db = MySQLdb.connect("localhost","root","pass123",db = "BoilerControl" )
+dbpass = getpass()
+
+
+db = MySQLdb.connect (host   = "localhost",
+                      user   = "TCROOT9000",
+                      passwd = dbpass,
+                      db     = "BoilerControl")
 
 oldExtip_cursor = db.cursor ()
 oldExtip_query = "select * from params_b where Param_Name = 'Ext_IP'"
