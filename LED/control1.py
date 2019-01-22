@@ -1,4 +1,4 @@
-################################################################################################
+###############################################################################################
 ################################################################################################
 #                                       Control1.py
 #                                       ==========
@@ -16,7 +16,7 @@
 #  temp sensor in play for that zone.  The code handles hysteresis, the limit settings for that
 #  are currently hard coded.
 #  
-################################################################################################
+##################################################################################################
 #  Change History
 #  ==============
 #  Version  Date       Who   Description
@@ -42,8 +42,11 @@
 #  2.3      2018-02-10 GLC   Proper-Gator9000 upgrade.
 #                            Added: Support for wired sensors - new zonetype "W" - not complete
 #  2.4      2018-06-23 GLC   Removed shutdown and restart functionality as moved to bootloop.py
-#  2.5      2018-12-16 GLC   Added PID to the start up email and tidied it up                            
-################################################################################################
+#  2.5      2018-12-16 GLC   Added PID to the start up email and tidied it up         
+#  2.6      2018-12-16 GLC   Added code to get the NGROK endpoint address for when supporting ALEXA
+#                            Also obtained address and included in email - checked Alexa_YN param.                   
+#  2.7      2019-01-02 GLC   Added more complex password mgt for database - get and build it.
+###################################################################################################
 
 import RPi.GPIO as GPIO 
 import time 
@@ -59,7 +62,8 @@ import socket
 import fcntl
 import struct
 import os
-
+import json
+from getpw import getpass
 ################################################################################################
 
 print "" 
@@ -342,6 +346,37 @@ def get_debug():
     critical_error('Get Debug', 'ERROR : Missing Debugmode Param', '--!! Shutting down ^2 !!--')
 
 
+################################################################################################
+############################### Function to get Alexa mode flag ################################
+################################################################################################
+
+def get_Alexa():
+
+  alexa_cursor = db.cursor ()
+  alexa_query = "select * from params_b where Param_Name = 'Alexa_YN'"
+  global Alexa_ON
+  try:
+     alexa_cursor.execute(alexa_query)
+  except MySQLdb.Error as err:
+     print ("******* Error reading Alexa param : ERROR : {}".format(err))
+     write_log ('ERROR: Get Alexa_YN',err)
+
+  numrows = int (alexa_cursor.rowcount)
+  if numrows == 1:
+    Alexa_res = alexa_cursor.fetchone()
+    if Alexa_res[1] != "Y" and Alexa_res[1] != "N":
+      print ""
+      print "*******  ERROR : Alexa param is not Y or N  *********"
+      critical_error('Alexa Check', 'Alexa Param Not Y or N', '--!! Shutting down ^1 !!--')
+    else:
+      AlexaON = Alexa_res[1]
+      return AlexaON
+  else:
+    print "***  Error:  Missing Param Alexa param  ***"
+    critical_error('Get Alexa', 'ERROR : Missing Alexa Param', '--!! Shutting down ^2 !!--')
+	
+	
+	
 	
 def get_web():
   global WebAddr
@@ -670,9 +705,13 @@ def get_ip_address():
 # really this should be replaced with a retry on the open - put it on the todo list
 #sleep (30) removed this sleep as its moved into the cronjob to allow git to work.
 
+
+dbpass = getpass()
+
+
 db = MySQLdb.connect (host   = "localhost",
-                      user   = "root",
-                      passwd = "pass123",
+                      user   = "TCROOT9000",
+                      passwd = dbpass,
                       db     = "BoilerControl")
 
 
@@ -686,25 +725,56 @@ db = MySQLdb.connect (host   = "localhost",
 global sendok
 global YPlan_CH_IS_ON
 global YPlan_HW_IS_ON
-	
+
+DebugMode = get_debug()
+
 sendok = False
 sendcounter = 0
 WebAddr = get_web()
 PID = os.getpid()
-
+# get the ngrok endpoint address to add into startup email - to allow reset in AWS until its static
 ipaddress = get_ip_address()
-print ipaddress
-while sendcounter < 10:
-  sendcounter += 1	
-  subject = "TC9000 Startup Alert: Primary switching process (v2.5). System ID: "
+
+# get the alexa param and check if its on, if so send the ngrok address in the start up email.
+# need to check the tunnel is available too.
+
+AlexaON = get_Alexa()
+
+if AlexaON == "Y":
+# get the ngrok tunnel details as they need to go in the startup email
+  try:
+    os.system("curl  http://localhost:4040/api/tunnels > tunnels.json")
+    with open('tunnels.json') as data_file:
+        datajson = json.load(data_file)
+  except:
+    print "*** Error - Alexa is set to ON but no endpoint found ***"
+    write_log('Control1 - Main','Alexa is on but no endpoint address found')
+    ngmsg = ": *** Alexa endpoint not found - contact support and turn off in system settings ***"
+  else:
+    for i in datajson['tunnels']:
+      ngmsg = i['public_url'] + '\n'
+	
+# format up the startup email with info
+subject = "TC9000 Startup Alert: Primary switching process (v2.7). System ID: "
+if AlexaON == "Y":
   msgbody = "The main Control job has started successfully.\n\n" \
             "Your local IP address is " + str(ipaddress) + "\n" \
             "Your web Address is " + str(WebAddr) + "\n" \
-			"Process ID : " + str(PID) + "\n"\
+            "Your unique Alexa endpoint address is " + str(ngmsg) + "\n" \
+            "Process ID : " + str(PID) + "\n"\
             "\nFrom \n" \
-			"The TotalControl9000 Support Team"
-	
-			
+            "The TotalControl9000 Support Team"
+else:
+  msgbody = "The main Control job has started successfully.\n\n" \
+            "Your local IP address is " + str(ipaddress) + "\n" \
+            "Your web Address is " + str(WebAddr) + "\n" \
+            "\nAlexa integration is not installed, contact support for instructions.\n\n" \
+            "Process ID : " + str(PID) + "\n\n"\
+            "\nFrom \n" \
+            "The TotalControl9000 Support Team"
+
+while sendcounter < 10:
+  sendcounter += 1	
   send_alert(subject, msgbody) 
 
   if sendok:
@@ -724,7 +794,7 @@ else:
   
 now = time.strftime('%Y-%m-%d %H:%M:%S')
 nowt = time.strftime('%H:%M:%S')
-DebugMode = get_debug()
+
 
 
 ###########################################################################
@@ -825,7 +895,7 @@ while True:
       curr_zone_temp = Zone_res[4]
       curr_zone_dtime = Zone_res[5]
       curr_zone_sensor = Zone_res[6]
-      curr_zone_offset = Zone_res[7]
+      curr_zone_offset = Zone_res[7]  
       curr_zone_pin = Zone_res[8]
       curr_zone_type = Zone_res[9]
 
