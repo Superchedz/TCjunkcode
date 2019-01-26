@@ -27,7 +27,7 @@ from datetime import date
 import time
 from time import sleep
 import smtplib 
-import mimetypes co
+import mimetypes
 import email 
 import email.mime.application 
 import os
