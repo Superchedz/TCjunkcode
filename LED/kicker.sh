@@ -17,20 +17,6 @@ echo Doing update to ensure shutdown value is always N   - for when its not new
 mysql --batch -h localhost -u root --password=pass123 -D  BoilerControl  < upshut.txt > supout.txt    
 
 
-echo ################## Sleep installer #####################
-echo ##### We test for the existence of sleepdone file ######
-echo ############ if not there run scripts ################
-echo created 6/5/2016
-echo
-if ! [ -f sleepdone ]; then
-  echo 
-  echo The sleepdone file wasnt found, so run sql script to add tables and set new columns to zone
-  touch sleepdone
-  mysql --batch -h localhost -u root --password=pass123 -D  BoilerControl  < sqlsleep1.txt > sqlout.txt    
-else
-  echo The sleepdone file was found so its assumed sleep tables are installed already - skipping
-fi
-
 echo "##########################################################################"
 echo "########## Start the NOIP service to update fowarding service ############"
 echo "##########################################################################"
