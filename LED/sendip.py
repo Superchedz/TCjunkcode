@@ -27,7 +27,7 @@ from datetime import date
 import time
 from time import sleep
 import smtplib 
-import mimetypes 
+import mimetypes co
 import email 
 import email.mime.application 
 import os
@@ -87,10 +87,10 @@ def send_alert(subject, msgbody):
  dbpass = getpass()
 
 
-  db = MySQLdb.connect (host   = "localhost",
-                        user   = "TCROOT9000",
-                        passwd = dbpass,
-                        db     = "BoilerControl")
+ db = MySQLdb.connect (host   = "localhost",
+                       user   = "TCROOT9000",
+                       passwd = dbpass,
+                       db     = "BoilerControl")
 						
 ##############  Get the params from the database to set up sending alert #######################
 ############################## Get the From email address ######################################
