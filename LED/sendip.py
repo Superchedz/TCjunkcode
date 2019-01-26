@@ -84,10 +84,10 @@ def get_ip_address(ifname):
 
 def send_alert(subject, msgbody):
   
- dbpass = getpass()
+  dbpass = getpass()
 
 
- db = MySQLdb.connect (host   = "localhost",
+  db = MySQLdb.connect (host   = "localhost",
                        user   = "TCROOT9000",
                        passwd = dbpass,
                        db     = "BoilerControl")
