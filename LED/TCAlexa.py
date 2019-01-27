@@ -126,6 +126,32 @@ def get_alexa_param():
   else:
     print "***  Error:  Missing Param Alexa_YN param  ***"
 
+################################################################################################
+############################### Function to get debug mode flag ################################
+################################################################################################
+
+def get_debug():
+
+  debug_cursor = db.cursor ()
+  debug_query = "select * from params_b where Param_Name = 'DebugMode'"
+  global DebugMode
+  try:
+     debug_cursor.execute(debug_query)
+  except MySQLdb.Error as err:
+     print ("******* Error reading DebugMode param : ERROR : {}".format(err))
+     write_log ('ERROR: Get DebugMode',err)
+
+  numrows = int (debug_cursor.rowcount)
+  if numrows == 1:
+    Debug_res = debug_cursor.fetchone()
+    if Debug_res[1] != "Y" and Debug_res[1] != "N":
+      print ""
+      print "*******  ERROR : Loop_DebugMode param is not numeric  *********"
+    else:
+      DebugMode = Debug_res[1]
+      return DebugMode
+  else:
+    print "***  Error:  Missing Param Debugmode param  ***"
 
 
 ################################################################################################
