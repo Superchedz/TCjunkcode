@@ -2,8 +2,9 @@
 # This job checks if alexa is turned on, if it is, it checks the python job is running
 # if the job then isn't running, it emails
 
-pwfile=$(cat pwsf.txt)
+pwfile=$(cat /home/pi/led/pwsf.txt)
 part=${pwfile:4:6}
+
 start="TC"
 end="9000"
 password="$start$part$end"
@@ -12,12 +13,11 @@ Alexa_YN="$(echo $myvar | cut -d' ' -f2 )"
 
 if [ "$Alexa_YN" == "Y" ]
 then
-  echo "its on"
-  if pgrep -f "python TCAlexa.py" > /dev/null
-  then
+   if pgrep -f "python TCAlexa.py" > /dev/null
+   then
       echo "TCAlexa.py process is running"
-      exit
-  else
+   else
       echo "TCAlexa.py process is not running - ohhh no"
-      sudo python /home/pi/led/alerter.py "Alerter  - TCAlexa Error" "Process TCAlexa.py was not found but param is on, check logs and restart"
+      sudo python /home/pi/led/alerter.py "Alerter  - TCAlexa Error" "Process TCAlexa.py was not found but param is on check logs and restart"
+   fi
 fi
