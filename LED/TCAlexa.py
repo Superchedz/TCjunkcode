@@ -9,7 +9,7 @@
 #  program can perform the following functions:
 #
 #  Boost       - boosts a zone
-#  Statis      - return the current status of a zone
+#  Status      - return the current status of a zone
 #  Cancel      - cancels an existing boost for an active zone
 #  Preset      - runs a predefined boost for a zone as set at zone level
 #  
@@ -728,7 +728,7 @@ def Statuszone(statuszone):
                boostleft = int(tend-tnow) / 60
                
                if zonetype == "T":
-                 status_msg = status_msg + 'is currently running due to an active boost, at ' + str(round(override_temp,1)) + 'degrees and will run for another ' + str(boostleft)+ ' minutes'
+                 status_msg = status_msg + 'is currently at ' +str(zonecurrenttemp) + ' and is currently running due to an active boost, at ' + str(round(override_temp,1)) + 'degrees and will run for another ' + str(boostleft)+ ' minutes'
                else:
                  status_msg = status_msg + 'is currently running due to an active boost and will run for another ' + str(boostleft)+ ' minutes'
              else:
@@ -739,7 +739,10 @@ def Statuszone(statuszone):
          if zoneactiveind == "N":
            status_msg = status_msg + ' but is currently disabled'
          else:
-           status_msg = status_msg + ' is enabled but is not currently on'
+		   if zonetype == "T":
+		     status_msg = status_msg + ' is at ' + str(zonecurrenttemp) + ' and is enabled but is not currently on'
+		   else:
+             status_msg = status_msg + ' is enabled but is not currently on'
      else:
        status_msg = 'The zone requested was not found, please try again'
        write_log ('Alexa bad status request - not found', statuszone)
