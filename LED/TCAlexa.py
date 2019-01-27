@@ -492,7 +492,6 @@ def preset(keyword):
 
 def yes():
    global zonefound
-   if DebugMode == "Y":
 
 ###############################  this means everything is set up, so just move from the alexa_temp_boost table to the override table ###########
 
