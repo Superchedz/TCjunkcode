@@ -102,28 +102,31 @@ def write_alexa_temp_boost(AlexaZoneID, Alexadurationmins, Alexaboosttemp):
 ############################### Function to get debug mode flag ################################
 ################################################################################################
 
-def get_debug():
 
-  debug_cursor = db.cursor ()
-  debug_query = "select * from params_b where Param_Name = 'DebugMode'"
-  global DebugMode
+def get_alexa_param():
+
+  alexa_cursor = db.cursor ()
+  alexa_query = "select * from params_b where Param_Name = 'Alexa_YN'"
+  global AlexaYN
   try:
-     debug_cursor.execute(debug_query)
+     alexa_cursor.execute(alexa_query)
   except MySQLdb.Error as err:
-     print ("******* Error reading DebugMode param : ERROR : {}".format(err))
-     write_log ('ERROR: Get DebugMode',err)
+     print ("******* Error reading Alexa_YN param : ERROR : {}".format(err))
+     write_log ('ERROR: Get Alexa_YN',err)
 
-  numrows = int (debug_cursor.rowcount)
+  numrows = int (alexa_cursor.rowcount)
   if numrows == 1:
-    Debug_res = debug_cursor.fetchone()
-    if Debug_res[1] != "Y" and Debug_res[1] != "N":
+    alexa_res = alexa_cursor.fetchone()
+    if alexa_res[1] != "Y" and alexa_res[1] != "N":
       print ""
-      print "*******  ERROR : Loop_DebugMode param is not numeric  *********"
+      print "*******  ERROR : Alexa YN param is not numeric  *********"
     else:
-      DebugMode = Debug_res[1]
-      return DebugMode
+      AlexaYN = alexa_res[1]
+      return AlexaYN
   else:
-    print "***  Error:  Missing Param Debugmode param  ***"
+    print "***  Error:  Missing Param Alexa_YN param  ***"
+
+
 
 ################################################################################################
 ############################### Function to get preset details   ###############################
@@ -229,6 +232,8 @@ print "##########    Version 1.0    ############"
 print "#########################################" 
 print ""
 
+
+
 def get_headlines():
     pass
 
@@ -236,9 +241,11 @@ def get_headlines():
 
 @ask.launch
 def welcome():
-   
-   return question("Welcome to TOTAL CONTROL 9000, say the boost or preset command, cancel active boosts, or request the status of a zone, or say total control for help.")
-
+   Alexa_YN =get_alexa_param()
+   if Alexa_YN == "Y":
+     return question("Welcome to TOTAL CONTROL 9000, say the boost or preset command, cancel active boosts, or request the status of a zone, or say total control for help.")
+   else:
+     return statement("Your Total Control 9000 system is not configured to use the Alexa Service, please check your configuration")
 
 
 ############################################################################################################################################
