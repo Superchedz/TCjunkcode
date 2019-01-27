@@ -526,22 +526,15 @@ def yes():
       boost_duration = atb_res[1]
       boost_temp = atb_res[2]
 
-      
 # now insert the proper override record into the database 
       now = datetime.datetime.now()
       boost_end = now + datetime.timedelta(minutes =boost_duration)
-      if Debug == "Y":
+      if DebugMode == "Y":
         print boost_end
-
-
-
 # before we do, its wise to delete any active boosts for the zone as we could end up with 2 at a time
-
       override_clean = db.cursor()
-
       try:
           override_clean.execute("DELETE FROM override_b where Zone_id = %s and Override_end > NOW()", (boost_zone))
-
 #     dont worry about the number of rows found, doesn't matter    
       except MySQLdb.Error as err:
          print "oh no!!! There was an error deleting from the override table"
@@ -551,7 +544,6 @@ def yes():
          return statement(confirmmsg)
 
       override_clean.close() 
-
   
 # Prepare SQL query to INSERT a record into the database.
       cursor = db.cursor()
@@ -588,11 +580,9 @@ def cancel(cancelzone):
 
    Error_state = False
    zonefound = False
-   
 
 # its possible the db connection has timeout, so ping first to reopen the connection
    db.ping(True)
-
 
 # the request could be a zone id or the alexa keyword, so we need to handle either
    if ' ' in cancelzone:
@@ -619,7 +609,6 @@ def cancel(cancelzone):
        if cancelzone == "all":
          try:
              Override_clean.execute("DELETE FROM override_b WHERE Override_end > NOW()")
-           
          except MySQLdb.Error as err:
              print "oh no!!! There was an error deleting from the override table in cancel"
              write_log ('Alexa SQL#44', '*** ERROR *** Deleting all from Override')
@@ -634,8 +623,6 @@ def cancel(cancelzone):
              write_log ('Alexa SQL#42', '*** ERROR *** Deleting from Override for zone')
 #        send_alert('Override Cleaner Error', '***Error detected deleting from Override during scheduled job')
              Error_state = True
-
-
 
        if not Error_state:  
          numrows = int (Override_clean.rowcount)
@@ -660,14 +647,9 @@ def cancel(cancelzone):
      db.commit()
    return statement(cancel_msg)
 
-
-
-
 ############################################################################################################################################
 ##########################################################   Get Status for a Zone #########################################################
 ############################################################################################################################################
-
-  
 @ask.intent("StatusIntent", convert={'statuszone':str})
 def Statuszone(statuszone):
    global zonefound
