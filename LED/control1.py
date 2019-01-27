@@ -761,8 +761,9 @@ if AlexaON == "Y":
             "Your local IP address is " + str(ipaddress) + "\n" \
             "Your web Address is " + str(WebAddr) + "\n" \
             "Your unique Alexa endpoint address is " + str(ngmsg) + "\n" \
-            "Process ID : " + str(PID) + "\n"\
-            "\nFrom \n" \
+			"Configure Alexa at https://developer.amazon.com/alexa/console/ask? \n\n" \
+            "Unix Process ID : " + str(PID) + "\n"\
+            "\n\nFrom \n\n" \
             "The TotalControl9000 Support Team"
 else:
   msgbody = "The main Control job has started successfully.\n\n" \
