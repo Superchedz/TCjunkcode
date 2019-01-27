@@ -83,8 +83,7 @@ def write_alexa_temp_boost(AlexaZoneID, Alexadurationmins, Alexaboosttemp):
     alexa_cursor = db.cursor()
  
     sql = """INSERT INTO alexa_temp_boost_b (Alexa_Zone_ID, Alexa_duration_mins, Alexa_boost_temp) VALUES ('"""+str(AlexaZoneID)+"""','"""+str(Alexadurationmins)+"""','"""+str(Alexaboosttemp)+"""')""" 
-    print sql
-  
+    
     try:
        alexa_cursor.execute(sql)
        db.commit()
@@ -173,7 +172,7 @@ def get_preset_zone(keyword):
      write_log ('ERROR: Get Alexa preset',err)
 
   numrows = int (presetzone_cursor.rowcount)
-  print numrows
+
   if numrows == 1:
     preset_res = presetzone_cursor.fetchone()
     zonefound = True
@@ -188,7 +187,7 @@ def get_preset_zone(keyword):
 
 ###########################################  functions to convert alexa duration to mins and validate it ###################################################
 def conv_duration(alexa_duration):
-  print alexa_duration
+  
   try:
     totalmins = alexa_duration.total_seconds()/60
   except:
@@ -304,10 +303,8 @@ def boost(zone, duration, temperature):
    
 # its possible the db connection has timeout, so ping first to reopen the connection
    db.ping(True)
-   print zone
 
    mins_duration = conv_duration(duration)
-   print mins_duration
    
    if ' ' in zone:
      boost_msg = 'A space was detected in your zone name of ' + str(zone) + '.  Please check your zone configuration and adjust your pronunciation'
@@ -315,12 +312,11 @@ def boost(zone, duration, temperature):
      return statement(boost_msg)
    else:
      if str.isdigit(zone) == True:
-       print "its a number so lets assume its the zone number"
+
        zoneID = int(zone)
        ZoneRES = get_zone(zoneID)
  
        if zonefound == True:
-         print ZoneRES
          zonename = ZoneRES[0]
          zoneactiveind = ZoneRES[1]
          zonecurrentstate = ZoneRES[2]
@@ -339,7 +335,7 @@ def boost(zone, duration, temperature):
          zoneactiveind = zoneRES[2]
          zonecurrentstate = zoneRES[3]
          zonetype = zoneRES[6]
-     print zonetype
+
      if zonefound == True:
        if zoneactiveind == "Y":
          if zonecurrentstate == "OFF":
@@ -371,8 +367,6 @@ def boostNT(zone, duration):
 # this code is for zones that are NOT type T with no temperature sensor
 # we just default the temperature to 1
 
-   print zone
-   print duration
    global zonefound
    global Error_state
    temperature = 1
@@ -380,11 +374,9 @@ def boostNT(zone, duration):
    
 # its possible the db connection has timeout, so ping first to reopen the connection
    db.ping(True)
-   print " "
    
    mins_duration = conv_duration(duration)
-   print mins_duration
-   
+  
    
    if ' ' in zone:
      boost_msg = 'A space was detected in your zone name of ' + str(zone) + '.  Please check your zone configuration and adjust your pronunciation'
@@ -397,7 +389,6 @@ def boostNT(zone, duration):
        ZoneRES = get_zone(zoneID)
  
        if zonefound == True:
-         print ZoneRES
          zonename = ZoneRES[0]
          zoneactiveind = ZoneRES[1]
          zonecurrentstate = ZoneRES[2]
@@ -416,7 +407,6 @@ def boostNT(zone, duration):
          zonecurrentstate = zoneRES[3]
          zonetype = zoneRES[6]
          
-     print zonetype
      if zonefound == True:
        if zonetype == "T":
          boost_msg = 'The zone requested of ' + str(zone) + 'has a temperature sensor and so this request was invalid, please use the preset or boost commands'
@@ -439,8 +429,6 @@ def boostNT(zone, duration):
        write_log ('Alexa bad boost, zone not found', zone) 
        return statement(boost_msg)
 
-
-
 ############################################################################################################################################
 ################################################################   Preset   ################################################################
 ############################################################################################################################################
@@ -462,7 +450,7 @@ def preset(keyword):
      presetRES = get_preset_zone(keyword)
 
      if zonefound == True:
-
+       
        zone = presetRES[0]
        zonename = presetRES[1]
        zoneactiveind = presetRES[2]
@@ -473,12 +461,12 @@ def preset(keyword):
             
        if zoneactiveind == "Y":
          if zonecurrentstate == "OFF":
-           if zonetype != "T":
+           if zonetype == "T":
              preset_msg = 'Your preset is to boost the ' + str(zonename) + 'zone, for ' + str(duration) + 'minutes at ' + str(temperature) + 'degrees , is that correct?'
            else:
              preset_msg = 'Your preset is to boost the ' + str(zonename) + 'zone, for ' + str(duration) + 'minutes, is that correct?'
          else:
-           if zonetype != "T":
+           if zonetype == "T":
              preset_msg = 'Your preset is to boost the ' + str(zonename) + 'zone, for ' + str(duration) + 'minutes at' + str(temperature) +  'degrees, this zone is already running, is that ok?'
            else:
              preset_msg = 'Your preset is to boost the ' + str(zonename) + 'zone, for ' + str(duration) + 'minutes, this zone is already running, is that ok?'
@@ -505,7 +493,7 @@ def preset(keyword):
 def yes():
    global zonefound
    if DebugMode == "Y":
-      print "in confirm"
+
 ###############################  this means everything is set up, so just move from the alexa_temp_boost table to the override table ###########
 
 
@@ -533,8 +521,8 @@ def yes():
       return statement(confirmmsg)     
    if numrows == 1:
       atb_res = alexa_temp_boost_cursor.fetchone()
-#      if DebugMode == "Y":
-      print "Alexa temp row found:zone %d temp: %d Duration : %d" % (atb_res[0], atb_res[1], atb_res[2])
+      if DebugMode == "Y":
+        print "Alexa temp row found:zone %d temp: %d Duration : %d" % (atb_res[0], atb_res[1], atb_res[2])
       boost_zone = atb_res[0]
       boost_duration = atb_res[1]
       boost_temp = atb_res[2]
@@ -543,8 +531,8 @@ def yes():
 # now insert the proper override record into the database 
       now = datetime.datetime.now()
       boost_end = now + datetime.timedelta(minutes =boost_duration)
-#      if Debug == "Y":
-#      print boost_end
+      if Debug == "Y":
+        print boost_end
 
 
 
@@ -578,7 +566,6 @@ def yes():
                                        Override_Duration_mins,
                                        Override_Temp)
                VALUES ('"""+str(boost_zone)+"""','"""+str(now)+"""','"""+str(boost_end)+"""','"""+str(boost_duration)+"""','"""+str(boost_temp)+"""')"""
-      print sql  
       try:
           cursor.execute(sql)
           db.commit()
@@ -591,11 +578,6 @@ def yes():
       
    db.commit()
    return statement(confirmmsg)
-
-
-
-
-
    
 ############################################################################################################################################
 #####################################################   Cancel an active boost on a zone ###################################################
@@ -604,7 +586,7 @@ def yes():
 @ask.intent("CancelIntent", convert={'cancelzone':str})
 def cancel(cancelzone):
    global zonefound
-   print cancelzone
+
    Error_state = False
    zonefound = False
    
@@ -619,19 +601,15 @@ def cancel(cancelzone):
      write_log ('Alexa bad cancel request - contained spaces', cancelzone) 
    else:
      if str.isdigit(cancelzone) == True:
-       print "its a number so lets assume its the zone number"
        zoneID = int(cancelzone)
        ZoneRES = get_zone(zoneID)
-       print ZoneRES
        if zonefound == True:
          zonename = ZoneRES[0]
      else:
        if cancelzone == "all":
-         print 'we need to just delete the lot'
          zonefound = True
        else: 
          cancelRES = get_preset_zone(cancelzone)
-         print cancelRES
          if zonefound == True:
            zoneID = cancelRES[0]
            zonename = cancelRES[1]  
@@ -703,7 +681,6 @@ def Statuszone(statuszone):
    
    if ' ' in statuszone:
      status_msg = 'A space was detected in your zone name of ' + str(statuszone) + '.  Please check your zone configuration and adjust your pronunciation'
-     print status_msg
      write_log ('Alexa bad status request - contained spaces', statuszone)    
    else:  
      if str.isdigit(statuszone) == True:
@@ -712,7 +689,6 @@ def Statuszone(statuszone):
        ZoneRes = get_zone(zoneID)
        
        if zonefound == True:
-         print "it was true here"
          zonename = ZoneRes[0]
          zonetype = ZoneRes[4]
          zoneactiveind = ZoneRes[1]
@@ -720,7 +696,6 @@ def Statuszone(statuszone):
          zonestate = ZoneRes[2]
      else:
        statusRes = get_preset_zone(statuszone)
-       print statusRes
        if zonefound == True:
          zoneID = statusRes[0]
          zonename = statusRes[1]  
@@ -761,7 +736,7 @@ def Statuszone(statuszone):
                boostleft = int(tend-tnow) / 60
                
                if zonetype == "T":
-                 status_msg = status_msg + 'is currently at ' +str(zonecurrenttemp) + ' and is currently running due to an active boost, at ' + str(round(override_temp,1)) + 'degrees and will run for another ' + str(boostleft)+ ' minutes'
+                 status_msg = status_msg + 'is currently at ' +str(zonecurrenttemp) + ' degrees and is running due to an active boost, at ' + str(round(override_temp,1)) + 'degrees and will run for another ' + str(boostleft)+ ' minutes'
                else:
                  status_msg = status_msg + 'is currently running due to an active boost and will run for another ' + str(boostleft)+ ' minutes'
              else:
@@ -773,7 +748,7 @@ def Statuszone(statuszone):
            status_msg = status_msg + ' but is currently disabled'
          else:
            if zonetype == "T":
-             status_msg = status_msg + ' is at ' + str(zonecurrenttemp) + ' and is enabled but is not currently on'
+             status_msg = status_msg + ' is at ' + str(zonecurrenttemp) + ' degrees and is enabled but is not currently on'
            else:
              status_msg = status_msg + ' is enabled but is not currently on'
      else:
