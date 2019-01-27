@@ -8,6 +8,6 @@
  0 1 * * * root /home/pi/led/launchcl.sh >/home/pi/logs/cllog.log 2>&1
 */20 * * * * root /home/pi/led/checkcnt.sh >/home/pi/logs/chclog.log 2>&1
 */20 * * * * root /home/pi/led/checkpro.sh >/home/pi/logs/chplog.log 2>&1
-*/30 * * * * root /shome/pi/led/launchip.sh >/home/pi/logs/iplog.log 2>&1
-
+*/30 * * * * root /home/pi/led/launchip.sh >/home/pi/logs/iplog.log 2>&1
+*/1  * * * * root /home/pi/led/checkalexa.sh >/home/pi/logs/alexacheck.log 2>&1
 
