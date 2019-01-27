@@ -739,9 +739,9 @@ def Statuszone(statuszone):
          if zoneactiveind == "N":
            status_msg = status_msg + ' but is currently disabled'
          else:
-		   if zonetype == "T":
-		     status_msg = status_msg + ' is at ' + str(zonecurrenttemp) + ' and is enabled but is not currently on'
-		   else:
+           if zonetype == "T":
+             status_msg = status_msg + ' is at ' + str(zonecurrenttemp) + ' and is enabled but is not currently on'
+           else:
              status_msg = status_msg + ' is enabled but is not currently on'
      else:
        status_msg = 'The zone requested was not found, please try again'
