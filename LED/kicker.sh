@@ -35,7 +35,15 @@ echo end of snooze
 nohup sudo python control1.py &
 cd /
 
-
+echo
+echo "##########################################################################"
+echo "################## Start the Alexa Management service  ###################"
+echo "##########################################################################"
+cd /
+cd home/pi/led
+echo end of snooze
+nohup sudo python TCAlexa.py &
+cd /
 echo
 echo "##########################################################################"
 echo "############  Start the ProtoSen scanner job - Serial version ############"
