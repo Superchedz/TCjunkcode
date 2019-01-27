@@ -17,7 +17,7 @@ then
    then
       echo "TCAlexa.py process is running"
    else
-      echo "TCAlexa.py process is not running - ohhh no"
+      echo "TCAlexa.py process is not running - alert email sent"
       sudo python /home/pi/led/alerter.py "Alerter  - TCAlexa Error" "Process TCAlexa.py was not found but param is on check logs and restart"
    fi
 fi
