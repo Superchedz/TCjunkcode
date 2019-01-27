@@ -735,9 +735,9 @@ def Statuszone(statuszone):
                boostleft = int(tend-tnow) / 60
                
                if zonetype == "T":
-                 status_msg = status_msg + 'is currently at ' +str(zonecurrenttemp) + ' degrees and is running due to an active boost, at ' + str(round(override_temp,1)) + 'degrees and will run for another ' + str(boostleft)+ ' minutes'
+                 status_msg = status_msg + 'is currently at ' +str(zonecurrenttemp) + ' degrees and has an active boost, at ' + str(round(override_temp,1)) + 'degrees and will run for another ' + str(boostleft)+ ' minutes'
                else:
-                 status_msg = status_msg + 'is currently running due to an active boost and will run for another ' + str(boostleft)+ ' minutes'
+                 status_msg = status_msg + 'has an active boost and will run for another ' + str(boostleft)+ ' minutes'
              else:
                status_msg = status_msg + 'is currently on due to a boost but i found a multiple active boosts, thats kinda weird'
          Override_get.close()
