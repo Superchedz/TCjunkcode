@@ -462,14 +462,14 @@ def preset(keyword):
        if zoneactiveind == "Y":
          if zonecurrentstate == "OFF":
            if zonetype == "T":
-             preset_msg = 'Your preset is to boost the ' + str(zonename) + 'zone, for ' + str(duration) + 'minutes at ' + str(temperature) + 'degrees , is that correct?'
+             preset_msg = 'Your preset is to boost the ' + str(zonename) + ' zone, for ' + str(duration) + ' minutes, at ' + str(temperature) + ' degrees , is that correct?'
            else:
-             preset_msg = 'Your preset is to boost the ' + str(zonename) + 'zone, for ' + str(duration) + 'minutes, is that correct?'
+             preset_msg = 'Your preset is to boost the ' + str(zonename) + ' zone, for ' + str(duration) + ' minutes, is that correct?'
          else:
            if zonetype == "T":
-             preset_msg = 'Your preset is to boost the ' + str(zonename) + 'zone, for ' + str(duration) + 'minutes at' + str(temperature) +  'degrees, this zone is already running, is that ok?'
+             preset_msg = 'Your preset is to boost the ' + str(zonename) + ' zone, for ' + str(duration) + ' minutes, at' + str(temperature) +  ' degrees, this zone is already running, is that ok?'
            else:
-             preset_msg = 'Your preset is to boost the ' + str(zonename) + 'zone, for ' + str(duration) + 'minutes, this zone is already running, is that ok?'
+             preset_msg = 'Your preset is to boost the ' + str(zonename) + ' zone, for ' + str(duration) + ' minutes, this zone is already running, is that ok?'
          write_alexa_temp_boost(zone, duration, temperature)
          write_log ('Alexa preset, temp record saved ok', keyword) 
        else:
