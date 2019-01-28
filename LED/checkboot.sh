@@ -1,3 +1,12 @@
+#!/bin/bash
+# Define a timestamp function
+timestamp() {
+  date +"%T"
+}
+
+# do something...
+timestamp # print timestamp
+
 if pgrep -f "python bootloop.py" > /dev/null
 then
     echo "bootloop.py process is running"

@@ -31,6 +31,7 @@ import email
 import email.mime.application 
 from datetime import timedelta
 import datetime
+from getpw import getpass
 ################################################################################################
 
 print "" 
@@ -295,9 +296,11 @@ def critical_error(Log_From, Log_Text, shutdownmsg):
 ###############################################################################################
 ###############################################################################################
 
+dbpass = getpass()
+
 db = MySQLdb.connect (host   = "localhost",
-                      user   = "root",
-                      passwd = "pass123",
+                      user   = "TCROOT9000",
+                      passwd = dbpass,
                       db     = "BoilerControl")
 
 #write_log ('CheckSense', 'Startup')
