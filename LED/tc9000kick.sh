@@ -38,7 +38,7 @@ sh ./home/pi/led/kicker.sh > /home/pi/logs/kickero.log
 echo '######################################################'
 echo "Tidying up MessageBridge logs to avoid getting too big"
 
-sudo rm -f /home/pi/WirelessThings-LaunchPad/MessageBridge/MessageBridge.log
-sudo rm -f /home/pi/Launchpad/MessageBridge/MessageBridge.log
+sudo rm  /home/pi/WirelessThings-LaunchPad/MessageBridge/MessageBridge.log
+sudo rm  /home/pi/Launchpad/MessageBridge/MessageBridge.log
 
  
