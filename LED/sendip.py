@@ -13,7 +13,7 @@
 #  1.0      2014-11-01 GLC   Initial Version
 #  1.1      2017-01-10 GLC   Added code to obtain and email out the NGROK address to support 
 #                            Alexa integration
-#  1.2      2019-01-20 GLC   Hardened DB security
+#  1.2      2019-01-20 GLC   Hardened DB security - fixed typo on indents
 ################################################################################################
 import socket
 import fcntl
@@ -253,7 +253,7 @@ def send_alert(subject, msgbody):
 now = datetime.datetime.now()
 print "Its %s" % now
 
-sleep (30)
+sleep (3)
 #####################################################################################################
 # first get the old IP from the params table:
 dbpass = getpass()
@@ -287,7 +287,7 @@ NewIIP = get_ip_address('eth0')
 
 
 print NewEIP
-print NewIIP 
+print NewIIP
   
 #####################################################################################################
 # next  get the old Internal IP from the params table:
@@ -318,8 +318,8 @@ if (OldEIP <> NewEIP) or (OldIIP <> NewIIP):
   with open('tunnels.json') as data_file:
       datajson = json.load(data_file)
 
-for i in datajson['tunnels']:
-  ngmsg = i['public_url'] + '\n'
+  for i in datajson['tunnels']:
+    ngmsg = i['public_url'] + '\n'
 
   
 
