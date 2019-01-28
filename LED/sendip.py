@@ -253,7 +253,7 @@ def send_alert(subject, msgbody):
 now = datetime.datetime.now()
 print "Its %s" % now
 
-sleep (3)
+sleep (30)
 #####################################################################################################
 # first get the old IP from the params table:
 dbpass = getpass()
