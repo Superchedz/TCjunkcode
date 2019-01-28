@@ -21,6 +21,7 @@
 #  1.0      2014-11-01 GLC   Initial Version
 #  1.1      2019-01-01 GLC   Bit of a tidy up and continue dev
 #  1.2      2019-01-11 GLC   Finalised code for first deployment
+#  1.3      2019-01-28 GLC   Improved help and added fallback intent
 
 from flask import Flask
 from flask_ask import Ask, statement, question, session
@@ -187,20 +188,20 @@ def get_preset_zone(keyword):
 
 ###########################################  functions to convert alexa duration to mins and validate it ###################################################
 def conv_duration(alexa_duration):
-  
+  global durationok
+  durationok = True
   try:
     totalmins = alexa_duration.total_seconds()/60
   except:
     print "Error converting the duration"
     write_log ('Alexa bad duration', str(alexa_duration))
-    return statement('the duration you provided could not be determined, i think you said something about potatoes - check the log for details')
-  
-    
+#    return statement('the duration you provided could not be determined, i think you said something about potatoes - check the log for details')
+    durationok = False
+    totalmins = 0       
   return int(totalmins)
   
 
-
-
+########################################### get the zone details from the zone number #########################################################
 
 def get_zone(zone_id):
 
@@ -299,13 +300,16 @@ def gono():
 def boost(zone, duration, temperature):
    global zonefound
    global Error_state
+   global durationok
 #####   zoneID = int(zone)
    
 # its possible the db connection has timeout, so ping first to reopen the connection
    db.ping(True)
 
    mins_duration = conv_duration(duration)
-   
+   if durationok == False:
+     return statement('the duration you provided could not be determined, i think you said something about potatoes - check the log for details')
+
    if ' ' in zone:
      boost_msg = 'A space was detected in your zone name of ' + str(zone) + '.  Please check your zone configuration and adjust your pronunciation'
      write_log ('Alexa bad boost request - contained spaces', zone)
@@ -369,6 +373,7 @@ def boostNT(zone, duration):
 
    global zonefound
    global Error_state
+   global durationok
    temperature = 1
 #####   zoneID = int(zone)
    
@@ -376,6 +381,8 @@ def boostNT(zone, duration):
    db.ping(True)
    
    mins_duration = conv_duration(duration)
+   if durationok == False:
+     return statement('the duration you provided could not be determined, i think you said something about potatoes - check the log for details')
   
    
    if ' ' in zone:
@@ -462,14 +469,14 @@ def preset(keyword):
        if zoneactiveind == "Y":
          if zonecurrentstate == "OFF":
            if zonetype == "T":
-             preset_msg = 'Your preset is to boost the ' + str(zonename) + ' zone, for ' + str(duration) + ' minutes, at ' + str(temperature) + ' degrees , is that correct?'
+             preset_msg = 'Your preset is to boost the ' + str(zonename) + 'zone, for ' + str(duration) + 'minutes at ' + str(temperature) + 'degrees , is that correct?'
            else:
-             preset_msg = 'Your preset is to boost the ' + str(zonename) + ' zone, for ' + str(duration) + ' minutes, is that correct?'
+             preset_msg = 'Your preset is to boost the ' + str(zonename) + 'zone, for ' + str(duration) + 'minutes, is that correct?'
          else:
            if zonetype == "T":
-             preset_msg = 'Your preset is to boost the ' + str(zonename) + ' zone, for ' + str(duration) + ' minutes, at' + str(temperature) +  ' degrees, this zone is already running, is that ok?'
+             preset_msg = 'Your preset is to boost the ' + str(zonename) + 'zone, for ' + str(duration) + 'minutes at' + str(temperature) +  'degrees, this zone is already running, is that ok?'
            else:
-             preset_msg = 'Your preset is to boost the ' + str(zonename) + ' zone, for ' + str(duration) + ' minutes, this zone is already running, is that ok?'
+             preset_msg = 'Your preset is to boost the ' + str(zonename) + 'zone, for ' + str(duration) + 'minutes, this zone is already running, is that ok?'
          write_alexa_temp_boost(zone, duration, temperature)
          write_log ('Alexa preset, temp record saved ok', keyword) 
        else:
@@ -502,8 +509,7 @@ def yes():
 
    try:
        alexa_temp_boost_cursor.execute("SELECT * from alexa_temp_boost_b")
-
-   except:
+   except MySQLdb.Error as err:
        print ("******* Error reading Alexa Boost : ERROR : {}".format(err))
        write_log ('ERROR: Selecting the stored alexa request',err)
        confirmmsg = "Something went wrong processing the boost record, your house will now explode...5...4...3...2...1.....parp"
@@ -744,15 +750,28 @@ def Statuszone(statuszone):
 ############################################################   Help Message   ##############################################################
 ############################################################################################################################################
   
-@ask.intent("TotalcontrolIntent")
+@ask.intent('AMAZON.HelpIntent')
 def help():
    
 #   msg = "you can boost a zone by saying ...  boost zone 1 for 10 minutes at 20 degrees ... you must specify the duration in minutes, so 2 hours would be 120 minutes.  To cancel a zone just say the word cancel then the zone number "
 #   msg = msg + "....you can also request the current temperature of a zone by asking how warm is it in zone 3 for example"
 #   msg = msg + "....you can also boost the hotwater using the presets by simply saying...hotwater"
-    msg = "Seriously, there's nothing i can do for you right now other than recommend a good plastic surgeon"
+    msg = "Seriously?  You need lots of help, but not the sort i can offer."
     write_log ('Alexa request', 'Some dumbass requested help')
     return statement(msg)
+
+@ask.intent("AMAZON.FallbackIntent")
+def fallback():
+   
+#   msg = "you can boost a zone by saying ...  boost zone 1 for 10 minutes at 20 degrees ... you must specify the duration in minutes, so 2 hours would be 120 minutes.  To cancel a zone just say the word cancel then the zone number "
+#   msg = msg + "....you can also request the current temperature of a zone by asking how warm is it in zone 3 for example"
+#   msg = msg + "....you can also boost the hotwater using the presets by simply saying...hotwater"
+    msg = "That command does not  match anything total control expects, you're wasting my time punk"
+    write_log ('Alexa request', 'Ended up in fallback')
+    return statement(msg)
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
