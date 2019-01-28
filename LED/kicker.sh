@@ -5,17 +5,7 @@ echo "##########################################################################
 echo "This is stage 2 of installing patches.  This does the actual installs"
 echo "Stage 1 was the TC9000kick.sh which pulled any new code down from GIT"
 
-
-echo ############### Shutdown installer #####################
-echo ## we can always do this as if the row exists it will just give an error.
-echo created 16/7/2017
-
 cd /home/pi/led
-
-
-echo Doing update to ensure shutdown value is always N   - for when its not new
-mysql --batch -h localhost -u root --password=pass123 -D  BoilerControl  < upshut.txt > supout.txt    
-
 
 echo "##########################################################################"
 echo "########## Start the NOIP service to update fowarding service ############"
