@@ -22,7 +22,7 @@ echo "##########################################################################
 cd /
 cd home/pi/led
 echo end of snooze
-nohup sudo python control1.py &
+nohup sudo python control1.py > /home/pi/logs/control1.log 2>&1 &
 cd /
 
 echo
@@ -32,7 +32,7 @@ echo "##########################################################################
 cd /
 cd home/pi/led
 echo end of snooze
-nohup sudo python TCAlexa.py &
+nohup sudo python TCAlexa.py /home/pi/logs/TCAlexa.log 2>&1 &
 cd /
 echo
 echo "##########################################################################"
@@ -40,7 +40,7 @@ echo "############  Start the ProtoSen scanner job - Serial version ############
 echo "##########################################################################"
 cd /
 cd home/pi/led
-nohup sudo python protosen.py &
+nohup sudo python protosen.py /home/pi/logs/protosen.log 2>&1 &
 cd /
 
 echo
@@ -49,7 +49,7 @@ echo "###################### Start the Bootloop program ########################
 echo "##########################################################################"
 cd /
 cd home/pi/led
-nohup sudo python bootloop.py &
+nohup sudo python bootloop.py /home/pi/logs/bootloop.log 2>&1 &
 cd /
 
 echo
@@ -59,7 +59,7 @@ echo "##########################################################################
 
 cd /
 cd home/pi/led
-sudo python sendip.py 
+nohup sudo python sendip.py /home/pi/logs/sendip.log 2>&1 &
 
 
 
