@@ -642,7 +642,7 @@ def cancel(cancelzone):
            if cancelzone == "all":
              cancel_msg =  str(numrows) + ' active boosts were cancelled successfully, goodbye'
            else:
-             cancel_msg =  'All active boosts on the ' +str(zonename) + 'zone were cancelled successfully, goodbye'
+             cancel_msg =  'All active boosts on the ' +str(zonename) + ' zone were cancelled successfully, goodbye you edjit'
      else:
        if str.isdigit(cancelzone) == True:
          cancel_msg =  'The zone number ' +str(cancelzone) + ' could not be found, please try again, you dumbo.'
@@ -706,10 +706,10 @@ def Statuszone(statuszone):
          if not Error_state:  
            numrows = int (Override_get.rowcount)
            if numrows == 0:
-		     if zonetype == "T":
-               status_msg = status_msg + 'is currently on due to a schedule and is at ' + str(zonecurrenttemp) + ' degrees'
+		     if zonetype == "T": 
+               status_msg = status_msg + ' is currently on due to a schedule and is at ' + str(zonecurrenttemp) + ' degrees'
              else:			 
-			   status_msg = status_msg + 'is currently on due to a schedule'
+			   status_msg = status_msg + ' is currently on due to a schedule'
            else:
 
              if numrows == 1:
@@ -729,7 +729,7 @@ def Statuszone(statuszone):
                else:
                  status_msg = status_msg + 'has an active boost and will run for another ' + str(boostleft)+ ' minutes'
              else:
-               status_msg = status_msg + 'is currently on due to a boost but i found a multiple active boosts, thats kinda weird'
+               status_msg = status_msg + ' is currently on due to a boost but i found a multiple active boosts, thats kinda weird'
          Override_get.close()
          db.commit()
        else:
