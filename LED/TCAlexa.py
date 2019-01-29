@@ -695,7 +695,6 @@ def Statuszone(statuszone):
        write_log ('Alexa status request ok', statuszone)
        status_msg = 'The ' + str(zonename) + ' zone '
        if zonestate == "ON":
-
          Override_get = db.cursor()
          try:
            Override_get.execute("SELECT Override_Temp, Override_end FROM override_b WHERE Override_end > NOW() and Zone_ID = %s", (zoneID))
@@ -707,7 +706,10 @@ def Statuszone(statuszone):
          if not Error_state:  
            numrows = int (Override_get.rowcount)
            if numrows == 0:
-             status_msg = status_msg + 'is currently on due to a schedule'
+		     if zonetype == "T":
+               status_msg = status_msg + 'is currently on due to a schedule and is at ' + str(zonecurrenttemp) + ' degrees'
+             else:			 
+			   status_msg = status_msg + 'is currently on due to a schedule'
            else:
 
              if numrows == 1:
