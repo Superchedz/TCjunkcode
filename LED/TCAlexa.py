@@ -706,10 +706,10 @@ def Statuszone(statuszone):
          if not Error_state:  
            numrows = int (Override_get.rowcount)
            if numrows == 0:
-		     if zonetype == "T": 
+             if zonetype == "T": 
                status_msg = status_msg + ' is currently on due to a schedule and is at ' + str(zonecurrenttemp) + ' degrees'
-             else:			 
-			   status_msg = status_msg + ' is currently on due to a schedule'
+             else: 
+               status_msg = status_msg + ' is currently on due to a schedule'
            else:
 
              if numrows == 1:
