@@ -746,12 +746,10 @@ if SensorMode == "SERIAL":
          if "@" in llapMsg:
            if DebugMode == "Y":
              print "ERROR: Found a @ in llap, ignoring it"
-#         read an single char to realign things		  
+#         read an single char to realign things  
            llapMsg = ser.read(1)
            print "ERRROR: not really an error but we got a @ in the message so are reading 1 extra character"
          else: 
-           print "Character to check is : " +str(llapMsg[0:1])
-
 # lets check the format of the message first, if it's short or we're out of synch, get things back on track.
 # all messages should start with an "a"
            if llapMsg[0:1] != "a":
