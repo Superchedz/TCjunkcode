@@ -1,4 +1,5 @@
 ################################################################################################
+################################################################################################
 #                                       Protosen.py 
 #                                       ==========
 ################################################################################################
@@ -9,7 +10,7 @@
 #  On startup this program sends and alert email, this is useful to alert the user that the 
 #  system has been restarted, possibly as the result of a reboot or powercut.
 #  If additional monitoring/debugging info is required, the debug param in the params_b table
-#  can be set to on, that forces this program to PRINT lots of additional info to the terminal, 
+#  can be set to on, that forces this program to PRINT lots of additional info to the terminal,
 #  this can either go to the log file (logs/logpt) or a terminal session if run manually.
 #  The program also records the sensor battery level readings and writes these to the zone_b
 #  table.
@@ -34,6 +35,8 @@
 #  3.3      2018-06-23 GLC   Fixed bug that assumed sensor started with a "Z" in battery calcs
 #  3.4      2018-12-16 GLC   Added PID to the start up email and tidied it.
 #  3.5      2019-01-20 GLC   Hardened DB security
+#  3.6      2019-01-31 GLC   Added logic to resync if the serial messages get out of step
+#                            and to dump trash characters
 ################################################################################################
 import serial
 import sys
@@ -255,6 +258,7 @@ def send_alert(subject, msgbody):
 
   if sendok:
     toadrs = [ToEmail] + [SupportEmail]
+    print toadrs
     try:
       SMTPServer.sendmail(FromEmail, toadrs, msg)
     except:
@@ -322,8 +326,8 @@ def writeTemp(llap_sensor_id, llap_temp):
       print "DEBUG: Temp wasn'numeric, oh dear"
       write_log ('ProtoSen Error non-numeric temp', err)
   else:
-    print "DEBUG: Zone wasnt found - E554"
     if DebugMode == "Y":
+      print "DEBUG: Zone wasnt found for sensor :" + str(llap_sensor_id)
       print "DEBUG: llap_temp" + llap_temp
 
 
@@ -351,7 +355,7 @@ def get_zone(sensor_id):
     print "DEBUG: Get_zone: about to do zone lookup"
     print "DEBUG: Sensor id for lookup is : " + sensor_id
   zone_cursor = db.cursor ()
-  zone_query = ("""select Zone_ID from zone_b where Zone_Sensor_ID = '%s'""" % (sensor_id))
+  zone_query = ("""select Zone_ID, Zone_Name from zone_b where Zone_Sensor_ID = '%s'""" % (sensor_id))
 
   try:
      zone_cursor.execute(zone_query)
@@ -366,6 +370,8 @@ def get_zone(sensor_id):
   if numrows == 1:
     zone_id_res = zone_cursor.fetchone()
     zone_id = zone_id_res[0]
+    if DebugMode == "Y":
+      print "DEBUG: Zone was found :" + zone_id_res[1]
     zone_found_ind = True
   else:
     zone_id = 0
@@ -651,7 +657,8 @@ print
 #determine is the sensors are serial or udp
 
 SensorMode = get_Sensor_Mode()
-DebugMode = get_debug()
+#DebugMode = get_debug()
+DebugMode = "Y"
 print "Sensor mode parameter found: " + SensorMode
 
 print "Opening connection and waiting for response...."
@@ -669,7 +676,7 @@ PID = os.getpid()
 while sendcounter < 10:
   sendcounter += 1
   
-  subject = "TC9000 Startup Alert: Primary sensor scanner process (v3.5). System ID: "
+  subject = "TC9000 Startup Alert: Primary sensor scanner process (v3.6). System ID: "
   msgbody = "The job that receives temp sensors readings has started successfully.\n\n" \
             "Process ID : " + str(PID) + "\n"\
             "\nFrom \n" \
@@ -712,6 +719,7 @@ if SensorMode == "SERIAL":
 #
 # Start infinite while loop to listen to XRF module
   while 1 :
+
    # All XRF module read and write commands should have 12 characters and begin with the letter "a"
    # Wait for message, the 1 second pause seems to improve the reading when several messages
    # are arriving in sequence, such as: a--TMP22.12-a--AWAKE----a--BATT2.74-a--SLEEPINGtime.
@@ -719,110 +727,147 @@ if SensorMode == "SERIAL":
      while ser.inWaiting()>0:
 #      This is inside loop so it can be turned on without a restart - used when running from command prompt
        DebugMode = get_debug()
-	   
 #      make sure we dont have a random a in there and mess things up
        buf = 'x'
        while buf[0] !='a':
          llapMsg = ser.read(12)
+         
          if DebugMode == "Y":
-           print "DEBUG: llapMSG = " + llapMsg
-           print now
+           print " "
+           print " "
+           print "######################### New message has arrived ################################"
+           print "DEBUG: Timestamp: " + str(now)          
+           print "DEBUG: llapMsg = " + llapMsg
+           
 #  display packet, helps to troubleshoot any errors
          now = datetime.datetime.now()
          now.strftime("%H:%M %m-%d-%Y")
-#       print 'Received '+ llapMsg + ' at ' + str(now)
      
          if "@" in llapMsg:
            if DebugMode == "Y":
-             print "found a @ i llap, ignoring it"
+             print "ERROR: Found a @ in llap, ignoring it"
 #         read an single char to realign things		  
            llapMsg = ser.read(1)
+           print "ERRROR: not really an error but we got a @ in the message so are reading 1 extra character"
          else: 
-           
-           now = datetime.datetime.now()
-           now.strftime("%H:%M %m-%d-%Y")
+           print "Character to check is : " +str(llapMsg[0:1])
+
+# lets check the format of the message first, if it's short or we're out of synch, get things back on track.
+# all messages should start with an "a"
+           if llapMsg[0:1] != "a":
+             send_alert('Sensor reading error, did not start with an a', llapmsg)             
+             write_log('Sensor error - not right start char', llapmsg)
+             if DebugMode == "Y":
+               print "ERROR: We found a message that doesn't start with the letter a, ditching it and resynching"
+               print "ERROR: the dodgy llap message was :" + str(llapMsg)             
+# so now we've reported it we need to synch up again
+# pull chars from the serial port until we findr 'a', then we know were at the start of a new message....then ignore this one and go back to the start
+             char = ser.read(1)
+             while char != "a":
+               char = ser.read(1)
+               if DebugMode == "Y": 
+                 print "ERROR: Dumping character from serial port: " + str(char)
+# We're out of step, so just delete the next 11 chars to get back to the start of the next message
+# ok yes this means we will loose the odd message, but life is too short to worry
+             dump = ser.read(11)     
+             if DebugMode == "Y":
+               print "ERROR: Throwing away these 11 chars to attempt to resynch: " + str(dump)
+           else:
+             now = datetime.datetime.now()
+             now.strftime("%H:%M %m-%d-%Y")
      
 # new sensors are format aZ1TEMP24.33
 # old sensors are format aZ2TMP023.33
-           if 'TMP' in llapMsg:	
+             if 'TMP' in llapMsg:	
+               if DebugMode == "Y":
+                 print "DEBUG: Found a TMP - OLD sensor reading in serial messages"		
+                 print ""
 
-             if DebugMode == "Y":
-               print "DEBUG: found a TMP - new sensor in serial messages"		
-               print ""
-             llap_sensor_id = llapMsg[1:3]
-             llap_temp = llapMsg[7:12]   
+               llap_sensor_id = llapMsg[1:3]
+               llap_temp = llapMsg[7:12]   
 
-             if DebugMode == "Y":
-#              print "DEBUG: llaptype found was " + llap_type 
-               print "DEBUG: llap payload found was " +  llap_temp
-               print "DEBUG: llap_sensor_id was " + llap_sensor_id
-               print "DEBUG: llap temp was" + llap_temp
+               if DebugMode == "Y":
+#                print "DEBUG: llaptype found was " + llap_type 
+                 print "DEBUG: llap payload found was :" + llapMsg
+                 print "DEBUG: llap_sensor_id was     :" + llap_sensor_id
+                 print "DEBUG: llap temp was          :" + llap_temp
 
   # now write it to the db
-             writeTemp(llap_sensor_id, llap_temp)
+               writeTemp(llap_sensor_id, llap_temp)
    
-           if "TEMP" in llapMsg:
-             if DebugMode == "Y": 
-               print "DEBUG: Found a TEMP - new sensor in serial messages"		
+             if "TEMP" in llapMsg:
+               if DebugMode == "Y": 
+                 print "DEBUG: Found a TEMP - NEW sensor in serial messages"		
 
-             llap_sensor_id = llapMsg[1:3]
-             llap_temp = llapMsg[8:12]   
+               llap_sensor_id = llapMsg[1:3]
+               llap_temp = llapMsg[8:12]   
 
-             if DebugMode == "Y":
-#              print "DEBUG: llaptype found was " + llap_type 
-               print "DEBUG: llap payload found was " +  llap_temp
-               print "DEBUG: llap_sensor_id was " + llap_sensor_id
-               print "DEBUG: llap temp was" + llap_temp
+               if DebugMode == "Y":
+#                print "DEBUG: llaptype found was " + llap_type 
+                 print "DEBUG: llap payload found was :" + llapMsg
+                 print "DEBUG: llap_sensor_id was     :" + llap_sensor_id
+                 print "DEBUG: llap temp was          :" + llap_temp
 
 # now write it to the db
-             writeTemp(llap_sensor_id, llap_temp)
+               writeTemp(llap_sensor_id, llap_temp)
 #  code to work with the key fobs - if a button press is detected we need to work out what it means.
-           if 'FOB' in llapMsg:
+             if 'FOB' in llapMsg:
 
-             if DebugMode == "Y":
-               print "DEBUG: Detected a button press"
-               print ""
-               llap_fob_id = llapMsg[1:3]
-               print "DEBUG: llap_fob_id = " + llap_fob_id 
-               llap_fob_name = llapMsg[3:9]
-               print "DEBUG: llap_fob_name = " + llap_fob_name
-               llap_fob_butt = llapMsg [9:10]
-               print "DEBUG: llap_fob_butt" + llap_fob_butt
-
-
+               if DebugMode == "Y":
+                 print "DEBUG: Detected a button press"
+                 print ""
+                 llap_fob_id = llapMsg[1:3]
+                 print "DEBUG: llap_fob_id = " + llap_fob_id 
+                 llap_fob_name = llapMsg[3:9]
+                 print "DEBUG: llap_fob_name = " + llap_fob_name
+                 llap_fob_butt = llapMsg [9:10]
+                 print "DEBUG: llap_fob_butt" + llap_fob_butt
 
 
-           if 'BATT' in llapMsg :
+             if 'BATT' in llapMsg :
 
         # Battery reading sent
-             if DebugMode == "Y":
-               print "DEBUG: Battery level is " + llapMsg[7:11] + "V"
+               
            # Save this value for later.
-             batt = llapMsg[7:11]
-             sensor_id =llapMsg[1:3]
+               batt = llapMsg[7:11]
+               sensor_id =llapMsg[1:3]
+               if DebugMode == "Y":
+                 print "DEBUG: llapMsg is       :" + llapMsg
+                 print "DEBUG: Battery level is :" + batt + "V"
+                 print "DEBUG: sensor id is     :" + sensor_id
 
-             if llapMsg[1:2] == "Z":
-               zone_id, found_zone_ind = get_zone(sensor_id)
+               if llapMsg[1:2] == "Z":
+                 zone_id, found_zone_ind = get_zone(sensor_id)
            
-               if found_zone_ind:
-                 if DebugMode == "Y":
-                   print "DEBUG: " + str(zone_id)
-                   print "DEBUG: zone found "
-
-                 battlevel = float(batt)
-                 if battlevel < 2:
-                   battpcnt = 0 
-                 else:
-                   battpcnt = int(float((battlevel - 1.95) / 1.05)*100)
+                 if found_zone_ind:
+                   if DebugMode == "Y":
+                     print "DEBUG: zone id was looked up as :" + str(zone_id)
+                     print "DEBUG: zone found "
+                 
+                   try:
+                     battlevel = float(batt)
+                   except ValueError:
+                     print "ERROR: The battery level was not a float xxxxxxxxx"
+                     battlevel = 2.4
+                     print batt
+                               
+                   if battlevel < 2:
+                     battpcnt = 0 
+                   else:
+                     battpcnt = int(float((battlevel - 1.95) / 1.05)*100)
 # new batteries can read slightly over, so max out the reading at 100% 
 
-                 if battpcnt > 100:
-                   battpcnt = 100
+                   if battpcnt > 100:
+                     battpcnt = 100
 # write the battery percentage to the zone so it can be displayed on the gui, also used to drive early 
 # low battery warning alerts.
-                 writeBatt(str(zone_id), battpcnt)
-               else:
-                 continue
+                   writeBatt(str(zone_id), battpcnt)
+                   if DebugMode == "Y":
+                     print "DEBUG: Battery reading was written to the database"
+                     print "DEBUG: Zone was : " + str(zone_id)
+                     print "DEBUG: Battery percent was" + str(battpcnt)
+                     print "#################### end of battery reading handling ########################"               
+                     print " "              
 else:
 # run code for UDP Sensors
 # Set up the UDP socket
@@ -867,7 +912,6 @@ else:
   # now write it to the db
       writeTemp(llap_sensor_id, llap_temp)
 
-   
     if 'BATT' in llap_type :
 
 #   Battery reading sent
@@ -879,7 +923,6 @@ else:
 # we need to work out if its a battery reading for a fob or a temp sensor, only way to do this is with the ID
 # temp sensor start with a Z, fobs start with an FOB
  
-
       if DebugMode == "Y":
         print "DEBUG: Battery reading for sensor type (F/Z) of " + llap_batt_sensor_type
       battlevel = float(batt)
@@ -904,8 +947,7 @@ else:
         else:
           print "ERROR: Didn't find the zone for that battery reading, no drama"
   
- 
- 
+  
  
 # old sensor in via message bridge and UDP port
     if 'TMP' in llap_type:	
