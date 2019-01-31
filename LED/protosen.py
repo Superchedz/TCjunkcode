@@ -755,8 +755,8 @@ if SensorMode == "SERIAL":
 # lets check the format of the message first, if it's short or we're out of synch, get things back on track.
 # all messages should start with an "a"
            if llapMsg[0:1] != "a":
-             send_alert('Sensor reading error, did not start with an a', llapmsg)             
-             write_log('Sensor error - not right start char', llapmsg)
+             send_alert('Sensor reading error, did not start with an a', llapMsg)             
+             write_log('Sensor error - not right start char', llapMsg)
              if DebugMode == "Y":
                print "ERROR: We found a message that doesn't start with the letter a, ditching it and resynching"
                print "ERROR: the dodgy llap message was :" + str(llapMsg)             
