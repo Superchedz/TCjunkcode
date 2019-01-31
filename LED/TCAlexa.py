@@ -310,6 +310,9 @@ def boost(zone, duration, temperature):
    if durationok == False:
      return statement('the duration you provided could not be determined, i think you said something about potatoes - check the log for details')
 
+   if zone.lower() == "of is":
+	 zone = "office"
+	  
    if ' ' in zone:
      boost_msg = 'A space was detected in your zone name of ' + str(zone) + '.  Please check your zone configuration and adjust your pronunciation'
      write_log ('Alexa bad boost request - contained spaces', zone)
@@ -384,7 +387,9 @@ def boostNT(zone, duration):
    if durationok == False:
      return statement('the duration you provided could not be determined, i think you said something about potatoes - check the log for details')
   
-   
+   if zone.lower() == "of is":
+	 zone = "office"
+	  
    if ' ' in zone:
      boost_msg = 'A space was detected in your zone name of ' + str(zone) + '.  Please check your zone configuration and adjust your pronunciation'
      write_log ('Alexa bad boost NT request - contained spaces', zone)
@@ -449,6 +454,9 @@ def preset(keyword):
    db.ping(True)
 
 # get the params for the preset keyword
+   if keyword.lower() == "of is":
+     keyword = "office"
+	 
    if ' ' in keyword:
      preset_msg = 'A space was detected in your zone name of ' + str(keyword) + '.  Please check your zone configuration and adjust your pronunciation'
      return statement(preset_msg)
@@ -591,6 +599,10 @@ def cancel(cancelzone):
    db.ping(True)
 
 # the request could be a zone id or the alexa keyword, so we need to handle either
+
+   if cancelzone.lower() = "of is":
+     cancelzone = office
+	 
    if ' ' in cancelzone:
      cancel_msg = 'A space was detected in your zone name of ' + str(cancelzone) + '.  Please check your zone configuration and adjust your pronunciation'
      write_log ('Alexa bad cancel request - contained spaces', cancelzone) 
@@ -665,7 +677,9 @@ def Statuszone(statuszone):
    db.ping(True)
    
 # the request could be a zone id or the alexa keyword, so we need to handle either
-   
+   if statuszone.lower() == "of is":
+     statuszone = "office"
+	 
    if ' ' in statuszone:
      status_msg = 'A space was detected in your zone name of ' + str(statuszone) + '.  Please check your zone configuration and adjust your pronunciation'
      write_log ('Alexa bad status request - contained spaces', statuszone)    
