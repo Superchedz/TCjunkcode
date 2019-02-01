@@ -657,9 +657,9 @@ print
 #determine is the sensors are serial or udp
 
 SensorMode = get_Sensor_Mode()
-#DebugMode = get_debug()
-DebugMode = "Y"
-print "Sensor mode parameter found: " + SensorMode
+DebugMode = get_debug()
+
+print "DEBUG: Sensor mode parameter found: " + SensorMode
 
 print "Opening connection and waiting for response...."
 #write_log ('Scanner Job', 'Startup')
@@ -703,7 +703,6 @@ if not sendok:
 else:
   print "ProtoSen - Email sent ok - startup complete"
 
-
 # read the time
   now = datetime.datetime.now()
 
@@ -726,7 +725,8 @@ if SensorMode == "SERIAL":
      time.sleep(0.1)
      while ser.inWaiting()>0:
 #      This is inside loop so it can be turned on without a restart - used when running from command prompt
-       DebugMode = get_debug()
+#       DebugMode = get_debug()
+       DebugMode = "Y"
 #      make sure we dont have a random a in there and mess things up
        buf = 'x'
        while buf[0] !='a':
@@ -746,10 +746,12 @@ if SensorMode == "SERIAL":
          if "@" in llapMsg:
            if DebugMode == "Y":
              print "ERROR: Found a @ in llap, ignoring it"
-#         read an single char to realign things  
+#            read an single char to realign things		  
            llapMsg = ser.read(1)
            print "ERRROR: not really an error but we got a @ in the message so are reading 1 extra character"
          else: 
+           if DebugMode == "Y":          
+             print "DEBUG: Character to check is : " +str(llapMsg[0:1])
 # lets check the format of the message first, if it's short or we're out of synch, get things back on track.
 # all messages should start with an "a"
            if llapMsg[0:1] != "a":
@@ -759,7 +761,7 @@ if SensorMode == "SERIAL":
                print "ERROR: We found a message that doesn't start with the letter a, ditching it and resynching"
                print "ERROR: the dodgy llap message was :" + str(llapMsg)             
 # so now we've reported it we need to synch up again
-# pull chars from the serial port until we findr 'a', then we know were at the start of a new message....then ignore this one and go back to the start
+# pull chars from the serial port until we find an 'a', then we know were at the start of a new message....then ignore this one and go back to the start
              char = ser.read(1)
              while char != "a":
                char = ser.read(1)
@@ -790,7 +792,7 @@ if SensorMode == "SERIAL":
                  print "DEBUG: llap_sensor_id was     :" + llap_sensor_id
                  print "DEBUG: llap temp was          :" + llap_temp
 
-  # now write it to the db
+# now write it to the db
                writeTemp(llap_sensor_id, llap_temp)
    
              if "TEMP" in llapMsg:
