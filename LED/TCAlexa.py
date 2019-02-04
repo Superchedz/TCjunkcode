@@ -492,8 +492,8 @@ def preset(keyword):
          write_log ('Alexa bad preset, zone deactivated', keyword) 
          return statement(preset_msg)
      else:
-       #preset_msg = 'The ' + str(keyword) + ' preset you requested was not found, please check your spelling, speak more clearly, dont mumble and also avoid weird accents.....such as saying your in the par shar for half an are'
-       preset_msg = 'The ' + str(keyword) + ' preset you requested was not found, Please check your zone configuration and adjust your pronunciation'
+       preset_msg = 'The ' + str(keyword) + ' preset you requested was not found, please check your spelling, speak more clearly, dont mumble and also avoid weird accents.....such as saying your in the par shar for half an are'
+       #preset_msg = 'The ' + str(keyword) + ' preset you requested was not found, Please check your zone configuration and adjust your pronunciation'
        write_log ('Alexa bad preset request - keyword not found', keyword) 
        return statement(preset_msg)
    return question(preset_msg)
