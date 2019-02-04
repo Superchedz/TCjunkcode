@@ -37,6 +37,7 @@
 #  3.5      2019-01-20 GLC   Hardened DB security
 #  3.6      2019-01-31 GLC   Added logic to resync if the serial messages get out of step
 #                            and to dump trash characters
+#  3.7      2019-02-04 GLC   removed check in z sensors in battery level code for serial
 ################################################################################################
 import serial
 import sys
@@ -676,7 +677,7 @@ PID = os.getpid()
 while sendcounter < 10:
   sendcounter += 1
   
-  subject = "TC9000 Startup Alert: Primary sensor scanner process (v3.6). System ID: "
+  subject = "TC9000 Startup Alert: Primary sensor scanner process (v3.7). System ID: "
   msgbody = "The job that receives temp sensors readings has started successfully.\n\n" \
             "Process ID : " + str(PID) + "\n"\
             "\nFrom \n" \
@@ -836,38 +837,38 @@ if SensorMode == "SERIAL":
                  print "DEBUG: Battery level is :" + batt + "V"
                  print "DEBUG: sensor id is     :" + sensor_id
 
-               if llapMsg[1:2] == "Z":
-                 zone_id, found_zone_ind = get_zone(sensor_id)
+
+               zone_id, found_zone_ind = get_zone(sensor_id)
            
-                 if found_zone_ind:
-                   if DebugMode == "Y":
-                     print "DEBUG: zone id was looked up as :" + str(zone_id)
-                     print "DEBUG: zone found "
+               if found_zone_ind:
+                 if DebugMode == "Y":
+                   print "DEBUG: zone id was looked up as :" + str(zone_id)
+                   print "DEBUG: zone found "
                  
-                   try:
-                     battlevel = float(batt)
-                   except ValueError:
-                     print "ERROR: The battery level was not a float xxxxxxxxx"
-                     battlevel = 2.4
-                     print batt
+                 try:
+                   battlevel = float(batt)
+                 except ValueError:
+                   print "ERROR: The battery level was not a float xxxxxxxxx"
+                   battlevel = 2.4
+                   print batt
                                
-                   if battlevel < 2:
-                     battpcnt = 0 
-                   else:
-                     battpcnt = int(float((battlevel - 1.95) / 1.05)*100)
+                 if battlevel < 2:
+                   battpcnt = 0 
+                 else:
+                   battpcnt = int(float((battlevel - 1.95) / 1.05)*100)
 # new batteries can read slightly over, so max out the reading at 100% 
 
-                   if battpcnt > 100:
-                     battpcnt = 100
+                 if battpcnt > 100:
+                   battpcnt = 100
 # write the battery percentage to the zone so it can be displayed on the gui, also used to drive early 
 # low battery warning alerts.
-                   writeBatt(str(zone_id), battpcnt)
-                   if DebugMode == "Y":
-                     print "DEBUG: Battery reading was written to the database"
-                     print "DEBUG: Zone was : " + str(zone_id)
-                     print "DEBUG: Battery percent was" + str(battpcnt)
-                     print "#################### end of battery reading handling ########################"               
-                     print " "              
+                 writeBatt(str(zone_id), battpcnt)
+                 if DebugMode == "Y":
+                   print "DEBUG: Battery reading was written to the database"
+                   print "DEBUG: Zone was : " + str(zone_id)
+                   print "DEBUG: Battery percent was" + str(battpcnt)
+                   print "#################### end of battery reading handling ########################"               
+                   print " "              
 else:
 # run code for UDP Sensors
 # Set up the UDP socket
