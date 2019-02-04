@@ -46,6 +46,7 @@
 #  2.6      2018-12-16 GLC   Added code to get the NGROK endpoint address for when supporting ALEXA
 #                            Also obtained address and included in email - checked Alexa_YN param.                   
 #  2.7      2019-01-02 GLC   Added more complex password mgt for database - get and build it.
+#  2.8      2019-02-04 GLC   Added write of NGROK address to params table
 ###################################################################################################
 
 import RPi.GPIO as GPIO 
@@ -732,7 +733,7 @@ sendok = False
 sendcounter = 0
 WebAddr = get_web()
 PID = os.getpid()
-# get the ngrok endpoint address to add into startup email - to allow reset in AWS until its static
+
 ipaddress = get_ip_address()
 
 # get the alexa param and check if its on, if so send the ngrok address in the start up email.
@@ -753,15 +754,29 @@ if AlexaON == "Y":
   else:
     for i in datajson['tunnels']:
       ngmsg = i['public_url'] + '\n'
-	
+
+# store the ngrok in the database so its available to the gui
+
+  ngrok_cursor = db.cursor ()
+  ngrok_query = ("""UPDATE params_b SET Param_Value = '%s' where Param_Name = 'NGROK_address'""" % (ngmsg))
+ 
+  try:
+     ngrok_cursor.execute(ngrok_query)
+     db.commit()
+  except MySQLdb.Error as err:
+     print ("***** Error on save NGROK address to param: ERROR: {}".format(err))
+     write_log('Control Main NGROK', err)
+     db.rollback()
+  ngrok_cursor.close()
+ 	
 # format up the startup email with info
-subject = "TC9000 Startup Alert: Primary switching process (v2.7). System ID: "
+subject = "TC9000 Startup Alert: Primary switching process (v2.8). System ID: "
 if AlexaON == "Y":
+  
   msgbody = "The main Control job has started successfully.\n\n" \
             "Your local IP address is " + str(ipaddress) + "\n" \
             "Your web Address is " + str(WebAddr) + "\n" \
-            "Your unique Alexa endpoint address is " + str(ngmsg) + "\n" \
-			"Configure Alexa at https://developer.amazon.com/alexa/console/ask? \n\n" \
+            "Your Alexa end point is " + str(ngmsg) + "\n" \
             "Unix Process ID : " + str(PID) + "\n"\
             "\n\nFrom \n\n" \
             "The TotalControl9000 Support Team"
@@ -781,7 +796,6 @@ while sendcounter < 10:
   if sendok:
     sendcounter = 11;  
     write_log('Control1 - Main','Starting up ok - email sent')
-    print "Send ok"
   else:
     print "Control1 - Email error - sleeping for 15 seconds before retrying"
     sleep (15)
