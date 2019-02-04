@@ -777,6 +777,7 @@ if AlexaON == "Y":
             "Your local IP address is " + str(ipaddress) + "\n" \
             "Your web Address is " + str(WebAddr) + "\n" \
             "Your Alexa end point is " + str(ngmsg) + "\n" \
+            "Update the end point into the AWS console https://developer.amazon.com/alexa/ \n\n" \
             "Unix Process ID : " + str(PID) + "\n"\
             "\n\nFrom \n\n" \
             "The TotalControl9000 Support Team"
