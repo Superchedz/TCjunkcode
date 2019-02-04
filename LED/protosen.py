@@ -37,7 +37,7 @@
 #  3.5      2019-01-20 GLC   Hardened DB security
 #  3.6      2019-01-31 GLC   Added logic to resync if the serial messages get out of step
 #                            and to dump trash characters
-#  3.7      2019-02-04 GLC   removed check in z sensors in battery level code for serial
+#  3.7      2019-02-04 GLC   Removed check in z sensors in battery level code for serial
 ################################################################################################
 import serial
 import sys
@@ -608,7 +608,7 @@ def writeBatt(zone_id, battpct):
     cursor = db.cursor()
 
 #
-#    # prepare a cursor for storing just the current temperature reading against the zone record
+#prepare a cursor for storing just the current temperature reading against the zone record
     cursorb = db.cursor()
 #
 #    # Prepare SQL query to UPDATE a record into the database.
@@ -726,8 +726,7 @@ if SensorMode == "SERIAL":
      time.sleep(0.1)
      while ser.inWaiting()>0:
 #      This is inside loop so it can be turned on without a restart - used when running from command prompt
-#       DebugMode = get_debug()
-       DebugMode = "Y"
+       DebugMode = get_debug()
 #      make sure we dont have a random a in there and mess things up
        buf = 'x'
        while buf[0] !='a':
