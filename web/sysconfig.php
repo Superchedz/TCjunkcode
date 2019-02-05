@@ -27,6 +27,7 @@ $YPlan_ch_zone = 0;
 $YPlan_hw_zone = 0;
 $YPlan_gpio = 0;
 $WebAddr = "";
+$NGROK = "Not Set";
 
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
@@ -91,8 +92,23 @@ if ($result->num_rows > 0) {
             $AlexaYN = $row["Param_Value"];
 
         }        
+        if ($row["Param_Name"] == "NGROK_address") {
+            $NGROK = $row["Param_Value"];
+        }
     }
 }
+
+
+echo "  <div class='form-group'>";
+echo "    <label for='scparam_ngrok' class='col-sm-4 control-label'>Alexa Endpoint</label>";
+echo "    <div class='col-sm-8'>";
+echo "      <input type='text' class='form-control' id='scparam_ngrok' placeholder='Alexa Endpoint' value='" .
+    $NGROK . "'>";
+echo "    </div>";
+echo "  </div>";
+
+
+
 
 echo "<form class='form-vertical'>";
 echo "  <div class='form-group'>";
@@ -179,7 +195,7 @@ echo "  </div>";
 
 
 echo "<div class='form-group'>";
-echo "  <label for='scparam_alexa' class='col-sm-5 control-label'>Alexa Integration</label>";
+echo "  <label for='scparam_alexa' class='col-sm-5 control-label'>Alexa Enabled</label>";
 echo "    <div class='col-sm-7'>";
 echo "  <select id='scparam_alexa' name='scparam_alexa'>"; 
 
