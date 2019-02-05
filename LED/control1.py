@@ -751,7 +751,7 @@ if AlexaON == "Y":
   except:
     print "*** Error - Alexa is set to ON but no endpoint found ***"
     write_log('Control1 - Main','Alexa is on but no endpoint address found')
-    ngmsg = ": *** Alexa endpoint not found - contact support and turn off in system settings ***"
+    ngmsg = ": ** Alexa endpoint not set **"
   else:
     for i in datajson['tunnels']:
       ngmsg = i['public_url'] + '\n'
