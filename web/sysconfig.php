@@ -14,7 +14,7 @@ $tbl_name = "params_b"; // Table name
 
 $sql = "SELECT * FROM $tbl_name";
 $result = mysqli_query($con, $sql);
-
+$AlexaYN = "";
 $Interval = 0;
 $FromEmail = "";
 $ToEmail = "";
@@ -85,9 +85,12 @@ if ($result->num_rows > 0) {
         }
         if ($row["Param_Name"] == "YPlan_GPIO") {
             $YPlan_gpio = $row["Param_Value"];
-        }		
-		
 
+        }	
+        if ($row["Param_Name"] == "Alexa_YN") {
+            $AlexaYN = $row["Param_Value"];
+
+        }        
     }
 }
 
@@ -167,9 +170,44 @@ echo "    <div class='col-sm-4'>";
 echo "  </div>";
 echo "  </div>";
 
+
 echo "  <div class='form-group'>";
 echo "    <label for='scparam_frost' class='col-sm-10 text-left control-label'>A reboot is required if any of the below fields are changed.</label>";
 echo "  </div>";
+
+
+
+
+echo "<div class='form-group'>";
+echo "  <label for='scparam_alexa' class='col-sm-5 control-label'>Alexa Integration</label>";
+echo "    <div class='col-sm-7'>";
+echo "  <select id='scparam_alexa' name='scparam_alexa'>"; 
+
+if ($AlexaYN == 'Y')
+{
+	echo "     <option value='Y' selected>Y</option>";
+}
+else{
+	echo "     <option value='Y'>Y</option>";
+}
+
+if ($AlexaYN == 'N')
+{
+	echo "     <option value='N' selected>N</option>";
+}
+else{
+	echo "     <option value='N'>N</option>";
+}
+
+echo "  </select>";
+echo "   </div>";
+echo "</div>";  
+ 
+
+
+
+
+
 
 echo "<div class='form-group'>";
 echo "  <label for='scparam_yplan' class='col-sm-5 control-label'>Plan Type</label>";
@@ -190,7 +228,6 @@ if ($YPlan == 'N')
 else{
 	echo "     <option value='N'>S-Plan/None</option>";
 }
-	
 echo "  </select>";
 echo "</div>";
 echo "</div>";

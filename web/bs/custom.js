@@ -380,13 +380,13 @@ function submitConfig() {
     var scparam_toemail = document.getElementById("scparam_toemail").value;
     var scparam_logret = document.getElementById("scparam_logret").value;
     var scparam_frost = document.getElementById("scparam_frost").value;
+    var scparam_alexa = document.getElementById("scparam_alexa").value;
     var scparam_yplan = document.getElementById("scparam_yplan").value;
-	
     var scparam_yplan_chzone = document.getElementById("scparam_yplanchzone").value;
     var scparam_yplan_hwzone = document.getElementById("scparam_yplanhwzone").value;
 	  
 	  
-      var scparam_yplan_gpio = document.getElementById("scparam_yplan_gpio").value;
+    var scparam_yplan_gpio = document.getElementById("scparam_yplan_gpio").value;
 
     var url = "savesysconfig.php?scparam_polinterval=" + scparam_polinterval;
 
@@ -410,6 +410,9 @@ function submitConfig() {
 
     url += "&scparam_frost=";
     url +=  scparam_frost;
+    
+    url += "&scparam_alexa=";
+    url +=  scparam_alexa;
 
 	url += "&scparam_yplan=";
     url +=  scparam_yplan;

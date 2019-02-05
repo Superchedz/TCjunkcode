@@ -47,6 +47,7 @@
 #                            Also obtained address and included in email - checked Alexa_YN param.                   
 #  2.7      2019-01-02 GLC   Added more complex password mgt for database - get and build it.
 #  2.8      2019-02-04 GLC   Added write of NGROK address to params table
+#  2.9      2019-02-04 GLC   Added default value of ngmsg in case its not available.
 ###################################################################################################
 
 import RPi.GPIO as GPIO 
@@ -740,7 +741,7 @@ ipaddress = get_ip_address()
 # need to check the tunnel is available too.
 
 AlexaON = get_Alexa()
-
+ngmsg = "undefined"
 if AlexaON == "Y":
 # get the ngrok tunnel details as they need to go in the startup email
   try:
@@ -770,7 +771,7 @@ if AlexaON == "Y":
   ngrok_cursor.close()
  	
 # format up the startup email with info
-subject = "TC9000 Startup Alert: Primary switching process (v2.8). System ID: "
+subject = "TC9000 Startup Alert: Primary switching process (v2.9). System ID: "
 if AlexaON == "Y":
   
   msgbody = "The main Control job has started successfully.\n\n" \
