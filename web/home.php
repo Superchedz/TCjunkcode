@@ -508,7 +508,7 @@ if (isset($_SESSION['myname'])) {
     <div class='form-group'>
     <label for='scparam_pinnum' class='col-sm-4 control-label'>Relay Pin Num (Pi)</label>
         <div class='col-sm-2'>
-            <input type='number' class='form-control' id='scparam_pinnum'>
+            <input type='number' class='form-control' id='scparam_pinnumscparam_pinnum'>
         </div>
     </div>
 
@@ -529,10 +529,37 @@ if (isset($_SESSION['myname'])) {
             <input type='text' class='form-control' id='scparam_zonetype' value="0">
         </div>
         <div class='col-sm-5'>
-            <label for='scparam_zonetype'  text-left control-label'>T (Temp) or N (No Sensor)</label>
+            <label for='scparam_zonetype'  text-left control-label'>T (Temp) or N (No)</label>
         </div>
     </div>
 
+    <div class='form-group'>
+        <label for='scparam_alexakeyword' class='col-sm-4 control-label'>Alexa Keyword</label>
+        <div class='col-sm-4'>
+            <input type='text' class='form-control' id='scparam_alexakeyword'>
+        </div>
+    </div>
+
+    <div class='form-group'>
+        <label for='scparam_alexaduration' class='col-sm-4 control-label'>Alexa Duration</label>
+        <div class='col-sm-2'>
+            <input type='number' class='form-control' id='scparam_alexaduration'>
+        </div>
+        <div class='col-sm-5'>
+            <label for='scparam_alexaduration2'  text-left control-label'>Mins</label>
+        </div>
+    </div>
+
+    
+    <div class='form-group'>
+        <label for='scparam_alexatemp' class='col-sm-4 control-label'>Alexa Temp</label>
+        <div class='col-sm-3'>
+            <input type='number' class='form-control' id='scparam_alexatemp' value="0">
+        </div>
+        <div class='col-sm-5'>
+            <label for='scparam_alexatemp1' control-label'>&deg;C</label>
+        </div>
+    </div>
 
 	
       </form>
@@ -592,8 +619,7 @@ if (isset($_SESSION['myname'])) {
     <div class='form-group'>
         <label for='scparam_extendperiod' class='col-sm-12 control-label'>Select to Shutdown or Restart the system?</label>
     </div>
-
-        
+       
       </form>
       </div>
       <div class="modal-footer">
@@ -604,11 +630,6 @@ if (isset($_SESSION['myname'])) {
     </div>
   </div>
 </div>
-
-
-
-
-
 
 
 
@@ -710,7 +731,35 @@ if (isset($_SESSION['myname'])) {
         <div class='col-sm-2'>
             <label for='scparam_addzonetype1' class='col-sm-6 control-label'>T(Temp) or N</label>
         </div>
-    </div>    
+    </div> 
+
+    <div class='form-group'>
+        <label for='scparam_addalexakeyword' class='col-sm-4 control-label'>Alexa Keyword</label>
+        <div class='col-sm-4'>
+            <input type='text' class='form-control' id='scparam_addalexakeyword'>
+        </div>
+    </div>  
+    
+    <div class='form-group'>
+        <label for='scparam_addalexaduration' class='col-sm-4 control-label'>Alexa Duration</label>
+        <div class='col-sm-2'>
+            <input type='number' class='form-control' id='scparam_addalexaduration' value="0">
+        </div>
+        <div class='col-sm-2'>
+            <label for='scparam_addalexaduration1' class='col-sm-6 control-label'>mins</label>
+        </div>
+    </div> 
+
+    <div class='form-group'>
+        <label for='scparam_addalexatemp' class='col-sm-4 control-label'>Alexa Temp</label>
+        <div class='col-sm-2'>
+            <input type='number' class='form-control' id='scparam_addalexatemp' value="0">
+        </div>
+        <div class='col-sm-2'>
+            <label for='scparam_addalexatemp1' class='col-sm-6 control-label'>&deg;C</label>
+        </div>
+    </div>
+
       </form>
       </div>
       <div class="modal-footer">

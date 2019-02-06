@@ -19,14 +19,19 @@ $scparam_zonesensor = GetInputFromRequest('scparam_addzonesensor');
 $scparam_offset = GetInputFromRequest('scparam_addoffset');
 $scparam_zonetype = GetInputFromRequest('scparam_addzonetype');
 $scparam_pinnum = GetInputFromRequest('scparam_addpinnum');
-
-
+$scparam_alexakeyword = GetInputFromRequest('scparam_addalexakeyword');
+$scparam_alexaduration = GetInputFromRequest('scparam_addalexaduration');
+$scparam_alexatemp = GetInputFromRequest('scparam_addalexatemp');
 
 $scparam_zonename = mysqli_real_escape_string($con, $scparam_zonename);
 $scparam_zonesensor = mysqli_real_escape_string($con, $scparam_zonesensor);
 $scparam_offset = mysqli_real_escape_string($con, $scparam_offset);
 $scparam_zonetype = mysqli_real_escape_string($con, $scparam_zonetype);
 $scparam_pinnum = mysqli_real_escape_string($con, $scparam_pinnum);
+$scparam_alexakeyword = mysqli_real_escape_string($con, $scparam_alexakeyword);
+$scparam_alexaduration = mysqli_real_escape_string($con, $scparam_alexaduration);
+$scparam_alexatemp = mysqli_real_escape_string($con, $scparam_alexatemp);
+
 
 $sql = "select IFNULL(max(zone_id),0) + 1 as 'Id' from zone_b";
 $result = mysqli_query($con, $sql);
@@ -35,7 +40,7 @@ if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
     $NewId = $row["Id"];
 
-    $sql1 = "insert into $tbl_name (Zone_ID, Zone_Name, Zone_Active_Ind, Zone_Current_State_Ind, Zone_Last_Temp_Reading, Zone_Last_Temp_Reading_Dtime, Zone_Sensor_ID, Zone_Offset, Pi_Pin_num, Zone_Type) value($NewId , '$scparam_zonename', 'N', 'OFF', 0, current_date, '$scparam_zonesensor', $scparam_offset, $scparam_pinnum, '$scparam_zonetype')";
+    $sql1 = "insert into $tbl_name (Zone_ID, Zone_Name, Zone_Active_Ind, Zone_Current_State_Ind, Zone_Last_Temp_Reading, Zone_Last_Temp_Reading_Dtime, Zone_Sensor_ID, Zone_Offset, Pi_Pin_num, Zone_Type, alexa_keyword, alexa_duration, alexa_temp) value($NewId , '$scparam_zonename', 'N', 'OFF', 0, current_date, '$scparam_zonesensor', $scparam_offset, $scparam_pinnum, '$scparam_zonetype', '$scparam_alexakeyword', $scparam_alexaduration, $scparam_alexatemp)";
     $result1 = mysqli_query($con, $sql1);
 
     echo "<div class='alert alert-info alert-dismissible' role='alert'>New Zone Created.";

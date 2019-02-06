@@ -110,6 +110,9 @@ $('#myModalZoneConfig').on('show.bs.modal', function (event) {
   var zonezonetype = button.data('zonetype'); // Extract info from data-* attributes  
   //alert(zonezonetype);
   var pinnum = button.data('pinnum'); // Extract info from data-* attributes
+  var alexakeyword = button.data('alexakeyword'); // Extract info from data-* attributes
+  var alexaduration = button.data('alexaduration'); // Extract info from data-* attributes
+  var alexatemp = button.data('alexatemp'); // Extract info from data-* attributes
     
   document.getElementById("myForgotPwd3Label").innerHTML = zoneid + " - " + zonename + " Settings";
   document.getElementById("hdnzoneid2").value = zoneid;
@@ -118,6 +121,9 @@ $('#myModalZoneConfig').on('show.bs.modal', function (event) {
   document.getElementById("scparam_offset").value = zoneoffset;  
   document.getElementById("scparam_zonetype").value = zonezonetype;  
   document.getElementById("scparam_pinnum").value = pinnum;  
+  document.getElementById("scparam_alexakeyword").value = alexakeyword;  
+  document.getElementById("scparam_alexaduration").value = alexaduration;  
+  document.getElementById("scparam_alexatemp").value = alexatemp;  
   
   
 
@@ -164,6 +170,9 @@ $('#myModalAddZone').on('show.bs.modal', function (event) {
     document.getElementById("scparam_addoffset").value = "0";
     document.getElementById("scparam_addzonetype").value = "0";	
     document.getElementById("scparam_addpinnum").value = "0";
+    document.getElementById("scparam_addalexakeyword").value = "";
+    document.getElementById("scparam_addalexaduration").value = "0";
+    document.getElementById("scparam_addalexatemp").value = "0";
     
 });
 

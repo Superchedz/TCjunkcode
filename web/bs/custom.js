@@ -278,7 +278,9 @@ function submitZoneConfig(){
     var scparam_offset = document.getElementById("scparam_offset").value;
     var scparam_zonetype = document.getElementById("scparam_zonetype").value;	
     var scparam_pinnum = document.getElementById("scparam_pinnum").value;
-    
+    var scparam_alexakeyword = document.getElementById("scparam_alexakeyword").value;
+    var scparam_alexaduration = document.getElementById("scparam_alexaduration").value;   
+    var scparam_alexatemp = document.getElementById("scparam_alexatemp").value;    
     
    var xmlhttp = new XMLHttpRequest();
 
@@ -303,11 +305,20 @@ function submitZoneConfig(){
     url += "&scparam_offset=";
     url +=  scparam_offset;
     
-	url += "&scparam_zonetype=";
+    url += "&scparam_zonetype=";
     url +=  scparam_zonetype;
     
-	url += "&scparam_pinnum=";
+    url += "&scparam_pinnum=";
     url +=  scparam_pinnum;
+    
+    url += "&scparam_alexakeyword=";
+    url +=  scparam_alexakeyword;
+    
+    url += "&scparam_alexaduration=";
+    url +=  scparam_alexaduration;
+    
+    url += "&scparam_alexatemp=";
+    url +=  scparam_alexatemp;
 
     xmlhttp.open("GET", url, true);
     xmlhttp.send();
@@ -320,7 +331,9 @@ function submitNewZoneConfig(){
     var scparam_offset = document.getElementById("scparam_addoffset").value;
 	var scparam_zonetype = document.getElementById("scparam_zonetype").value;
     var scparam_pinnum = document.getElementById("scparam_addpinnum").value;
-
+    var scparam_alexakeyword = document.getElementById("scparam_addalexakeyword").value;
+    var scparam_alexaduration = document.getElementById("scparam_addalexaduration").value;
+    var scparam_alexatemp = document.getElementById("scparam_addalexatemp").value;
     
     
    var xmlhttp = new XMLHttpRequest();
@@ -334,12 +347,12 @@ function submitNewZoneConfig(){
             //window.location = "home.php";
         }
     }
-    
+
     var url = "savenewzoneconfig.php?";
 
     url += "scparam_addzonename=";
     url +=  scparam_zonename;
-    
+
     url += "&scparam_addzonesensor=";
     url +=  scparam_zonesensor;
 
@@ -348,9 +361,18 @@ function submitNewZoneConfig(){
 
     url += "&scparam_addzonetype=";
     url +=  scparam_zonetype;	
-	
+
     url += "&scparam_addpinnum=";
     url +=  scparam_pinnum;
+
+    url += "&scparam_addalexakeywordm=";
+    url +=  scparam_alexakeyword;
+
+    url += "&scparam_addalexaduration=";
+    url +=  scparam_alexaduration;
+
+    url += "&scparam_addalexatemp=";
+    url +=  scparam_alexatemp;    
 
     xmlhttp.open("GET", url, true);
     xmlhttp.send();
