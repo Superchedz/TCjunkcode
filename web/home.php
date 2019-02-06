@@ -508,7 +508,7 @@ if (isset($_SESSION['myname'])) {
     <div class='form-group'>
     <label for='scparam_pinnum' class='col-sm-4 control-label'>Relay Pin Num (Pi)</label>
         <div class='col-sm-2'>
-            <input type='number' class='form-control' id='scparam_pinnumscparam_pinnum'>
+            <input type='number' class='form-control' id='scparam_pinnum'>
         </div>
     </div>
 
