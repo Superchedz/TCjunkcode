@@ -17,6 +17,7 @@ sudo rsync -a web/ /var/www/boiler/
 
 sudo mv crons/* /etc/cron.d
 sudo mv LED/* /home/pi/led
+nohup sudo python /home/pi/led/logger.py "Startup" "Pulled latest code from GITHUB" &
 cd /
 
 echo "##########################################################################"
@@ -27,6 +28,7 @@ cd /home/pi/logs
 sudo mkdir -p /home/pi/logs/previous
 sudo rm -f /home/pi/logs/previous/*
 sudo find . -maxdepth 1 -type f -exec mv {} /home/pi/logs/previous \;
+nohup sudo python /home/pi/led/logger.py "Startup" "Backed up previous log files" &
 cd /
 
 echo
@@ -48,6 +50,7 @@ echo '######################################################'
 echo "Tidying up MessageBridge logs to avoid getting too big"
 
 sudo rm  /home/pi/WirelessThings-LaunchPad/MessageBridge/MessageBridge.log
-sudo rm  /home/pi/Launchpad/MessageBridge/MessageBridge.log
 
+sudo rm  /home/pi/Launchpad/MessageBridge/MessageBridge.log
+nohup sudo python /home/pi/led/logger.py "Startup" "Cleared down MessageBridge logs" &
  

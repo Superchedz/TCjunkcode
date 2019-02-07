@@ -19,5 +19,6 @@ then
    else
       echo "TCAlexa.py process is not running - alert email sent"
       sudo python /home/pi/led/alerter.py "Alerter  - TCAlexa Error" "Process TCAlexa.py was not found but param is on check logs and restart"
+      nohup sudo python /home/pi/led/logger.py "ERROR" "Alexa listener job not found" &
    fi
 fi
