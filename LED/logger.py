@@ -12,6 +12,7 @@
 #  ======== ========== ====  ===========
 #  1.0      2014-11-01 GLC   Initial Version
 #  1.1      2015-11-22 GLC   Added to receive params from run command.
+#  1.2      2019-02-07 GLC   Security fix
 ################################################################################################
 
 import sys
@@ -25,6 +26,7 @@ import smtplib
 import mimetypes 
 import email 
 import email.mime.application 
+from getpw import getpass
 
 
 ################################################################################################
@@ -34,7 +36,9 @@ import email.mime.application
 def write_log(Log_From, Log_Text):
   print "************** Creating log***************"
 
-  db = MySQLdb.connect("localhost","root","pass123","BoilerControl" )
+  dbpass = getpass()
+  
+  db = MySQLdb.connect("localhost","root",dbpass,"BoilerControl" )
   log_cursor = db.cursor()
  
   sql = """INSERT INTO log(Log_From, Log_Text) VALUES ('"""+Log_From+"""','"""+Log_Text+"""')""" 
