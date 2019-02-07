@@ -38,7 +38,7 @@ def write_log(Log_From, Log_Text):
 
   dbpass = getpass()
   
-  db = MySQLdb.connect("localhost","root",dbpass,"BoilerControl" )
+  db = MySQLdb.connect("localhost","TCROOT9000",dbpass,"BoilerControl" )
   log_cursor = db.cursor()
  
   sql = """INSERT INTO log(Log_From, Log_Text) VALUES ('"""+Log_From+"""','"""+Log_Text+"""')""" 
