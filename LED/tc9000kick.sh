@@ -19,6 +19,15 @@ sudo mv crons/* /etc/cron.d
 sudo mv LED/* /home/pi/led
 cd /
 
+echo "##########################################################################"
+echo "############## Backing up previous log files to aid support ##############"
+echo "##########################################################################"
+
+cd /home/pi/logs
+sudo mkdir -p /home/pi/logs/previous
+sudo rm -f /home/pi/logs/previous/*
+sudo find . -maxdepth 1 -type f -exec mv {} /home/pi/logs/previous \;
+cd /
 
 echo
 echo "##########################################################################"
