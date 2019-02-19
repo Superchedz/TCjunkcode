@@ -344,12 +344,12 @@ db = MySQLdb.connect (host   = "localhost",
 # need to check the tunnel is available too.
 
 AlexaON = get_Alexa()
-print AlexaON
+
 ngmsg = "undefined"
 if AlexaON == "Y":
 #  ipaddress = get_ip_address()
   DebugMode = get_debug()
-  
+  ngmsg = "not detected"
 # get the ngrok tunnel details as they need to go in the startup email
   try:
     os.system("curl  http://localhost:4040/api/tunnels > tunnels.json")
@@ -363,14 +363,18 @@ if AlexaON == "Y":
   else:
     for i in datajson['tunnels']:
       ngmsg = i['public_url'] + '\n'
-  print ngmsg
+  print " "
+  print " " 
+  print "Current tunnel address : " + ngmsg
   
 # check if it's changed since we last updated the database
   if processing_successful == True:
+ 
     curr_ngrok = get_curr_ngrok()      
-    print curr_ngrok  
+    print "Params table value     : " + curr_ngrok
+  
     if curr_ngrok != ngmsg:
-      print "not equal"
+      print "Not equal, sending email and updating database"
 # store the ngrok in the database so its available to the gui
 
       ngrok_cursor = db.cursor ()
