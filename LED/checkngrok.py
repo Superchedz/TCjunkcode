@@ -254,7 +254,6 @@ def get_Alexa():
 
 	
 def get_curr_ngrok():
-  print "hello"
   global currNGROK
   ng_cursor = db.cursor ()
   ng_query = "select * from params_b where Param_Name = 'NGROK_address'"
@@ -266,11 +265,10 @@ def get_curr_ngrok():
      write_log ('ERROR: Get NGROK_address',err)
 
   numrows = int (ng_cursor.rowcount)
-  print numrows
+  
   if numrows == 1:
     ng_res = ng_cursor.fetchone()
     currNGROK = ng_res[1]
-    print currNGROK
     return currNGROK
   else:
     currNGROK = "Not Found"
