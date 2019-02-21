@@ -392,9 +392,10 @@ if AlexaON == "Y":
      
       if processing_successful == True:    
 # format up the alert email with info
-        subject = "TC9000 - NGROK endpoint change detected: System ID: "
+        subject = "TC9000 - NGROK endpoint change detected: System ID"
         msgbody = "Dear valued customer,\n\n" \
                   "A change has been detected in your NGROK Alexa Endpoint address \n" \
+                  "Your old value was : " + str(curr_ngrok) + "\n" \
                   "Your Alexa end point is now: " + str(ngmsg) + "\n" \
                   "You should update the end point into the AWS console here https://developer.amazon.com/alexa/ \n\n" \
                   "This is probably because your system lost its internet connection for an extended period. \n"\
