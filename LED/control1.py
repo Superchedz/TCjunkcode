@@ -48,6 +48,7 @@
 #  2.7      2019-01-02 GLC   Added more complex password mgt for database - get and build it.
 #  2.8      2019-02-04 GLC   Added write of NGROK address to params table
 #  2.9      2019-02-04 GLC   Added default value of ngmsg in case its not available.
+#  2.9.1    2019-02-21 GLC   Handled ngrok addresses of http not https
 ###################################################################################################
 
 import RPi.GPIO as GPIO 
@@ -757,7 +758,9 @@ if AlexaON == "Y":
       ngmsg = i['public_url'] + '\n'
 
 # store the ngrok in the database so its available to the gui
-
+# check it has https first, by stripping and readding https
+  ngmsg = "https://" + ngmsg.split("/")[-1]
+ 
   ngrok_cursor = db.cursor ()
   ngrok_query = ("""UPDATE params_b SET Param_Value = '%s' where Param_Name = 'NGROK_address'""" % (ngmsg))
  
@@ -771,7 +774,7 @@ if AlexaON == "Y":
   ngrok_cursor.close()
  	
 # format up the startup email with info
-subject = "TC9000 Startup Alert: Primary switching process (v2.9). System ID: "
+subject = "TC9000 Startup Alert: Primary switching process (v2.9.1). System ID: "
 if AlexaON == "Y":
   
   msgbody = "The main Control job has started successfully.\n\n" \

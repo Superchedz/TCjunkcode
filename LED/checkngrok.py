@@ -4,6 +4,7 @@
 #                                       ==========
 ################################################################################################
 #  This program is the main part of the TotalControl9000 system.
+#  This program is the main part of the TotalControl9000 system.
 #  
 #  It is run regularly via Cron to check the status of the NGROK process and check for any
 #  changes to its address, if any is found it emails the new address to allow the AWS console 
@@ -14,6 +15,8 @@
 #  Version  Date       Who   Description
 #  ======== ========== ====  ===========
 #  1.0      2019-02-15 GLC   Initial Version
+#  1.1      2019-02-21 GLC   Modified to handle ngrok check giving address with http not https
+#                            Strip off up to the // before checking or emailing  
 ###################################################################################################
 
 import time 
@@ -253,8 +256,8 @@ def get_Alexa():
     critical_error('Get Alexa', 'ERROR : Missing Alexa Param', '--!! Shutting down ^2 !!--')
 
 	
-def get_curr_ngrok():
-  global currNGROK
+def get_db_ngrok():
+  global dbNGROK
   ng_cursor = db.cursor ()
   ng_query = "select * from params_b where Param_Name = 'NGROK_address'"
 
@@ -268,11 +271,11 @@ def get_curr_ngrok():
   
   if numrows == 1:
     ng_res = ng_cursor.fetchone()
-    currNGROK = ng_res[1]
-    return currNGROK
+    dbNGROK = ng_res[1]
+    return dbNGROK
   else:
-    currNGROK = "Not Found"
-    return currNGROK
+    dbNGROK = "Not Found"
+    return dbNGROK
     print "***  Error:  Missing Param NGROK_address param  ***"
 
 
@@ -366,19 +369,24 @@ if AlexaON == "Y":
   print " "
   print " " 
   print "Current tunnel address : " + ngmsg
+  print ngmsg.split("/")[-1]
   
 # check if it's changed since we last updated the database
   if processing_successful == True:
  
-    curr_ngrok = get_curr_ngrok()      
-    print "Params table value     : " + curr_ngrok
+    db_ngrok = get_db_ngrok()      
+    print "Params table value     : " + db_ngrok
+
+# make short as sometimes it can be http and sometimes https, so just strip it off
+    short_ngmsg = ngmsg.split("/")[-1]
   
-    if curr_ngrok != ngmsg:
+    if db_ngrok.split("/")[-1] != ngmsg.split("/")[-1]:     
       print "Not equal, sending email and updating database"
 # store the ngrok in the database so its available to the gui
+      newlongngmsg = "https://" + str(short_ngmsg)
 
       ngrok_cursor = db.cursor ()
-      ngrok_query = ("""UPDATE params_b SET Param_Value = '%s' where Param_Name = 'NGROK_address'""" % (ngmsg))
+      ngrok_query = ("""UPDATE params_b SET Param_Value = '%s' where Param_Name = 'NGROK_address'""" % (newlongngmsg))
  
       try:
          ngrok_cursor.execute(ngrok_query)
@@ -392,11 +400,10 @@ if AlexaON == "Y":
      
       if processing_successful == True:    
 # format up the alert email with info
-        subject = "TC9000 - NGROK endpoint change detected: System ID"
+        subject = "TC9000 - NGROK endpoint change detected: System ID: "
         msgbody = "Dear valued customer,\n\n" \
                   "A change has been detected in your NGROK Alexa Endpoint address \n" \
-                  "Your old value was : " + str(curr_ngrok) + "\n" \
-                  "Your Alexa end point is now: " + str(ngmsg) + "\n" \
+                  "Your Alexa end point is now: https://" + str(newlongngmsg) + "\n" \
                   "You should update the end point into the AWS console here https://developer.amazon.com/alexa/ \n\n" \
                   "This is probably because your system lost its internet connection for an extended period. \n"\
                   "\n\nFrom \n\n" \
